@@ -29,7 +29,7 @@ import 'package:skiiyabet/windows/transaction/deposit.dart';
 import 'package:skiiyabet/windows/support/support.dart';
 import 'package:skiiyabet/windows/transaction/transaction.dart';
 import 'package:skiiyabet/windows/transaction/withdraw.dart';
-import 'package:http/http.dart' as http; 
+import 'package:http/http.dart' as http;
 
 import 'entities/fetching.dart';
 
@@ -99,7 +99,6 @@ class SkiiyaBet extends StatefulWidget {
 }
 
 class _SkiiyaBetState extends State<SkiiyaBet> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1406,11 +1405,11 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
 
   List<String> _betMenuList = [
     'Tous les Matches | ',
-    'Matches Populaires | ',
-    'Domicile + Grand Points | ',
-    'Domicile + Petits Points | ',
-    'Extérieur + Grand Points | ',
-    'Extérieur + Petits Points | ',
+    // 'Matches Populaires | ',
+    // 'Domicile + Grand Points | ',
+    // 'Domicile + Petits Points | ',
+    // 'Extérieur + Grand Points | ',
+    // 'Extérieur + Petits Points | ',
   ];
 
   Widget _buildMenu(int index) {
@@ -1437,35 +1436,36 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 fieldLoadMore = 0;
                 // load all games bases on their timestamp
                 loadingGames(fieldLoadMore);
-              } else if (_selectedIndex == 1) {
-                // set all loading to all popular matches to be found
-                fieldLoadMore = 1;
-                // load all games bases on their timestamp
-                // filter games by most popular ones
-                loadingGames(fieldLoadMore);
-                // loadingGames(1);
-              } else if (_selectedIndex == 2) {
-                // loadingGames(2); // set all loading to home games and with high odds
-                fieldLoadMore = 2;
-                // load all games bases on their timestamp
-                // filter games by home games and with high odds
-                loadingGames(fieldLoadMore);
-              } else if (_selectedIndex == 3) {
-                // set all loading to home games and with low odds
-                fieldLoadMore = 3;
-                // filter games by home games and with low odds
-                loadingGames(fieldLoadMore);
-              } else if (_selectedIndex == 4) {
-                // set all loading to away games and with high odds
-                fieldLoadMore = 4;
-                // filter games by away games and with high odds
-                loadingGames(fieldLoadMore);
-              } else if (_selectedIndex == 5) {
-                // set all loading to away games and with low odds
-                fieldLoadMore = 5;
-                // filter games by away games and with low odds
-                loadingGames(fieldLoadMore);
               }
+              //  else if (_selectedIndex == 1) {
+              //   // set all loading to all popular matches to be found
+              //   fieldLoadMore = 1;
+              //   // load all games bases on their timestamp
+              //   // filter games by most popular ones
+              //   loadingGames(fieldLoadMore);
+              //   // loadingGames(1);
+              // } else if (_selectedIndex == 2) {
+              //   // loadingGames(2); // set all loading to home games and with high odds
+              //   fieldLoadMore = 2;
+              //   // load all games bases on their timestamp
+              //   // filter games by home games and with high odds
+              //   loadingGames(fieldLoadMore);
+              // } else if (_selectedIndex == 3) {
+              //   // set all loading to home games and with low odds
+              //   fieldLoadMore = 3;
+              //   // filter games by home games and with low odds
+              //   loadingGames(fieldLoadMore);
+              // } else if (_selectedIndex == 4) {
+              //   // set all loading to away games and with high odds
+              //   fieldLoadMore = 4;
+              //   // filter games by away games and with high odds
+              //   loadingGames(fieldLoadMore);
+              // } else if (_selectedIndex == 5) {
+              //   // set all loading to away games and with low odds
+              //   fieldLoadMore = 5;
+              //   // filter games by away games and with low odds
+              //   loadingGames(fieldLoadMore);
+              // }
               // Window.showWindow = 0;
             });
           // print(_selectedIndex);
@@ -1480,22 +1480,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   color: _selectedIndex == index
                       ? Colors.lightGreen[400]
                       : Colors.grey,
-                  fontSize: 12.0,
+                  fontSize: 14.0,
                   fontWeight: _selectedIndex == index
                       ? FontWeight.bold
                       : FontWeight.normal,
                 ),
               ),
-              // if (_selectedIndex == index)
-              //   SizedBox(
-              //     width: 3.0,
-              //   ),
-              // if (_selectedIndex == index)
-              //   Icon(
-              //     Icons.check,
-              //     color: Colors.lightBlue,
-              //     size: 15.0,
-              //   ),
             ],
           ),
         ),
@@ -1696,6 +1686,30 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
 
   @override
   void initState() {
+    // WE FIRST LOAD ALL THE GAMES HERE
+    _fetchMatch.fetchMatchDetails(Selection.loadLimit).then((value) {
+      // print(value);
+      // WE SET THE VALUE TO THE MATCHES ARRAY
+      _matches = value;
+      // for(int i = 0; i < value.length; i++){
+      //   print(value[i].id);
+      // }
+    });
+    // LET US LOAD LEAGUES HERE
+    _fetchMatch.fetchLeagues().then((value) {
+      // WE SET THE VALUE TO THE MATCHES ARRAY
+      // print(value['league']['data'][0]);
+      if (value.length > 0) {
+        _leagues = value[0]['data'];
+        // print(value[0]['data'][0]);
+      }
+    });
+
+    // LET US LOAD LEAGUES HERE
+    _fetchMatch.fetchCountries().then((value) {
+      // WE SET THE VALUE TO THE MATCHES ARRAY
+      _countries = value;
+    });
     // this match check weither matches are still available or have expired
     // checkMatchValidity();
     // New methods loading...
@@ -1751,12 +1765,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.all(8.0),
-        child: data.length > 0
+        child: _matches.length > 0
             ? ListView.builder(
                 controller: _scrollController,
-                itemCount: data.length,
-                itemBuilder: (context, index) {
-                  return singleMatch(data, index);
+                itemCount: _matches.length,
+                itemBuilder: (context, _index) {
+                  return singleMatch(_matches[_index], _index);
                 },
               )
             : Center(
@@ -1824,202 +1838,212 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     ));
   }
 
-  Widget singleMatch(var _thisData, int index) {
+  Widget singleMatch(var _thisMatch, int index) {
     // we assign the context at position Index to the document snapshot document
-    DocumentSnapshot match = _thisData[index];
+    // DocumentSnapshot match = _thisData[index];
     //snapshot.data[index]
     // match = data[index];
     // print(match);
-    var team1 = match['team1'];
-    var team2 = match['team2'];
-    var championship = match['championship'];
-    var country = match['country'];
-    // load time details
-    var hour = match['time']['1'];
-    if (hour.toString().length < 2) {
-      hour = '0' + hour;
-    }
-    var min = match['time']['2'];
-    if (min.toString().length < 2) {
-      min = '0' + min;
-    }
-    var timeIndicator = match['time']['3'];
-    // load the date details [day, date and month]
-    var day = match['date']['1'];
-    var mydate = match['date']['2'];
-    if (mydate.toString().length < 2) {
-      mydate = '0' + mydate;
-    }
-    var month = match['date']['3'];
-    if (month.toString().length < 2) {
-      month = '0' + month;
-    }
-    // print(match['isPopular']);
-    // show the trending icon if the match has been set as popular
-    bool isTrending = match['isPopular'];
-    // add the current match into the odds array with all its odds values
-    // check first if the id already does not exist
-    if (!Selection.gameOddsArray.contains(match.documentID)) {
-      int currentPosition = Selection.gameOddsArray.length;
-      for (var j = 0; j < (Selection.maxLength + 1); j++) {
-        if (j == 0) {
-          // add the id at the first position
-          Selection.gameOddsArray.insert(currentPosition, match.documentID);
-        } else {
-          // add false values at the remaining position
-          Selection.gameOddsArray.insert((currentPosition + j), false);
+    var id = _thisMatch.id;
+    // var team1 = match['team1'];
+    var team1 = _thisMatch.localTeam['data']['name'];
+    var team2 = _thisMatch.visitorTeam['data']['name'];
+    // var team2 = match['team2'];
+    // GET THE TIME OF THE MATCH
+    var time = _thisMatch.time['starting_at']['time'];
+    // GET THE DATE OF THE GAME
+    var date = _thisMatch.time['starting_at']['date'];
+    // var championship = match['championship'];
+    // var country = match['country'];
+    // // load time details
+    var championship;
+    var country;
+    int _leagueIndex;
+    // LET US LOAD CHAMPIONSHIPS
+    // ONLY IF WE HAVE DATA IN THE ARRAY
+    if (_leagues.length > 0)
+      for (int j = 0; j < _leagues.length; j++) {
+        if (_leagues[j]['id'] == _thisMatch.league_id) {
+          championship = _leagues[j]['name'];
+          _leagueIndex = j;
+          // print('the ligue is ${_leagues[_lpLg]['name']}');
+          // WE BREAK THE LOOP FOR BETTER PROCESSING
+          break;
         }
       }
-    }
+
+    // LET US GET THE CORRECT COUNTRY HERE
+    // ONLY IF WE HAVE DATA IN THE ARRAY
+    if (_countries.length > 0)
+      for (int j = 0; j < _countries.length; j++) {
+        if (_leagues[_leagueIndex]['country_id'] == _countries[j]['id']) {
+          country = ' - ' + _countries[j]['name'];
+          // print('the country name is ${_countries[j]['name']}');
+          // WE BREAK THE LOOP FOR BETTER PROCESSING
+          break;
+        }
+      }
+
     return Column(
       children: [
-        // SizedBox(height: 5.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: () {
-                if (mounted)
-                  setState(() {
-                    Window.showWindow = 1;
-                    // assign match to matchDetails
-                    // Match.matchDetails = match;
-                    matchMoreOdds = match;
-                    // set the index of window to football
-                    Window.showJackpotIndex = 0;
-                    // set the match clicked to the index so that it is the only one to be updated
-                    // Selection.matchClicked = index;
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (_) => SkiiyaBet(),
-                    //   ),
-                    // );
-                  });
-              },
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: ResponsiveWidget.isExtraSmallScreen(context)
-                          ? 200.0
-                          : ResponsiveWidget.isSmallScreen(context)
-                              ? 200
-                              : 250,
-                      child: Row(
-                        children: [
-                          Container(
-                            width: ResponsiveWidget.isExtraSmallScreen(context)
-                                ? 200.0
-                                : ResponsiveWidget.isSmallScreen(context)
-                                    ? 200
-                                    : ResponsiveWidget.isSmallScreen(context)
-                                        ? 300
-                                        : 250,
-                            child: Text(
-                              team1 + ' - ' + team2,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize:
-                                    ResponsiveWidget.isSmallScreen(context)
-                                        ? 14.0
-                                        : 16.0,
-                                // decoration: TextDecoration.underline,
+        GestureDetector(
+            onTap: () {
+              if (mounted)
+                setState(() {
+                  // print('Match id: $id : Details Requested');
+                  // Window.showWindow = 1;
+                  // assign match to matchDetails
+                  // Match.matchDetails = match;
+                  // matchMoreOdds = match;
+                  // set the index of window to football
+                  // Window.showJackpotIndex = 0;
+                  // set the match clicked to the index so that it is the only one to be updated
+                  // Selection.matchClicked = index;
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (_) => SkiiyaBet(),
+                  //   ),
+                  // );
+                });
+            },
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child:
+                  // SizedBox(height: 5.0),
+                  Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('ID: $id',
+                          style: TextStyle(
+                            fontSize: 13.0,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.bold,
+                          )),
+                      Container(
+                        width: ResponsiveWidget.isExtraSmallScreen(context)
+                            ? 200.0
+                            : ResponsiveWidget.isSmallScreen(context)
+                                ? 200
+                                : 250,
+                        child: Row(
+                          children: [
+                            Container(
+                              width: ResponsiveWidget.isExtraSmallScreen(
+                                      context)
+                                  ? 200.0
+                                  : ResponsiveWidget.isSmallScreen(context)
+                                      ? 200
+                                      : ResponsiveWidget.isSmallScreen(context)
+                                          ? 300
+                                          : 250,
+                              child: Text(
+                                team1 + ' - ' + team2,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize:
+                                      ResponsiveWidget.isSmallScreen(context)
+                                          ? 14.0
+                                          : 16.0,
+                                  // decoration: TextDecoration.underline,
+                                ),
+                                maxLines: 4,
+                                overflow: TextOverflow.clip,
                               ),
-                              maxLines: 4,
-                              overflow: TextOverflow.clip,
+                            ),
+                            // SizedBox(width: 2.0,),
+                            // if (!ResponsiveWidget.isExtraSmallScreen(context) &&
+                            //     !ResponsiveWidget.isSmallScreen(context))
+                            //   Icon(
+                            //     Icons.bar_chart_rounded,
+                            //     size: 20.0,
+                            //     color: Colors.grey,
+                            //   )
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 1.0),
+                      Container(
+                        width: ResponsiveWidget.isExtraSmallScreen(context)
+                            ? 100.0
+                            : ResponsiveWidget.isSmallScreen(context)
+                                ? 150
+                                : 250,
+                        child: Text(
+                          championship + country,
+                          style: TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold
+                              // decoration: TextDecoration.underline,
+                              ),
+                          maxLines: 4,
+
+                          // overflow: TextOverflow.clip,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        children: [
+                          // if (isTrending)
+                          // Icon(
+                          //   Icons.trending_up,
+                          //   size:
+                          //       ResponsiveWidget.isSmallScreen(context) ? 20.0 : 25.0,
+                          //   color: Colors.lightGreen[400],
+                          // ),
+                          // Text('getting error ' + isTrending.toString()),
+                          // SizedBox(width: 3.0),
+                          Text(
+                            time.toString(),
+                            // 'hour' + ':' + 'min' + ' ' + 'timeIndicator',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: ResponsiveWidget.isSmallScreen(context)
+                                  ? 13.0
+                                  : 15.0,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                          // SizedBox(width: 2.0,),
-                          // if (!ResponsiveWidget.isExtraSmallScreen(context) &&
-                          //     !ResponsiveWidget.isSmallScreen(context))
-                          //   Icon(
-                          //     Icons.bar_chart_rounded,
-                          //     size: 20.0,
-                          //     color: Colors.grey,
-                          //   )
                         ],
                       ),
-                    ),
-                    SizedBox(height: 1.0),
-                    Container(
-                      width: ResponsiveWidget.isExtraSmallScreen(context)
-                          ? 100.0
-                          : ResponsiveWidget.isSmallScreen(context)
-                              ? 150
-                              : 250,
-                      child: Text(
-                        championship + ' - ' + country,
+                      Text(
+                        // thurs 17/09
+                        date.toString(),
+                        // 'day' + ' ' + 'mydate' + '/' + 'month',
+                        // match.date[0] + ' : ' + match.date[1] + ' /' + match.date[3],
                         style: TextStyle(
-                          fontSize: 11.0,
-                          color: Colors.grey,
-                          // decoration: TextDecoration.underline,
+                          color: Colors.black,
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.bold,
                         ),
-                        maxLines: 4,
-
-                        // overflow: TextOverflow.clip,
                       ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Row(
-                  children: [
-                    if (isTrending)
-                      Icon(
-                        Icons.trending_up,
-                        size: ResponsiveWidget.isSmallScreen(context)
-                            ? 20.0
-                            : 25.0,
-                        color: Colors.lightGreen[400],
-                      ),
-                    // Text('getting error ' + isTrending.toString()),
-                    SizedBox(width: 3.0),
-                    Text(
-                      hour + ':' + min + ' ' + timeIndicator,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: ResponsiveWidget.isSmallScreen(context)
-                            ? 13.0
-                            : 15.0,
-                        // fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  // thurs 17/09
-                  day + ' ' + mydate + '/' + month,
-                  // match.date[0] + ' : ' + match.date[1] + ' /' + match.date[3],
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 11.0,
+                    ],
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        // Divider(
-        //   color: Colors.grey,
-        //   thickness: 0.3,
-        // ),
+                ],
+              ),
+              // Divider(
+              //   color: Colors.grey,
+              //   thickness: 0.3,
+              // ),
+            )),
         // For betting buttons
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            team1Widget(match, 1),
+            team1Widget(_matches, 1),
             SizedBox(width: 5.0),
-            drawWidget(match, 2),
-            SizedBox(width: 5.0),
-            team2Widget(match, 3),
+            // drawWidget(_matches, 2),
+            // SizedBox(width: 5.0),
+            // team2Widget(match, 3),
           ],
         ),
         SizedBox(height: 5.0),
@@ -2163,22 +2187,21 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     loadBetslipMatches();
   }
 
-  team1Widget(DocumentSnapshot match, int index) {
+  team1Widget(var match, int index) {
     // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        Selection.gameOddsArray.indexOf(match.documentID) + index]);
+    // updateColors(Selection.gameOddsArray[
+    //     Selection.gameOddsArray.indexOf(match.documentID) + index]);
     return Expanded(
       child: RawMaterialButton(
         onPressed: () {
           if (mounted)
             setState(() {
-              topHomeButtonFunction(match, index);
+              // topHomeButtonFunction(match, index);
             });
         },
         fillColor: colorBg,
         padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: oneTimesTwoContainer(
-            '1', match['team1'], match['oneTimesTwo']['1']),
+        child: oneTimesTwoContainer('1', 'team 1', 10.00),
       ),
     );
   }
@@ -2419,7 +2442,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             inputFormatters: <TextInputFormatter>[
                               FilteringTextInputFormatter.digitsOnly
                             ],
-                            
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 15.0,
@@ -2881,8 +2903,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                                           'FÉLICITATIONS! PARI AJOUTÉ';
                                                       // these are displaying colors for the success message
                                                       showBetslipMessageColor =
-                                                          Colors
-                                                              .white;
+                                                          Colors.white;
                                                       showBetslipMessageColorBg =
                                                           Colors
                                                               .lightGreen[400];
