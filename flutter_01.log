@@ -1,0 +1,99 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter run --machine --target lib\main.dart -d 05302339BT031827 --track-widget-creation --dart-define=flutter.inspector.structuredErrors=true --start-paused --web-server-debug-protocol ws --web-server-debug-backend-protocol ws --web-allow-expose-url --web-port 5000
+
+## exception
+
+ProcessException: ProcessException: The process cannot access the file because it is being used by another process.
+
+  Command: C:\flutter\bin\mingit\cmd\git.EXE -c log.showSignature=false log -n 1 --pretty=format:%ad --date=iso
+
+```
+#0      _ProcessImpl._runAndWait (dart:io-patch/process_patch.dart:473:7)
+#1      _runNonInteractiveProcessSync (dart:io-patch/process_patch.dart:616:18)
+#2      Process.runSync (dart:io-patch/process_patch.dart:66:12)
+#3      LocalProcessManager.runSync (package:process/src/interface/local_process_manager.dart:93:20)
+#4      _runSync (package:flutter_tools/src/version.dart:651:56)
+#5      FlutterVersion._latestGitCommitDate (package:flutter_tools/src/version.dart:221:14)
+#6      FlutterVersion.checkFlutterVersionFreshness (package:flutter_tools/src/version.dart:399:49)
+#7      FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:305:40)
+<asynchronous suspension>
+#8      FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart)
+#9      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:150:29)
+#10     _rootRun (dart:async/zone.dart:1190:13)
+#11     _CustomZone.run (dart:async/zone.dart:1093:19)
+#12     _runZoned (dart:async/zone.dart:1630:10)
+#13     runZoned (dart:async/zone.dart:1550:10)
+#14     AppContext.run (package:flutter_tools/src/base/context.dart:149:18)
+#15     FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:281:19)
+<asynchronous suspension>
+#16     CommandRunner.run.<anonymous closure> (package:args/command_runner.dart:112:25)
+#17     new Future.sync (dart:async/future.dart:223:31)
+#18     CommandRunner.run (package:args/command_runner.dart:112:14)
+#19     FlutterCommandRunner.run (package:flutter_tools/src/runner/flutter_command_runner.dart:230:18)
+#20     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:69:22)
+#21     _rootRun (dart:async/zone.dart:1190:13)
+#22     _CustomZone.run (dart:async/zone.dart:1093:19)
+#23     _runZoned (dart:async/zone.dart:1630:10)
+#24     runZonedGuarded (dart:async/zone.dart:1618:12)
+#25     runZoned (dart:async/zone.dart:1547:12)
+#26     run.<anonymous closure> (package:flutter_tools/runner.dart:67:18)
+<asynchronous suspension>
+#27     run.<anonymous closure> (package:flutter_tools/runner.dart)
+#28     runInContext.runnerWrapper (package:flutter_tools/src/context_runner.dart:64:18)
+<asynchronous suspension>
+#29     runInContext.runnerWrapper (package:flutter_tools/src/context_runner.dart)
+#30     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:150:29)
+#31     _rootRun (dart:async/zone.dart:1190:13)
+#32     _CustomZone.run (dart:async/zone.dart:1093:19)
+#33     _runZoned (dart:async/zone.dart:1630:10)
+#34     runZoned (dart:async/zone.dart:1550:10)
+#35     AppContext.run (package:flutter_tools/src/base/context.dart:149:18)
+#36     runInContext (package:flutter_tools/src/context_runner.dart:67:24)
+#37     run (package:flutter_tools/runner.dart:52:10)
+#38     main (package:flutter_tools/executable.dart:76:9)
+#39     main (file:///C:/flutter/packages/flutter_tools/bin/flutter_tools.dart:8:3)
+#40     _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:299:32)
+#41     _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:168:12)
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel beta, 1.21.0-9.2.pre, on Microsoft Windows [Version 10.0.18363.1082], locale en-VG)
+    • Flutter version 1.21.0-9.2.pre at C:\flutter
+    • Framework revision 81a45ec2e5 (4 weeks ago), 2020-08-27 14:14:33 -0700
+    • Engine revision 20a9531835
+    • Dart version 2.10.0 (build 2.10.0-7.3.beta)
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 30.0.2)
+    • Android SDK at C:\Users\Maombi\AppData\Local\Android\sdk
+    • Platform android-30, build-tools 30.0.2
+    • Java binary at: C:\Program Files\Android\Android Studio\jre\bin\java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)
+    • All Android licenses accepted.
+
+[✓] Chrome - develop for the web
+    • Chrome at C:\Program Files (x86)\Google\Chrome\Application\chrome.exe
+
+[✓] Android Studio (version 4.0)
+    • Android Studio at C:\Program Files\Android\Android Studio
+    • Flutter plugin version 48.1.2
+    • Dart plugin version 193.7361
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b01)
+
+[✓] VS Code (version 1.49.0)
+    • VS Code at C:\Users\Maombi\AppData\Local\Programs\Microsoft VS Code
+    • Flutter extension version 3.14.1
+
+[✓] Connected device (4 available)
+    • TECNO KC6 (mobile) • 05302339BT031827 • android-arm    • Android 9 (API 28)
+    • Web Server (web)   • web-server       • web-javascript • Flutter Tools
+    • Chrome (web)       • chrome           • web-javascript • Google Chrome 85.0.4183.102
+    • Edge (web)         • edge             • web-javascript • Microsoft Edge 85.0.564.44
+
+• No issues found!
+```
