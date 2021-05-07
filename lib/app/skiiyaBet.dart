@@ -91,7 +91,7 @@ bool switchToMoreMatchOddsWindow = false;
 // THIS WILL CONTAIN THE CURRENT MATCH TO LOAD MORE ODDS
 var moreOddsMatch;
 // IT STORE THE ODDS OF THE GAME WE WILL NEDD
-var moreLoadedMatchOdds = [];
+var moreLoadedMatchOdds;
 
 class SkiiyaBet extends StatefulWidget {
   @override
@@ -215,57 +215,38 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                         });
                                     },
                                     child: MouseRegion(
-                                      cursor: SystemMouseCursors.click,
-                                      child: Selection.userTelephone
-                                                  .toString()
-                                                  .compareTo('') ==
-                                              0
-                                          ? Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Adhésion'.toUpperCase(),
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 14.0,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  'Connectez-Vous',
-                                                  style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 12.0,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              ],
-                                            )
-                                          : Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Chargement...',
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    // fontWeight: FontWeight.bold,
-                                                    fontSize: 11.0,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 3.0),
-                                                SpinKitCubeGrid(
-                                                  color: Colors.lightGreen[400],
-                                                  size: 18.0,
-                                                ),
-                                              ],
-                                            ),
-                                    ),
+                                        cursor: SystemMouseCursors.click,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                                height: 35.0,
+                                                // padding: new EdgeInsets.symmetric(
+                                                //     horizontal: 5.0),
+                                                child: ButttonWithIcon(
+                                                  icon: Icons.login,
+                                                  buttonColor:
+                                                      Colors.lightGreen[400],
+                                                  color: Colors.white,
+                                                  title: ResponsiveWidget
+                                                          .isExtraSmallScreen(
+                                                              context)
+                                                      ? 'Mon\nCompte'
+                                                      : 'Mon Compte',
+                                                  onPressed: () {
+                                                    if (mounted)
+                                                      setState(() {
+                                                        // on click display the login button
+                                                        // redirect to login page
+                                                        Window.showWindow = 14;
+                                                      });
+                                                  },
+                                                ))
+                                          ],
+                                        )),
                                   ),
                             SizedBox(width: 10.0),
                             // display the counter in the app bar with NO ACTION
@@ -767,7 +748,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       ),
                       Container(
                         alignment: Alignment.centerRight,
-                        padding: new EdgeInsets.only(right: 10.0),
+                        padding: new EdgeInsets.only(right: 5.0),
                         width: ResponsiveWidget.isSmallScreen(context)
                             ? (MediaQuery.of(context).size.width - 60.0) * 0.60
                             : (MediaQuery.of(context).size.width - 60.0) * 0.25,
@@ -780,13 +761,13 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                 ResponsiveWidget.isMediumScreen(context))
                               Padding(
                                 padding: const EdgeInsets.only(
-                                    top: 10.0, bottom: 10.0, right: 10.0),
+                                    top: 10.0, bottom: 10.0, right: 5.0),
                                 child: Container(
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                       border: Border(
                                           right: BorderSide(
-                                              color: Colors.grey, width: 1.5))),
+                                              color: Colors.grey, width: 1.0))),
                                   // child: IconButton(
                                   //     icon: Icon(Icons.notifications), onPressed: null),
                                 ),
@@ -830,83 +811,38 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                       ),
                                     ],
                                   )
-                                : GestureDetector(
-                                    onTap: () {
-                                      if (mounted)
-                                        setState(() {
-                                          // on click display the login button
-                                          // redirect to login page
-                                          Window.showWindow = 14;
-                                        });
-                                    },
-                                    child: MouseRegion(
-                                      cursor: SystemMouseCursors.click,
-                                      child: Selection.userTelephone
-                                                  .toString()
-                                                  .compareTo('') ==
-                                              0
-                                          ? Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Adhésion'.toUpperCase(),
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 15.0,
-                                                  ),
-                                                ),
-                                                !ResponsiveWidget
-                                                        .isMediumScreen(context)
-                                                    ? Text(
-                                                        'S\'Identifier / S\'Inscrire',
-                                                        style: TextStyle(
-                                                          color: Colors.grey,
-                                                          fontSize: 12.0,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                        ),
-                                                      )
-                                                    : Text(
-                                                        'Connectez-Vous Ici',
-                                                        style: TextStyle(
-                                                          color: Colors.grey,
-                                                          fontSize: 12.0,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                        ),
-                                                      )
-                                              ],
-                                            )
-                                          : Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Chargement...',
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    // fontWeight: FontWeight.bold,
-                                                    fontSize: 11.0,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 3.0),
-                                                SpinKitCubeGrid(
-                                                  color: Colors.lightGreen[400],
-                                                  size: 18.0,
-                                                ),
-                                              ],
-                                            ),
-                                    ),
-                                  ),
+                                : MouseRegion(
+                                    cursor: SystemMouseCursors.click,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                            height: 35.0,
+                                            // padding: new EdgeInsets.symmetric(
+                                            //     horizontal: 5.0),
+                                            child: ButttonWithIcon(
+                                              icon: Icons.login,
+                                              buttonColor:
+                                                  Colors.lightGreen[400],
+                                              color: Colors.white,
+                                              title: 'Mon Compte',
+                                              onPressed: () {
+                                                if (mounted)
+                                                  setState(() {
+                                                    // on click display the login button
+                                                    // redirect to login page
+                                                    Window.showWindow = 14;
+                                                  });
+                                              },
+                                            ))
+                                      ],
+                                    )),
                             // if (ResponsiveWidget.isMediumScreen(context) ||
                             //     ResponsiveWidget.isSmallScreen(context))
-                            SizedBox(width: 10.0),
+                            SizedBox(width: 5.0),
                             // display the counter in the app bar with NO ACTION
                             if (!(ResponsiveWidget.isMediumScreen(context) ||
                                 ResponsiveWidget.isSmallScreen(context)))
@@ -914,12 +850,13 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                 padding:
                                     EdgeInsets.only(top: 10.0, bottom: 10.0),
                                 child: Container(
-                                  padding: EdgeInsets.only(left: 8.0),
+                                  padding: EdgeInsets.only(left: 5.0),
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
                                       border: Border(
                                           left: BorderSide(
-                                              color: Colors.grey, width: 1.5))),
+                                              color: Colors.grey.shade300,
+                                              width: 1.0))),
                                   child: Container(
                                     // width: 15.0,
                                     padding:
@@ -1421,22 +1358,22 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             setState(() {
               // SET THE CHAMPIONSHIP HIGHLIGHT ICON TO NULL IN DESKTOP MODE
               // WE GIVE IT A VALUE OF -1 SO THAT NO CHAMPIONSHIP WILL BE SELECTED
-              _indexChampionSelection = -1;
+              // _indexChampionSelection = -1;
 
               // set the selected championship to none if one item is clicked here
-              selectedMobileTopItem = '';
-              _selectedIndex = index;
-              // load games on event clicking on
-              // 'Matches','Popular Bets', 'Home & High Odds', 'Away & High Odds',
-              // clear all data to reload new ones and filtered
-              data.clear();
-              // when clicked on match index, load matches with all games
-              if (_selectedIndex == 0) {
-                // set all loading to all matches to be found
-                fieldLoadMore = 0;
-                // load all games bases on their timestamp
-                loadingGames(fieldLoadMore);
-              }
+              // selectedMobileTopItem = '';
+              // _selectedIndex = index;
+              // // load games on event clicking on
+              // // 'Matches','Popular Bets', 'Home & High Odds', 'Away & High Odds',
+              // // clear all data to reload new ones and filtered
+              // data.clear();
+              // // when clicked on match index, load matches with all games
+              // if (_selectedIndex == 0) {
+              //   // set all loading to all matches to be found
+              //   fieldLoadMore = 0;
+              //   // load all games bases on their timestamp
+              //   loadingGames(fieldLoadMore);
+              // }
               //  else if (_selectedIndex == 1) {
               //   // set all loading to all popular matches to be found
               //   fieldLoadMore = 1;
@@ -1499,9 +1436,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       // margin: EdgeInsets.only(right: 0),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: Colors.grey, width: 1.0),
-          left: BorderSide(color: Colors.grey, width: 1.0),
-          right: BorderSide(color: Colors.grey, width: 1.0),
+          top: BorderSide(color: Colors.grey, width: 0.4),
+          left: BorderSide(color: Colors.grey, width: 0.4),
+          right: BorderSide(color: Colors.grey, width: 0.4),
         ),
       ),
       child: Container(
@@ -1691,9 +1628,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       // print(value);
       // WE SET THE VALUE TO THE MATCHES ARRAY
       _matches = value;
-      // for(int i = 0; i < value.length; i++){
-      //   print(value[i].id);
-      // }
+      // LET US INSERT DATA INTO THE SELECTION ARRAY
+      for (int i = 0; i < _matches.length; i++) {
+        // print(_matches[i].id);
+        // WE ADD ONLY THE ID OF THE GAME TO THE ARRAY COLLECTION
+        oddsGameArray.add(OddsArray.fromDatabase(_matches[i]));
+      }
     });
     // LET US LOAD LEAGUES HERE
     _fetchMatch.fetchLeagues().then((value) {
@@ -1736,106 +1676,148 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        // Future thisData;
-        // add and load 10 more games on every bottom list reach
-        // load more data + condition to filter games already loaded
-        Selection.loadLimit = Selection.loadLimit + 10;
-        if (mounted)
-          setState(() {
-            // execute this method so that new content can be added to the listview
-            loadingGames(fieldLoadMore);
+        setState(() {
+          // print('loading new games');
+          // Future thisData;
+          // add and load 10 more games on every bottom list reach
+          // load more data + condition to filter games already loaded
+          Selection.loadLimit = Selection.loadLimit + 15;
+          // if (mounted)
+          var _newMatches = [];
+          // WE FIRST LOAD ALL THE GAMES HERE
+          _fetchMatch.fetchMatchDetails(Selection.loadLimit).then((_getData) {
+            // print(value);
+            // WE SET THE VALUE TO THE MATCHES ARRAY
+            _matches = _getData;
+            // LOOPS
+            for (int i = 0; i < _getData.length; i++) {
+              // VALIDATE A NEW MATCH
+              bool _isNotPresent = true;
+              // MATCHES LOOPING
+              for (int j = 0; j < _matches.length; j++) {
+                // WE COMPARE LOADED MATCHES WITH CURRENT MATCHES
+                if (_getData[i] == _matches[j]) {
+                  // SET TRUE FOR MATCHING
+                  _isNotPresent = false;
+                  // BREAK THE LOOP FOR PROCESSING
+                  break;
+                }
+              }
+              // IF THE MATCH HAS NOT YET BEEN LOADED
+              if (_isNotPresent) {
+                // print('This is a new match ${_getData[i].id}');
+                _newMatches.add(_getData[i]);
+              }
+            }
+            // LET US INSERT DATA INTO THE SELECTION ARRAY
+            for (int i = 0; i < _newMatches.length; i++) {
+              // print(_matches[i].id);
+              // WE ADD ONLY THE ID OF THE GAME TO THE ARRAY COLLECTION
+              oddsGameArray.add(OddsArray.fromDatabase(_newMatches[i]));
+            }
           });
+          // setState(() {
+          //   // execute this method so that new content can be added to the listview
+          //   loadingGames(fieldLoadMore);
+          // });
+        });
       }
     });
   }
 
   Widget games() {
-    return Expanded(
-        child: Container(
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: Colors.grey, width: 0.3),
-          bottom: BorderSide(color: Colors.grey, width: 0.3),
-          left: BorderSide(color: Colors.grey, width: 0.3),
-          right: BorderSide(color: Colors.grey, width: 0.3),
+    // SHOW THE GAME HOME PANEL INITIALLY
+    if (!switchToMoreMatchOddsWindow) {
+      return Expanded(
+          child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(color: Colors.grey, width: 0.3),
+            bottom: BorderSide(color: Colors.grey, width: 0.3),
+            left: BorderSide(color: Colors.grey, width: 0.3),
+            right: BorderSide(color: Colors.grey, width: 0.3),
+          ),
         ),
-      ),
-      margin: EdgeInsets.only(
-          left: ResponsiveWidget.isBigScreen(context) ? 15.0 : 10.0),
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.all(8.0),
-        child: _matches.length > 0
-            ? ListView.builder(
-                controller: _scrollController,
-                itemCount: _matches.length,
-                itemBuilder: (context, _index) {
-                  return singleMatch(_matches[_index], _index);
-                },
-              )
-            : Center(
-                child:
-                    // isNoInternetNetworkOrOtherError
-                    (isNoInternetNetwork)
-                        ? // if there is a network error
-                        GestureDetector(
-                            onTap: () {
-                              if (mounted)
-                                setState(() {
-                                  // on click of this item, reload games to check for update
-                                  loadingGames(fieldLoadMore);
-                                  // load championship content
-                                  loadSideData();
-                                  // hide the error message
-                                  isNoInternetNetwork = false;
-                                  // isNoInternetNetworkOrOtherError = false;
-                                  // load user details too
-                                  // print('User phone: ${Selection.userTelephone}');
-                                  if (Selection.userTelephone.compareTo('') !=
-                                      0) {
-                                    // if the phone is not empty, then reloggin the user
-                                    reLoginUser();
-                                  }
-                                });
-                            },
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.refresh,
-                                    size: 35.0,
-                                    color: Colors.black,
-                                  ),
-                                  Text('Problème d\'Internet'.toUpperCase(),
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 12.0,
-                                        fontWeight: FontWeight.w500,
-                                        // fontStyle: FontStyle.italic,
-                                      )),
-                                  Text(
-                                      'Cliquez Ici pour Mettre à Jour'
-                                          .toUpperCase(),
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 12.0,
-                                        fontWeight: FontWeight.w500,
-                                        // fontStyle: FontStyle.italic,
-                                      )),
-                                ],
+        margin: EdgeInsets.only(
+            left: ResponsiveWidget.isBigScreen(context) ? 15.0 : 10.0),
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(8.0),
+          child: _matches.length > 0
+              ? ListView.builder(
+                  controller: _scrollController,
+                  itemCount: _matches.length,
+                  itemBuilder: (context, _index) {
+                    return singleMatch(_matches[_index], _index);
+                  },
+                )
+              : Center(
+                  child:
+                      // isNoInternetNetworkOrOtherError
+                      (isNoInternetNetwork)
+                          ? // if there is a network error
+                          GestureDetector(
+                              onTap: () {
+                                if (mounted)
+                                  setState(() {
+                                    // on click of this item, reload games to check for update
+                                    loadingGames(fieldLoadMore);
+                                    // load championship content
+                                    loadSideData();
+                                    // hide the error message
+                                    isNoInternetNetwork = false;
+                                    // isNoInternetNetworkOrOtherError = false;
+                                    // load user details too
+                                    // print('User phone: ${Selection.userTelephone}');
+                                    if (Selection.userTelephone.compareTo('') !=
+                                        0) {
+                                      // if the phone is not empty, then reloggin the user
+                                      reLoginUser();
+                                    }
+                                  });
+                              },
+                              child: MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.refresh,
+                                      size: 35.0,
+                                      color: Colors.black,
+                                    ),
+                                    Text('Problème d\'Internet'.toUpperCase(),
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.w500,
+                                          // fontStyle: FontStyle.italic,
+                                        )),
+                                    Text(
+                                        'Cliquez Ici pour Mettre à Jour'
+                                            .toUpperCase(),
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.w500,
+                                          // fontStyle: FontStyle.italic,
+                                        )),
+                                  ],
+                                ),
                               ),
+                            )
+                          //     )) // else do this
+                          : SpinKitCubeGrid(
+                              color: Colors.lightGreen[400],
+                              size: 25.0,
                             ),
-                          )
-                        //     )) // else do this
-                        : SpinKitCubeGrid(
-                            color: Colors.lightGreen[400],
-                            size: 25.0,
-                          ),
-              ),
-      ),
-    ));
+                ),
+        ),
+      ));
+    } else {
+      // THEN SHOW THE GAME DETAILS ON GAME CLICK
+      return singleGame();
+    }
   }
 
   Widget singleMatch(var _thisMatch, int index) {
@@ -1883,6 +1865,16 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           break;
         }
       }
+    // print(_thisMatch.threeWayOdds['id']);
+    // print(_thisMatch.threeWayOdds['name']);
+    // print(_thisMatch.threeWayOdds['bookmaker']['data'][0]['id']);
+    // print(_thisMatch.threeWayOdds['bookmaker']['data'][0]['name']);
+    // print(_thisMatch.threeWayOdds['bookmaker']['data'][0]['odds']['data'][0]['label']);
+    // print(_thisMatch.threeWayOdds['bookmaker']['data'][0]['odds']['data'][0]['value']);
+    // print(_thisMatch.threeWayOdds['bookmaker']['data'][0]['odds']['data'][0]['winning']);
+    // THIS STORE THE DATA FOR THREE WAY ODDS
+    var _threeWayData =
+        _thisMatch.threeWayOdds['bookmaker']['data'][0]['odds']['data'];
 
     return Column(
       children: [
@@ -1890,21 +1882,53 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             onTap: () {
               if (mounted)
                 setState(() {
+                  // SWITCH THE VIEW TO A LOAD MORE WINDOWS
+                  switchToMoreMatchOddsWindow = true;
                   // print('Match id: $id : Details Requested');
                   // Window.showWindow = 1;
-                  // assign match to matchDetails
-                  // Match.matchDetails = match;
-                  // matchMoreOdds = match;
-                  // set the index of window to football
-                  // Window.showJackpotIndex = 0;
-                  // set the match clicked to the index so that it is the only one to be updated
-                  // Selection.matchClicked = index;
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (_) => SkiiyaBet(),
-                  //   ),
-                  // );
+                  // THIS VARIABLE STORE THE CURRENT GAME SELECTED
+                  // CHECK IF THE CURRENT GAME IS STILL THE SAME
+                  // if (moreOddsMatch != null) {
+                  //   if (moreOddsMatch.id != _thisMatch.id) {}
+                  // } else {
+                  // IF WE HAVE ANY VALUE IN THE ARRA, LOAD NEW DATA
+                  if (moreOddsMatch == null) {
+                    moreOddsMatch = _thisMatch;
+                    // START FETCHING THE MATCHES ODDS HERE
+                    _fetchMatch
+                        .fetchAllGameOdds(moreOddsMatch.id.toString())
+                        .then((value) {
+                      // STORE THE ODDS OF THE MATCH IN THE ARRAY
+                      moreLoadedMatchOdds = value;
+                      // odds loop
+                      // print(value['odds'][0]['id']);
+                      // print(value['odds'][0]['name']);
+                      // print(value['odds'][0]['bookmaker']['data'][0]['id']);
+                      // print(value['odds'][0]['bookmaker']['data'][0]['name']); // data loop
+                      // print(value['odds'][0]['bookmaker']['data'][0]['odds']['data'][0]['label']);
+                      // print(value['odds'][0]['bookmaker']['data'][0]['odds']['data'][0]['value']);
+                      // print(value['odds'][0]['bookmaker']['data'][0]['odds']['data'][0]['winning']);
+                    });
+                  }
+                  // IF THE TWO IDS DO NOT MATCH, LOAD NEW CONTENT
+                  else if (moreOddsMatch.id != _thisMatch.id) {
+                    // WE SET THE SELECTED MATCH TO NULL
+                    moreOddsMatch = null;
+                    // WE SET THE ARRAYS VALUE TO NULL
+                    moreLoadedMatchOdds = null;
+                    // SET THE NEW GAME AS ID
+                    moreOddsMatch = _thisMatch;
+                    // START FETCHING THE MATCHES ODDS HERE
+                    _fetchMatch
+                        .fetchAllGameOdds(moreOddsMatch.id.toString())
+                        .then((value) {
+                      // STORE THE ODDS OF THE MATCH IN THE ARRAY
+                      moreLoadedMatchOdds = value;
+                    });
+                  }
+
+                  // }
+                  // OTHERWISE DO NOTHING
                 });
             },
             child: MouseRegion(
@@ -1993,18 +2017,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     children: [
                       Row(
                         children: [
-                          // if (isTrending)
-                          // Icon(
-                          //   Icons.trending_up,
-                          //   size:
-                          //       ResponsiveWidget.isSmallScreen(context) ? 20.0 : 25.0,
-                          //   color: Colors.lightGreen[400],
-                          // ),
-                          // Text('getting error ' + isTrending.toString()),
-                          // SizedBox(width: 3.0),
                           Text(
                             time.toString(),
-                            // 'hour' + ':' + 'min' + ' ' + 'timeIndicator',
                             style: TextStyle(
                               color: Colors.grey,
                               fontSize: ResponsiveWidget.isSmallScreen(context)
@@ -2035,15 +2049,19 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               //   thickness: 0.3,
               // ),
             )),
-        // For betting buttons
+        // FOR BETTING SELECTION BUTTONS
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            team1Widget(_matches, 1),
-            SizedBox(width: 5.0),
-            // drawWidget(_matches, 2),
-            // SizedBox(width: 5.0),
-            // team2Widget(match, 3),
+            // WE LOOP THE AMOUNT OF DATA AVAILABLE IN THE ARRAY
+            for (int _i = 0; _i < _threeWayData.length; _i++)
+              threeWayWidget(
+                index, // INDEX OF GAME IN THE ARRAY
+                _thisMatch.threeWayOdds['bookmaker']['data'][0]['odds']['data'],
+                _thisMatch.threeWayOdds['id'], // CONTAINS THE ID OF THE ODD
+                _thisMatch.threeWayOdds['name'], // CONTAINS THE NAME OF THE ODD
+                _i, // CONTAINS THE INDEX OF THE ODD
+              ),
           ],
         ),
         SizedBox(height: 5.0),
@@ -2187,21 +2205,301 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     loadBetslipMatches();
   }
 
-  team1Widget(var match, int index) {
-    // update the coloration of the button
-    // updateColors(Selection.gameOddsArray[
-    //     Selection.gameOddsArray.indexOf(match.documentID) + index]);
+  unselectOddsButton(int _gameOddIndex) {
+    // THIS BUTTON UNSELECT THE CURRENT GAME INDEX AND UPDATE COLORS
+    oddsGameArray[_gameOddIndex].oddID = null;
+    oddsGameArray[_gameOddIndex].oddName = null;
+    oddsGameArray[_gameOddIndex].oddIndex = null;
+    oddsGameArray[_gameOddIndex].oddLabel = null;
+    oddsGameArray[_gameOddIndex].oddValue = null;
+    // CHANGE THE COLORS TO DEFAULTS COLORS
+    _buttonColor = Colors.grey.shade200;
+    _labelColor = Colors.black87;
+  }
+
+  selectOddsButton(int _gameOddIndex, int _oddId, String _oddName,
+      int _oddIndex, String _label, String _value) {
+    // WE SET THE VALUES OF THE GAME INTO THE ARRAY
+    // WE UPDATE THE VALUES AND THE COLORS
+    oddsGameArray[_gameOddIndex].oddID = _oddId;
+    oddsGameArray[_gameOddIndex].oddName = _oddName;
+    oddsGameArray[_gameOddIndex].oddIndex = _oddIndex;
+    oddsGameArray[_gameOddIndex].oddLabel = _label;
+    oddsGameArray[_gameOddIndex].oddValue = _value;
+    // WE PRECISE THE RIGHT BUTTON FOR SELECTION
+    // UPDATE THE COLOR OF THE BUTTON AND OF THE LABEL
+    customColors();
+  }
+
+  // DEFAULT COLORS
+  defaultColors() {
+    // INITIAL VALUES OF COLORS
+    _buttonColor = Colors.grey.shade200;
+    _labelColor = Colors.black87;
+  }
+
+  // CUSTOM COLORS
+  customColors() {
+    // COLOR OF SELECTION
+    _buttonColor = Colors.lightGreen[400];
+    _labelColor = Colors.white70;
+  }
+
+  // UPDATE THE COLORS OF THE BUTTONS AND GET THE GAME INDEX IN THE ODDS ARRAY
+  int renderButton(var _data, int _gameId, int _oddId, int _oddIndex) {
+    // RETURN THE INDEX OF THE GAME IN THE ARRAY OF ODDS
+    int _gameOddIndex;
+
+    // LET US UPDATE THE COLOR OF THE BUTTON ON SELECTION
+    for (int j = 0; j < _data.length; j++) {
+      // CHECK IF THE IDs MATCH THEN BREAK THE LOOP FOR A BETTER PROCESSING
+      if (_gameId == _data[j].gameID) {
+        // IF DATA IS EMPTY, UPDATE WITH DEFAULT COLORS
+        if (_data[j].oddID == null ||
+            _data[j].oddName == null ||
+            _data[j].oddIndex == null ||
+            _data[j].oddLabel == null ||
+            _data[j].oddValue == null) {
+          // SET THE COLORS
+          // UPDATE THE COLORS
+          defaultColors();
+        } else {
+          // WE PRECISE THE RIGHT BUTTON FOR SELECTION
+          // WE NEED THE SAME GAME ID AND THE SAME GAME INDEX
+          if ((_data[j].oddID == _oddId) && (_data[j].oddIndex == _oddIndex)) {
+            // UPDATE ONLY IF IT IS THE RIGHT BUTTON OR SELECTION
+            customColors();
+          } else {
+            // UPDATE THE COLORS
+            defaultColors();
+          }
+        }
+        _gameOddIndex = j;
+        // WE BREAK THE LOOP
+        break;
+      }
+    }
+    return _gameOddIndex;
+  }
+
+  threeWayWidget(
+      int _gameIndex, var _match, int _oddId, String _oddName, int _oddIndex) {
+    // GET THE RIGHT DATA WITH THE RIGHT INDEX
+    var _threeWayData = _match[_oddIndex];
+    // GET THE LENGTH OF THE THREE WAY ODDS DATA
+    int _dataLength = _match.length;
+    // CONTAINS THE LABEL OF THE BUTTON
+    var _label = _threeWayData['label'];
+    // CONTAINS THE VALUE OF THE BUTTON
+    var _value = _threeWayData['value'];
+
+    // INDEX OF GAME IN THE ARRAY OF ODDS
+    // GETTING THE ID OF THE GAME
+    int _gameId = _matches[_gameIndex].id;
+
+    // WE GET THE INDEX OF THE SELECTION AND UPDATE THE COLORS AT THE SAME TIME HERE
+    int _gameOddIndex = renderButton(oddsGameArray, _gameId, _oddId, _oddIndex);
+
     return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              // topHomeButtonFunction(match, index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: oneTimesTwoContainer('1', 'team 1', 10.00),
+      child: Container(
+        margin: new EdgeInsets.only(
+            right: (_oddIndex < _dataLength - 1) ? 5.0 : 0.0),
+        child: RawMaterialButton(
+          onPressed: () {
+            if (mounted)
+              setState(() {
+                // CHECK IF THE GAME HAS BEEN SELECTED BEFORE IF NOT
+                if (oddsGameArray[_gameOddIndex].oddID == null ||
+                    oddsGameArray[_gameOddIndex].oddName == null ||
+                    oddsGameArray[_gameOddIndex].oddIndex == null ||
+                    oddsGameArray[_gameOddIndex].oddLabel == null ||
+                    oddsGameArray[_gameOddIndex].oddValue == null ||
+                    // UPDATE ALSO IF THE INDEX IS NOT THE SAME
+                    oddsGameArray[_gameOddIndex].oddIndex != _oddIndex) {
+                  // UPDATE THE VALUES IN THE ARRAY
+                  selectOddsButton(_gameOddIndex, _oddId, _oddName, _oddIndex,
+                      _label, _value);
+                } else {
+                  // WE SET THE VALUES TO NULL TO UNSELECT EVERY THING HERE
+                  unselectOddsButton(_gameOddIndex);
+                }
+              });
+          },
+          fillColor: _buttonColor,
+          padding: new EdgeInsets.symmetric(horizontal: 5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                _label.toString(),
+                style: TextStyle(
+                  color: _labelColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13.0,
+                ),
+                maxLines: 4,
+              ),
+              Container(
+                width: 32.0,
+                alignment: Alignment.centerRight,
+                child: Text(
+                  _value.toString(),
+                  style: TextStyle(
+                    color: _labelColor,
+                    fontSize: 13.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  oddDataAndOddId(var oddData, int _oddId) {
+    // oddData = moreLoadedMatchOdds['odds'][0]
+    // print(moreLoadedMatchOdds['odds'][3]['id']);
+    // print(moreLoadedMatchOdds['odds'][3]['name']);
+    // print(moreLoadedMatchOdds['odds'][0]['bookmaker']['data'][0]['id']);
+    // print(moreLoadedMatchOdds['odds'][0]['bookmaker']['data'][0]
+    //     ['name']); // data loop
+    // print(moreLoadedMatchOdds['odds'][0]['bookmaker']['data'][0]['odds']['data']
+    //     [0]['label']);
+    // print(moreLoadedMatchOdds['odds'][0]['bookmaker']['data'][0]['odds']['data']
+    //     [0]['value']);
+    // print(moreLoadedMatchOdds['odds'][3]['bookmaker']['data'][0]['odds']['data']
+    //     [0]);
+    var oddArray = oddData['bookmaker']['data'][0]['odds']['data'];
+    return Column(
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              oddData['name'],
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 15.0,
+                letterSpacing: 1.0,
+              ),
+            ),
+            SizedBox(height: 5.0),
+            // IF ODDS VALUES ARE LESS THAN 3 OR EQUAL TO 3
+            if (oddArray.length <= 3)
+              Row(
+                children: [
+                  for (int j = 0; j < oddArray.length; j++)
+                    allOddsWidget(oddArray, _oddId, oddData['name'], j),
+                ],
+              ),
+            // IF ODDS VALUES ARE GREATER THAN 3
+            if (oddArray.length > 3)
+              for (int j = 0; j < oddArray.length - 1; j = j + 2)
+                Row(
+                  children: [
+                    allOddsWidget(oddArray, _oddId, oddData['name'], j),
+                    allOddsWidget(oddArray, _oddId, oddData['name'], (j + 1)),
+                  ],
+                ),
+            // SizedBox(height: 10.0),
+            SizedBox(height: 8.0),
+            Divider(color: Colors.grey, thickness: 0.5),
+            SizedBox(height: 8.0),
+          ],
+        ),
+      ],
+    );
+  }
+
+  allOddsWidget(var data, int _oddId, String _oddName, int _oddIndex) {
+    // data = ['bookmaker']['data'][0]['odds']['data']
+    // INDEX OF GAME IN THE ARRAY OF ODDS
+    // GETTING THE ID OF THE GAME
+    // int _gameId = moreOddsMatch.id;
+    // GET THE LENGTH OF THE THREE WAY ODDS DATA
+    // int _dataLength = 2;
+    // CONTAINS THE LABEL OF THE BUTTON
+    var _label = data[_oddIndex]['label'];
+    // CONTAINS THE VALUE OF THE BUTTON
+    var _value = data[_oddIndex]['value'];
+
+    var total;
+    // GET THE TOTAL ATTRIBUTE BEFORE UPDATING
+    if (data[_oddIndex]['total'] == null) {
+      total = '';
+    } else {
+      total = ' ' + data[_oddIndex]['total'];
+    }
+
+    var handicap;
+    // GET THE HANDICAP ATTRIBUTE BEFORE UPDATING
+    if (data[_oddIndex]['handicap'] == null) {
+      handicap = '';
+    } else {
+      handicap = ' (' + data[_oddIndex]['handicap'] + ')';
+    }
+
+    // LET US GET THE INDEX OF GAME ID
+    int _gameId = moreOddsMatch.id;
+
+    // WE GET THE INDEX OF THE SELECTION AND UPDATE THE COLORS AT THE SAME TIME HERE
+    int _gameOddIndex = renderButton(oddsGameArray, _gameId, _oddId, _oddIndex);
+
+    return Expanded(
+      child: Container(
+        margin: new EdgeInsets.only(
+            right: (_oddIndex < data.length - 1) ? 8.0 : 0.0),
+        child: RawMaterialButton(
+          onPressed: () {
+            if (mounted)
+              setState(() {
+                // print('odd details requested');
+                // CHECK IF THE GAME HAS BEEN SELECTED BEFORE IF NOT
+                if (oddsGameArray[_gameOddIndex].oddID == null ||
+                    oddsGameArray[_gameOddIndex].oddName == null ||
+                    oddsGameArray[_gameOddIndex].oddIndex == null ||
+                    oddsGameArray[_gameOddIndex].oddLabel == null ||
+                    oddsGameArray[_gameOddIndex].oddValue == null ||
+                    // UPDATE ALSO IF THE INDEX IS NOT THE SAME
+                    oddsGameArray[_gameOddIndex].oddIndex != _oddIndex) {
+                  // UPDATE THE VALUES IN THE ARRAY
+                  selectOddsButton(_gameOddIndex, _oddId, _oddName, _oddIndex,
+                      _label, _value);
+                } else {
+                  // WE SET THE VALUES TO NULL TO UNSELECT EVERY THING HERE
+                  unselectOddsButton(_gameOddIndex);
+                }
+              });
+          },
+          fillColor: _buttonColor,
+          padding: new EdgeInsets.symmetric(horizontal: 5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                _label.toString() + total.toString() + handicap.toString(),
+                style: TextStyle(
+                  color: _labelColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13.0,
+                ),
+                maxLines: 4,
+              ),
+              Text(
+                _value.toString(),
+                style: TextStyle(
+                  color: _labelColor,
+                  fontSize: 13.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -3134,6 +3432,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   }
 
   Widget singleGame() {
+    // var _oddData = moreLoadedMatchOdds['odds'];
+
     return Expanded(
       child: Container(
           decoration: BoxDecoration(
@@ -3165,7 +3465,13 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     onPressed: () {
                       if (mounted)
                         setState(() {
-                          Window.showWindow = 0;
+                          // Window.showWindow = 0;
+                          // SET THE VALUE TO FALSE TO DISPLAY THE HOME PAGE OF GAMES
+                          switchToMoreMatchOddsWindow = false;
+                          // WE SET THE SELECTED MATCH TO NULL
+                          // moreOddsMatch = null;
+                          // // WE SET THE ARRAYS VALUE TO NULL
+                          // moreLoadedMatchOdds = null;
                         });
                     },
                   ),
@@ -3174,33 +3480,60 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 SizedBox(height: 8.0),
                 Divider(color: Colors.grey, thickness: 0.5),
                 SizedBox(height: 8.0),
-                teamToWin(),
-                Divider(color: Colors.grey, thickness: 0.5),
-                SizedBox(height: 8.0),
-                overUnder(),
-                SizedBox(height: 8.0),
-                Divider(color: Colors.grey, thickness: 0.5),
-                SizedBox(height: 8.0),
-                bothTeamsToScore(),
-                SizedBox(height: 8.0),
-                Divider(color: Colors.grey, thickness: 0.5),
-                SizedBox(height: 8.0),
-                doubleChance(),
-                SizedBox(height: 8.0),
-                Divider(color: Colors.grey, thickness: 0.5),
-                SizedBox(height: 8.0),
-                oddEven(),
-                SizedBox(height: 8.0),
-                Divider(color: Colors.grey, thickness: 0.5),
-                SizedBox(height: 8.0),
-                halfOdds(),
-                SizedBox(height: 8.0),
-                Divider(color: Colors.grey, thickness: 0.5),
-                SizedBox(height: 8.0),
-                cleanSheet(),
-                Divider(color: Colors.grey, thickness: 0.5),
-                SizedBox(height: 8.0),
-                otherBets(),
+                Column(
+                  children: [
+                    // IF WE HAVE ONE MATCH DATA LOADED
+                    if (moreLoadedMatchOdds != null)
+                      for (int _i = 0;
+                          _i < moreLoadedMatchOdds['odds'].length;
+                          _i++)
+                        // WE SAVE THE ODD DATA AND THE ODD ID
+                        oddDataAndOddId(moreLoadedMatchOdds['odds'][_i],
+                            moreLoadedMatchOdds['odds'][_i]['id']),
+                    // Text(
+                    //   moreLoadedMatchOdds['odds'][_i]['name'],
+                    //   style: TextStyle(
+                    //     color: Colors.black,
+                    //     fontWeight: FontWeight.bold,
+                    //     fontSize: 15.0,
+                    //     letterSpacing: 1.0,
+                    //   ),
+                    // ),
+                    // ELSE DISPLAY A LOADING SCREEN
+                    if (moreLoadedMatchOdds == null)
+                      SpinKitCircle(
+                        color: Colors.lightGreen[400],
+                        size: 18.0,
+                      )
+                  ],
+                ),
+                // Divider(color: Colors.grey, thickness: 0.5),
+                // SizedBox(height: 8.0),
+                // teamToWin(),
+                // overUnder(),
+                // SizedBox(height: 8.0),
+                // Divider(color: Colors.grey, thickness: 0.5),
+                // SizedBox(height: 8.0),
+                // bothTeamsToScore(),
+                // SizedBox(height: 8.0),
+                // Divider(color: Colors.grey, thickness: 0.5),
+                // SizedBox(height: 8.0),
+                // doubleChance(),
+                // SizedBox(height: 8.0),
+                // Divider(color: Colors.grey, thickness: 0.5),
+                // SizedBox(height: 8.0),
+                // oddEven(),
+                // SizedBox(height: 8.0),
+                // Divider(color: Colors.grey, thickness: 0.5),
+                // SizedBox(height: 8.0),
+                // halfOdds(),
+                // SizedBox(height: 8.0),
+                // Divider(color: Colors.grey, thickness: 0.5),
+                // SizedBox(height: 8.0),
+                // cleanSheet(),
+                // Divider(color: Colors.grey, thickness: 0.5),
+                // SizedBox(height: 8.0),
+                // otherBets(),
               ],
             ),
           )),
@@ -4855,70 +5188,90 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   }
 
   matchIntro() {
-    // month and day declaration
-    var day = matchMoreOdds['date']['2'];
-    if (day.toString().length < 2) {
-      day = '0' + day;
-    }
-    var month = matchMoreOdds['date']['3'];
-    if (month.toString().length < 2) {
-      month = '0' + month;
-    }
-    // hour and minute declaration
-    var hour = matchMoreOdds['time']['1'];
-    if (hour.toString().length < 2) {
-      hour = '0' + hour;
-    }
-    var minute = matchMoreOdds['time']['2'];
-    if (minute.toString().length < 2) {
-      minute = '0' + minute;
-    }
+    // moreOddsMatch
+    var team1 = moreOddsMatch.localTeam['data']['name'];
+    var team2 = moreOddsMatch.visitorTeam['data']['name'];
+    // var team2 = match['team2'];
+    // GET THE TIME OF THE MATCH
+    var time = moreOddsMatch.time['starting_at']['time'];
+    // GET THE DATE OF THE GAME
+    var date = moreOddsMatch.time['starting_at']['date'];
+
+    var championship;
+    var country;
+    int _leagueIndex;
+    // LET US LOAD CHAMPIONSHIPS
+    // ONLY IF WE HAVE DATA IN THE ARRAY
+    if (_leagues.length > 0)
+      for (int j = 0; j < _leagues.length; j++) {
+        if (_leagues[j]['id'] == moreOddsMatch.league_id) {
+          championship = _leagues[j]['name'];
+          _leagueIndex = j;
+          // print('the ligue is ${_leagues[_lpLg]['name']}');
+          // WE BREAK THE LOOP FOR BETTER PROCESSING
+          break;
+        }
+      }
+
+    // LET US GET THE CORRECT COUNTRY HERE
+    // ONLY IF WE HAVE DATA IN THE ARRAY
+    if (_countries.length > 0)
+      for (int j = 0; j < _countries.length; j++) {
+        if (_leagues[_leagueIndex]['country_id'] == _countries[j]['id']) {
+          country = ' - ' + _countries[j]['name'];
+          // print('the country name is ${_countries[j]['name']}');
+          // WE BREAK THE LOOP FOR BETTER PROCESSING
+          break;
+        }
+      }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Row(
+        Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              matchMoreOdds['date']['1'] + ' ' + day + '/' + month,
+              date.toString(),
+              // matchMoreOdds['date']['1'] + ' ' + day + '/' + month,
               // 'sat 11/09',
               style: TextStyle(
                 color: Colors.grey,
-                fontSize: ResponsiveWidget.isSmallScreen(context) ? 12.0 : 13.0,
+                fontSize: 14.0,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(width: 8.0),
+            SizedBox(height: 3.0),
             Text(
-              hour + ':' + minute + ' ' + matchMoreOdds['time']['3'],
+              time.toString(),
+              // hour + ':' + minute + ' ' + matchMoreOdds['time']['3'],
               // '05:00 PM',
               style: TextStyle(
                   color: Colors.black,
-                  fontSize: 12.0,
+                  fontSize: 14.0,
                   fontWeight: FontWeight.bold),
             ),
           ],
         ),
         SizedBox(height: 5.0),
         Text(
-          matchMoreOdds['team1'] + ' - ' + matchMoreOdds['team2'],
+          team1.toString() + ' - ' + team2.toString(),
+          // matchMoreOdds['team1'] + ' - ' + matchMoreOdds['team2'],
           // 'Liverpool vs Man City',
           style: TextStyle(
-              color: Colors.black,
-              fontSize: ResponsiveWidget.isSmallScreen(context) ? 16.0 : 20.0,
-              fontWeight: FontWeight.bold),
+            color: Colors.black,
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        SizedBox(height: 4.0),
+        SizedBox(height: 5.0),
         Text(
+          championship + country,
           // 'Premier League - England - Football',
-          matchMoreOdds['championship'] +
-              ' - ' +
-              matchMoreOdds['country'] +
-              ' - ' +
-              matchMoreOdds['type'],
           style: TextStyle(
             color: Colors.grey,
-            fontSize: ResponsiveWidget.isSmallScreen(context) ? 12.0 : 13.0,
-            // fontWeight: FontWeight.bold,
+            fontSize: 13.0,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ],
