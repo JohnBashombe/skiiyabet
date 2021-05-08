@@ -15,9 +15,10 @@ class FetchMatch {
     await Firestore.instance
         .collection('football')
         .where('status', isEqualTo: 'NS')
+        .orderBy('time.starting_at.date_time', descending: false)
         .limit(limit)
         .getDocuments()
-        .then((value) {
+        .then((value) { 
       // print(value.documents);
       // LOOP THROUGH THE DATA TO ADD MATCH INSTANCES
       for (int _data = 0; _data < value.documents.length; _data++) {

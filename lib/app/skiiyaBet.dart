@@ -1104,14 +1104,13 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                               bottom: 15.0,
                               top: 5.0),
                           // padding: new EdgeInsets.symmetric(horizontal: 8.0),
-                          child: loadSideDataArrayChamp.length > 0
+                          child: _leagues.length > 0
                               ? ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: loadSideDataArrayChamp.length,
+                                  itemCount: _leagues.length,
                                   itemBuilder: (context, index) {
                                     return _topChampionshipMobile(
-                                        loadSideDataArrayChamp[index],
-                                        loadSideDataArrayCountry[index]);
+                                        _leagues[index], index);
                                   })
                               : Center(
                                   // execute this for network error
@@ -1171,44 +1170,44 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
 
   String selectedMobileTopItem = '';
 
-  _topChampionshipMobile(String championship, String country) {
+  _topChampionshipMobile(var _thisLeague, int index) {
     return GestureDetector(
       onTap: () async {
-        final _thisLocalData = await Selection.getCategory(championship);
+        // final _thisLocalData = await Selection.getCategory(championship);
         // we will now check if a championship has been adde so it won't be added again
         if (mounted)
           setState(() {
             // set the match top to an index that does not exists
-            _selectedIndex = -1;
-            // set the clicked item to the one selected
-            selectedMobileTopItem = championship;
-            // clear all old value of data array so that filtered ones can be added
-            data.clear();
-            for (var i = 0; i < (_thisLocalData.length); i++) {
-              // execute this if the array contains elements
-              if (data.length > 0) {
-                int verifier = 0;
-                // check if the array contains already the championship
-                for (var j = 0; j < data.length; j++) {
-                  if (data[j]
-                          .documentID
-                          .toString()
-                          .compareTo(_thisLocalData[i].documentID.toString()) ==
-                      0) {
-                    verifier++;
-                  }
-                }
-                // add the championship if it is not added yet
-                if (verifier == 0) {
-                  // add the current match to data array
-                  data.add(_thisLocalData[i]);
-                }
-              }
-              // else execute this
-              else {
-                data.add(_thisLocalData[i]);
-              }
-            }
+            // _selectedIndex = -1;
+            // // set the clicked item to the one selected
+            // selectedMobileTopItem = championship;
+            // // clear all old value of data array so that filtered ones can be added
+            // data.clear();
+            // for (var i = 0; i < (_thisLocalData.length); i++) {
+            //   // execute this if the array contains elements
+            //   if (data.length > 0) {
+            //     int verifier = 0;
+            //     // check if the array contains already the championship
+            //     for (var j = 0; j < data.length; j++) {
+            //       if (data[j]
+            //               .documentID
+            //               .toString()
+            //               .compareTo(_thisLocalData[i].documentID.toString()) ==
+            //           0) {
+            //         verifier++;
+            //       }
+            //     }
+            //     // add the championship if it is not added yet
+            //     if (verifier == 0) {
+            //       // add the current match to data array
+            //       data.add(_thisLocalData[i]);
+            //     }
+            //   }
+            //   // else execute this
+            //   else {
+            //     data.add(_thisLocalData[i]);
+            //   }
+            // }
             // print('The championship is $championship and country is $country');
             // Window.showWindow = 0;
           });
@@ -1234,7 +1233,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  championship.toUpperCase(),
+                  'championship'.toUpperCase(),
                   style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -1243,7 +1242,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 SizedBox(width: 4.0),
                 // Icon(Icons.more_horiz, color: Colors.lightGreen, size: 12.0),
                 Text(
-                  '| ' + country,
+                  '| ' + 'country',
                   style: TextStyle(
                     fontSize: 10.0,
                     color: Colors.grey,
@@ -1251,7 +1250,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     // fontStyle: FontStyle.italic,
                   ),
                 ),
-                if (selectedMobileTopItem.toString().compareTo(championship) ==
+                if (selectedMobileTopItem
+                        .toString()
+                        .compareTo('championship') ==
                     0)
                   Row(
                     children: [
@@ -1356,6 +1357,22 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         onTap: () {
           if (mounted)
             setState(() {
+              // IF NOT ZERO MEANS WE HAVE A CERTAIN LEAGUE DATA TO HOME THEN LOAD NORMAL MATCHES
+              if (_currentPick == 2) {
+                // A CHAMPIONSHIP HAS BEEN LOADED AND DISPLAYED
+                // SO LOAD NEW DATA MATCHES HERE
+                // print('A league data is display');
+                // LOAD MAIN MATCHES HERE
+              }
+              // else {
+              //   // CHAMPIONSHIPS LOADED BUT EITHER EMPTY OR STILL LOADING
+              //   print('CHAMPIONSHIPS LOADED BUT EITHER EMPTY OR STILL LOADING');
+              // }
+              // WE CHANGE THE WINDOWS VIEW IF NOT AT HOME PAGE
+              switchToMoreMatchOddsWindow = false;
+              // SET THE SELECTED CHAMPIONSHIPS TO NONE
+              _currentPick = 0;
+              _currentLeagueID = -1;
               // SET THE CHAMPIONSHIP HIGHLIGHT ICON TO NULL IN DESKTOP MODE
               // WE GIVE IT A VALUE OF -1 SO THAT NO CHAMPIONSHIP WILL BE SELECTED
               // _indexChampionSelection = -1;
@@ -1621,8 +1638,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     }
   }
 
-  @override
-  void initState() {
+  loadMatchMethod() {
     // WE FIRST LOAD ALL THE GAMES HERE
     _fetchMatch.fetchMatchDetails(Selection.loadLimit).then((value) {
       // print(value);
@@ -1635,6 +1651,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         oddsGameArray.add(OddsArray.fromDatabase(_matches[i]));
       }
     });
+  }
+
+  @override
+  void initState() {
+    // THIS LOADS ALL MACTHES
+    loadMatchMethod();
     // LET US LOAD LEAGUES HERE
     _fetchMatch.fetchLeagues().then((value) {
       // WE SET THE VALUE TO THE MATCHES ARRAY
@@ -1665,7 +1687,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         reLoginUser(); // uncomment after coding
       });
     // this loadingGames method load only once at first lunch
-    loadingGames(fieldLoadMore);
+    // loadingGames(fieldLoadMore);
     loadSideData();
     super.initState();
     // _data = Selection.getPosts(0);
@@ -5561,13 +5583,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             right: BorderSide(color: Colors.grey, width: 0.1),
           ),
         ),
-        child: loadSideDataArrayChamp.length > 0
+        child: _leagues.length > 0
             ? ListView.builder(
-                itemCount: loadSideDataArrayChamp.length,
+                itemCount: _leagues.length,
                 itemBuilder: (context, index) {
-                  // load the first and the following index
-                  return championship(loadSideDataArrayChamp[index],
-                      loadSideDataArrayCountry[index]);
+                  // LOAD THE LEAGUES AND DISPLAY THEM
+                  return championship(_leagues[index], index);
                 },
               )
             : Center(
@@ -5588,49 +5609,113 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     );
   }
 
-  championship(String championship, String country) {
+  // SHOW THE CURRENT PICK ACTION
+  int _currentPick = 0;
+  // CONTAINS THE CURRENT SELECTED LEAGUE
+  int _currentLeagueID = -1;
+
+  String _league_return_country(int _countryId) {
+    // RETURN THE COUNTRY BASED ON THE LEAGUE
+    var _country = '';
+    // LET US GET THE CORRECT COUNTRY HERE
+    // ONLY IF WE HAVE DATA IN THE ARRAY
+    // WE LOOP THROUGH COUNTRIES TO GET THE RIGHT COUNTRY NAME WITH THE COUNTRY ID
+    if (_countries.length > 0)
+      for (int j = 0; j < _countries.length; j++) {
+        if (_countryId == _countries[j]['id']) {
+          _country = _countries[j]['name'];
+          // print('the country name is ${_countries[j]['name']}');
+          // WE BREAK THE LOOP FOR BETTER PROCESSING
+          break;
+        }
+      }
+    return _country;
+  }
+
+  league_Action_Click(int _leagueID) {
+// WE SET THE PRESENT LEAGUE TO THIS
+    _currentLeagueID = _leagueID;
+    // WE SET THE STATE TO LOADING STATE
+    _currentPick = 1;
+    // THIS SET THE LIMIT OF LOADING MATCHES PER LEAGUE
+    int _loadChampsLimit = 35;
+    // START FETCHING MATCHES PER LEAGUE
+    // HOLD MATCHES NOT ADDED ALREADY
+    var _newMatches = [];
+    // START FETCHNING MATCHES HERE
+    _fetchMatch
+        .fetchMatchDetailsByLeague(_loadChampsLimit, _leagueID)
+        .then((_getData) {
+      // print(_getData);
+      // LOOPS
+      for (int i = 0; i < _getData.length; i++) {
+        // VALIDATE A NEW MATCH
+        bool _isNotPresent = true;
+        // MATCHES LOOPING
+        for (int j = 0; j < _matches.length; j++) {
+          // WE COMPARE LOADED MATCHES WITH CURRENT MATCHES
+          if (_getData[i] == _matches[j]) {
+            // SET TRUE FOR MATCHING
+            _isNotPresent = false;
+            // BREAK THE LOOP FOR PROCESSING
+            break;
+          }
+        }
+        // IF THE MATCH HAS NOT YET BEEN LOADED
+        if (_isNotPresent) {
+          // print('This is a new match ${_getData[i].id}');
+          _newMatches.add(_getData[i]);
+        }
+      }
+      // CHANGE THE DISPLAY HERE
+      // setState(() {
+      if (_getData.length > 0) {
+        if (mounted)
+          setState(() {
+            _matches = _getData; // SET THE NEW VALUES
+            _currentPick = 2; // SUCCESS MESSAGE
+          });
+
+        for (int i = 0; i < _newMatches.length; i++) {
+          // print(_matches[i].id);
+          // WE ADD ONLY THE ID OF THE GAME TO THE ARRAY COLLECTION
+          oddsGameArray.add(OddsArray.fromDatabase(_newMatches[i]));
+        }
+        // print('WE found data');
+      } else {
+        // print('No data found');
+        if (mounted)
+          setState(() {
+            _currentPick = 3; // NO DATA FOUND DISPLAY
+          });
+      }
+    });
+    // print(_currentPick);
+  }
+
+  championship(var _thisLeague, int _ligueIndex) {
+    // WE GET THE CURRENT CHAMPIONSHIP NAME
+    String _league = _thisLeague['name'];
+    int _leagueID = _thisLeague['id'];
+    // WE GET THE CURRENT COUNTRY ID
+    int _countryId = _thisLeague['country_id'];
+
+    // THIS WILL STORE THE CURRENT COUNTRY NAME
+    // RETURN THE COUNTRY BASED ON THE LEAGUE
+    var _country = _league_return_country(_countryId);
+
+    // WE RETURN A CLICKABLE WIDGET
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () async {
-          final _thisLocalData = await Selection.getCategory(championship);
+        onTap: () {
           // we will now check if a championship has been adde so it won't be added again
           if (mounted)
             setState(() {
-              // get the index of the selected item
-              // // ASSIGN THE SELECTED CHAMPIONSHIP TO A NEW ICON
-              _indexChampionSelection =
-                  loadSideDataArrayChamp.indexOf(championship);
-
-              // print('selection of $championship');
-              // print('state is $_getChampionship');
-              // clear all old value of data array so that filtered ones can be added
-              data.clear();
-              for (var i = 0; i < (_thisLocalData.length); i++) {
-                // execute this if the array contains elements
-                if (data.length > 0) {
-                  int verifier = 0;
-                  // check if the array contains already the championship
-                  for (var j = 0; j < data.length; j++) {
-                    if (data[j].documentID.toString().compareTo(
-                            _thisLocalData[i].documentID.toString()) ==
-                        0) {
-                      verifier++;
-                    }
-                  }
-                  // add the championship if it is not added yet
-                  if (verifier == 0) {
-                    // add the current match to data array
-                    data.add(_thisLocalData[i]);
-                    // add the championship
-                  }
-                }
-                // else execute this
-                else {
-                  // add match if not yet added
-                  data.add(_thisLocalData[i]);
-                }
-              }
+              // WE INITIALIZE AND SET THE NEW VALUES AND RESPONSE
+              league_Action_Click(_leagueID);
+              // print(_leagueID);
+              // });
             });
         },
         child: Column(
@@ -5648,35 +5733,69 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       Container(
                         width: 105.0,
                         child: Text(
-                          championship,
+                          // DISPLAY THE LEAGUE
+                          _league.toString(),
                           style: TextStyle(
                               color: Colors.black,
-                              // fontWeight: FontWeight.bold,
-                              fontSize: 12.0),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13.0),
                           maxLines: 2,
                           overflow: TextOverflow.clip,
                         ),
                       ),
                       Text(
-                        country,
-                        style: TextStyle(color: Colors.grey, fontSize: 11.0),
+                        // DISPLAY THE COUNTRY
+                        _country.toString(),
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
 
-                  Icon(
-                    // SHOW A DIFFERENT ICON IF A CHAMPIONSHIP IS SELECTED
-                    _indexChampionSelection ==
-                            loadSideDataArrayChamp.indexOf(championship)
-                        ? Icons.verified
-                        : Icons.arrow_forward_ios,
-                    // SHOW A DIFFERENT COLOR WHEN A CHAMPIONSHIP IS SELECTED
-                    color: _indexChampionSelection ==
-                            loadSideDataArrayChamp.indexOf(championship)
-                        ? Colors.lightBlue[400]
-                        : Colors.lightGreen[400],
-                    size: 20.0,
-                  ),
+                  // INITIAL PHASE
+                  // if (_currentPick == 0)
+                  if (_currentLeagueID != _leagueID)
+                    Icon(
+                      // SHOW A DIFFERENT ICON IF A CHAMPIONSHIP IS SELECTED
+                      Icons.arrow_forward_ios,
+                      // SHOW A DIFFERENT COLOR WHEN A CHAMPIONSHIP IS SELECTED
+                      color: Colors.grey,
+                      size: 20.0,
+                    ),
+                  // CHECK THE SELECTION CHOICE
+                  if (_currentPick == 1)
+                    // IF REQUEST IS LOADING
+                    // WE WANT TO LOAD ONLY A SPECIFIC LEAGUE
+                    if (_currentLeagueID == _leagueID)
+                      SpinKitCircle(color: Colors.lightBlue, size: 18.0),
+
+                  // IF WE HAVE GAMES HERE
+                  // WE WANT TO LOAD ONLY A SPECIFIC LEAGUE
+                  // SHOW A SUCCESS ICON
+                  if (_currentPick == 2)
+                    if (_currentLeagueID == _leagueID)
+                      Icon(
+                        // SHOW A DIFFERENT ICON IF A CHAMPIONSHIP IS SELECTED
+                        Icons.verified,
+                        // SHOW A DIFFERENT COLOR WHEN A CHAMPIONSHIP IS SELECTED
+                        color: Colors.green,
+                        size: 18.0,
+                      ),
+
+                  // WE WANT TO LOAD ONLY A SPECIFIC LEAGUE
+                  // IF WE HAVE NO GAMES
+                  if (_currentPick == 3)
+                    if (_currentLeagueID == _leagueID)
+                      Icon(
+                        // SHOW A DIFFERENT ICON IF A CHAMPIONSHIP IS SELECTED
+                        FontAwesomeIcons.timesCircle,
+                        // SHOW A DIFFERENT COLOR WHEN A CHAMPIONSHIP IS SELECTED
+                        color: Colors.red,
+                        size: 18.0,
+                      ),
                 ],
               ),
             ),
