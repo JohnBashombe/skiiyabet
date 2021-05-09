@@ -1,5 +1,3 @@
-import 'package:firebase/firestore.dart';
-
 class Match {
   // TO AVOID LOADING UNWANTED CONTENT, WE WILL BE:
   // LOADING THE SELECTED MATCH BY TODAY DATE

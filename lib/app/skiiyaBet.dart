@@ -38,7 +38,7 @@ DocumentSnapshot matchMoreOdds;
 Color color, colorBg, colorRounded, colorCaption;
 int _selectedIndex = 0;
 // store loaded games
-var data = [];
+// var data = [];
 // this array contains
 var loadSideDataArrayChamp = [];
 var loadSideDataArrayCountry = [];
@@ -93,6 +93,9 @@ var moreOddsMatch;
 // IT STORE THE ODDS OF THE GAME WE WILL NEDD
 var moreLoadedMatchOdds;
 
+// SCROOL CONTROLLER
+ScrollController _scrollController = new ScrollController();
+
 class SkiiyaBet extends StatefulWidget {
   @override
   _SkiiyaBetState createState() => _SkiiyaBetState();
@@ -103,6 +106,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.white,
       // resizeToAvoidBottomPadding: true,
       appBar: ResponsiveWidget.isSmallScreen(context)
           ? AppBar(
@@ -389,7 +393,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       width: 50.0,
                       height: MediaQuery.of(context).size.height * 0.9,
                       decoration: BoxDecoration(
-                        color: Colors.white70,
+                        color: Colors.white,
                         border: Border(
                           right: BorderSide(
                             color: Colors.grey,
@@ -409,7 +413,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       height: MediaQuery.of(context).size.height * 0.1,
                       width: 50.0,
                       decoration: BoxDecoration(
-                        color: Colors.white70,
+                        color: Colors.white,
                         border: Border(
                           right: BorderSide(color: Colors.grey, width: 0.4),
                         ),
@@ -480,7 +484,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               // backgroundColor: Colors.white70, thisBottomColor
               height: 50.0,
               color: Colors.lightGreen[400],
-              buttonBackgroundColor: Colors.white,
+              buttonBackgroundColor: Colors.white70,
               backgroundColor: Colors.white,
               onTap: (int value) {
                 if (mounted)
@@ -509,32 +513,32 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               },
               items: [
                   Icon(Icons.home,
-                      size: 16.0,
+                      size: Selection.bottomCurrentTab == 0 ? 30.0 : 20.0,
                       color: Selection.bottomCurrentTab == 0
                           ? Colors.black
                           : Colors.white),
                   Icon(Icons.search,
-                      size: 16.0,
+                      size: Selection.bottomCurrentTab == 1 ? 30.0 : 20.0,
                       color: Selection.bottomCurrentTab == 1
                           ? Colors.black
                           : Colors.white),
                   Icon(Icons.credit_card,
-                      size: 16.0,
+                      size: Selection.bottomCurrentTab == 2 ? 30.0 : 20.0,
                       color: Selection.bottomCurrentTab == 2
                           ? Colors.black
                           : Colors.white),
                   Icon(Icons.monetization_on,
-                      size: 16.0,
+                      size: Selection.bottomCurrentTab == 3 ? 30.0 : 20.0,
                       color: Selection.bottomCurrentTab == 3
                           ? Colors.black
                           : Colors.white),
                   Icon(Icons.business_center,
-                      size: 16.0,
+                      size: Selection.bottomCurrentTab == 4 ? 30.0 : 20.0,
                       color: Selection.bottomCurrentTab == 4
                           ? Colors.black
                           : Colors.white),
                   Icon(FontAwesomeIcons.user,
-                      size: 16.0,
+                      size: Selection.bottomCurrentTab == 5 ? 30.0 : 20.0,
                       color: Selection.bottomCurrentTab == 5
                           ? Colors.black
                           : Colors.white),
@@ -587,7 +591,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               setState(() {
                 // SET THE CHAMPIONSHIP HIGHLIGHT ICON TO NULL IN DESKTOP MODE
                 // WE GIVE IT A VALUE OF -1 SO THAT NO CHAMPIONSHIP WILL BE SELECTED
-                _indexChampionSelection = -1;
+                // _indexChampionSelection = -1;
 
                 Window.selectedMenu = index;
                 // print(Window.selectedMenu);
@@ -600,24 +604,24 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   // call home panel
                   // set all loading to all popular matches to be found
                   // clear list games before adding more
-                  data.clear();
+                  // data.clear();
                   // set the field type to filter
                   fieldLoadMore = 0;
                   // load all games bases on their timestamp
                   // filter games by most popular ones
-                  loadingGames(fieldLoadMore);
+                  // loadingGames(fieldLoadMore);
                   // loadingGames(1);
                 } else if (Window.selectedMenu == 2) {
                   Window.showJackpotIndex = 0;
                   Window.showWindow = 0; // call trending matches panel
                   // set all loading to all popular matches to be found
                   // clear list games before adding more
-                  data.clear();
+                  // data.clear();
                   // set the field type to filter
                   fieldLoadMore = 1;
                   // load all games bases on their timestamp
                   // filter games by most popular ones
-                  loadingGames(fieldLoadMore);
+                  // loadingGames(fieldLoadMore);
                   // loadingGames(1);
                 }
                 // else if (Window.selectedMenu == 3) {
@@ -680,13 +684,14 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               ? MediaQuery.of(context).size.width
               : MediaQuery.of(context).size.width - 60.0,
           decoration: BoxDecoration(
-            color: Colors.white70,
+            color: Colors.white,
             border: Border(bottom: BorderSide(color: Colors.grey, width: 0.3)),
           ),
           child: Column(
             children: [
               if (!ResponsiveWidget.isSmallScreen(context))
                 Container(
+                  // color: Colors.white,
                   height: ResponsiveWidget.isSmallScreen(context) ? 50.0 : 59.0,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -960,9 +965,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 ),
               if (ResponsiveWidget.isSmallScreen(context))
                 Container(
+                  color: Colors.white,
                   alignment: Alignment.center,
-                  height: 40.0,
-                  margin: EdgeInsets.only(left: 5.0, right: 5.0),
+                  height: 40.2, // SO THAT WE WILL HAVE A PERFECT TOUCHDOWN
+                  margin: EdgeInsets.symmetric(horizontal: 15.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1022,16 +1028,31 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             });
         },
         child: Container(
-          padding: new EdgeInsets.symmetric(horizontal: 12.0),
-          alignment: Alignment.centerLeft,
+          padding: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+          margin: new EdgeInsets.symmetric(
+            // SHOW NO MARGIN ON BIG SCREEN
+              vertical: ResponsiveWidget.isSmallScreen(context) ? 5.0 : 0.0),
+          alignment: Alignment.centerLeft,  
           decoration: BoxDecoration(
+            // borderRadius: BorderRadius.circular(18.0),
             border: Border(
-              bottom: Window.showJackpotIndex == index
-                  ? BorderSide(
-                      color: Colors.lightGreen[400],
-                      width:
-                          ResponsiveWidget.isSmallScreen(context) ? 4.0 : 3.0,
-                    )
+              // SHOW ONLY ON SMALL SCREENS
+              left: ResponsiveWidget.isSmallScreen(context)
+                  ? (Window.showJackpotIndex == index
+                      ? BorderSide(
+                          color: Colors.lightGreen[400],
+                          width: 3.0,
+                        )
+                      : BorderSide.none)
+                  : BorderSide.none,
+              // DO NOT DISPLAY ON SMALL SCREEN
+              bottom: !ResponsiveWidget.isSmallScreen(context)
+                  ? (Window.showJackpotIndex == index
+                      ? BorderSide(
+                          color: Colors.lightGreen[400],
+                          width: 3.0,
+                        )
+                      : BorderSide.none)
                   : BorderSide.none,
             ),
           ),
@@ -1040,10 +1061,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             style: TextStyle(
               color:
                   Window.showJackpotIndex == index ? Colors.black : Colors.grey,
-              fontSize: 12.0,
+              fontSize: Window.showJackpotIndex == index ? 16.0 : 13.0,
               fontWeight: Window.showJackpotIndex == index
                   ? FontWeight.bold
-                  : FontWeight.normal,
+                  : FontWeight.w300,
             ),
           ),
         ),
@@ -1071,7 +1092,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           padding: ResponsiveWidget.isLargeScreen(context)
               ? EdgeInsets.all(20.0)
               : EdgeInsets.only(top: 10.0, right: 10.0, bottom: 10.0),
-          decoration: BoxDecoration(color: Colors.white70),
+          decoration: BoxDecoration(color: Colors.white),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
@@ -1094,7 +1115,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     if (!ResponsiveWidget.isLargeScreen(context))
                       if (Window.showWindow == 0)
                         Container(
-                          height: 25.0,
+                          // HEIGHT OF LEAGUES ON MOBILE
+                          height: 40.0,
                           // margin: new EdgeInsets.only(
                           //     left: 15.0, bottom: 15.0, top: 5.0),
                           margin: EdgeInsets.only(
@@ -1110,7 +1132,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                   itemCount: _leagues.length,
                                   itemBuilder: (context, index) {
                                     return _topChampionshipMobile(
-                                        _leagues[index], index);
+                                        _leagues[index]);
                                   })
                               : Center(
                                   // execute this for network error
@@ -1148,7 +1170,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                 ? 15.0
                                 : 10.0),
                         decoration: BoxDecoration(
-                            color: Colors.white70,
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(8.0)),
                         child: _betFilters(),
                       ),
@@ -1170,104 +1192,143 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
 
   String selectedMobileTopItem = '';
 
-  _topChampionshipMobile(var _thisLeague, int index) {
+  _topChampionshipMobile(var _thisLeague) {
+    // WE GET THE CURRENT CHAMPIONSHIP NAME
+    String _league = _thisLeague['name'];
+    int _leagueID = _thisLeague['id'];
+    // WE GET THE CURRENT COUNTRY ID
+    int _countryId = _thisLeague['country_id'];
+
+    // THIS WILL STORE THE CURRENT COUNTRY NAME
+    // RETURN THE COUNTRY BASED ON THE LEAGUE
+    var _country = _league_return_country(_countryId);
+
+    // THIS IS A CLICKABLE WIDGET HERE
     return GestureDetector(
-      onTap: () async {
-        // final _thisLocalData = await Selection.getCategory(championship);
+      onTap: () {
         // we will now check if a championship has been adde so it won't be added again
         if (mounted)
           setState(() {
-            // set the match top to an index that does not exists
-            // _selectedIndex = -1;
-            // // set the clicked item to the one selected
-            // selectedMobileTopItem = championship;
-            // // clear all old value of data array so that filtered ones can be added
-            // data.clear();
-            // for (var i = 0; i < (_thisLocalData.length); i++) {
-            //   // execute this if the array contains elements
-            //   if (data.length > 0) {
-            //     int verifier = 0;
-            //     // check if the array contains already the championship
-            //     for (var j = 0; j < data.length; j++) {
-            //       if (data[j]
-            //               .documentID
-            //               .toString()
-            //               .compareTo(_thisLocalData[i].documentID.toString()) ==
-            //           0) {
-            //         verifier++;
-            //       }
-            //     }
-            //     // add the championship if it is not added yet
-            //     if (verifier == 0) {
-            //       // add the current match to data array
-            //       data.add(_thisLocalData[i]);
-            //     }
-            //   }
-            //   // else execute this
-            //   else {
-            //     data.add(_thisLocalData[i]);
-            //   }
-            // }
-            // print('The championship is $championship and country is $country');
-            // Window.showWindow = 0;
+            setState(() {
+              // WE INITIALIZE AND SET THE NEW VALUES AND RESPONSE
+              league_Action_Click(_leagueID);
+            });
           });
       },
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 3.0),
+            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 3.0),
             decoration: BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                  bottom: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                  left: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                  right: BorderSide(
-                    color: Colors.lightGreen[400],
-                    width: 2.0,
-                  ),
+                  top: BorderSide(color: Colors.grey.shade300, width: 2.0),
+                  bottom: BorderSide(color: Colors.grey.shade300, width: 2.0),
+                  left: BorderSide(color: Colors.grey.shade300, width: 2.0),
+                  right: BorderSide(color: Colors.grey.shade300, width: 2.0),
                 ),
-                color: Colors.white70,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(10.0)),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'championship'.toUpperCase(),
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12.0),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      _league.toString(),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14.0),
+                    ),
+                    SizedBox(width: 4.0),
+                    // Icon(Icons.more_horiz, color: Colors.lightGreen, size: 12.0),
+                    Text(
+                      _country.toString(),
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                        // fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    // if (selectedMobileTopItem
+                    //         .toString()
+                    //         .compareTo('championship') ==
+                    //     0)
+                    //   Row(
+                    //     children: [
+                    //       SizedBox(
+                    //         width: 3.0,
+                    //       ),
+                    //       Center(
+                    //         child: Icon(
+                    //           Icons.check,
+                    //           color: Colors.lightBlue[400],
+                    //           size: 15.0,
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                  ],
                 ),
-                SizedBox(width: 4.0),
-                // Icon(Icons.more_horiz, color: Colors.lightGreen, size: 12.0),
-                Text(
-                  '| ' + 'country',
-                  style: TextStyle(
-                    fontSize: 10.0,
+                // IntrinsicHeight(
+                //     child: new Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //   children: <Widget>[
+                //     Text('Foo'),
+                //     VerticalDivider(),
+                //     Text('Bar'),
+                //     VerticalDivider(),
+                //     Text('Baz'),
+                //   ],
+                // )),
+                // SizedBox(width: 5.0),
+                VerticalDivider(),
+                // SizedBox(width: 5.0),
+                // Divider(),
+                // INITIAL PHASE
+                // if (_currentPick == 0)
+                if (_currentLeagueID != _leagueID)
+                  Icon(
+                    // SHOW A DIFFERENT ICON IF A CHAMPIONSHIP IS SELECTED
+                    Icons.arrow_forward_ios,
+                    // SHOW A DIFFERENT COLOR WHEN A CHAMPIONSHIP IS SELECTED
                     color: Colors.grey,
-                    fontWeight: FontWeight.bold,
-                    // fontStyle: FontStyle.italic,
+                    size: 20.0,
                   ),
-                ),
-                if (selectedMobileTopItem
-                        .toString()
-                        .compareTo('championship') ==
-                    0)
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 3.0,
-                      ),
-                      Center(
-                        child: Icon(
-                          Icons.check,
-                          color: Colors.lightBlue[400],
-                          size: 15.0,
-                        ),
-                      ),
-                    ],
-                  ),
+                // CHECK THE SELECTION CHOICE
+                if (_currentPick == 1)
+                  // IF REQUEST IS LOADING
+                  // WE WANT TO LOAD ONLY A SPECIFIC LEAGUE
+                  if (_currentLeagueID == _leagueID)
+                    SpinKitCircle(color: Colors.lightBlue, size: 18.0),
+
+                // IF WE HAVE GAMES HERE
+                // WE WANT TO LOAD ONLY A SPECIFIC LEAGUE
+                // SHOW A SUCCESS ICON
+                if (_currentPick == 2)
+                  if (_currentLeagueID == _leagueID)
+                    Icon(
+                      // SHOW A DIFFERENT ICON IF A CHAMPIONSHIP IS SELECTED
+                      Icons.verified,
+                      // SHOW A DIFFERENT COLOR WHEN A CHAMPIONSHIP IS SELECTED
+                      color: Colors.green,
+                      size: 18.0,
+                    ),
+
+                // WE WANT TO LOAD ONLY A SPECIFIC LEAGUE
+                // IF WE HAVE NO GAMES
+                if (_currentPick == 3)
+                  if (_currentLeagueID == _leagueID)
+                    Icon(
+                      // SHOW A DIFFERENT ICON IF A CHAMPIONSHIP IS SELECTED
+                      FontAwesomeIcons.timesCircle,
+                      // SHOW A DIFFERENT COLOR WHEN A CHAMPIONSHIP IS SELECTED
+                      color: Colors.red,
+                      size: 18.0,
+                    ),
               ],
             ),
           ),
@@ -1361,6 +1422,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               if (_currentPick == 2) {
                 // A CHAMPIONSHIP HAS BEEN LOADED AND DISPLAYED
                 // SO LOAD NEW DATA MATCHES HERE
+                loadMatchMethod();
                 // print('A league data is display');
                 // LOAD MAIN MATCHES HERE
               }
@@ -1372,57 +1434,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               switchToMoreMatchOddsWindow = false;
               // SET THE SELECTED CHAMPIONSHIPS TO NONE
               _currentPick = 0;
+              // SET THE CURRENT ID TO NULL TOO
               _currentLeagueID = -1;
-              // SET THE CHAMPIONSHIP HIGHLIGHT ICON TO NULL IN DESKTOP MODE
-              // WE GIVE IT A VALUE OF -1 SO THAT NO CHAMPIONSHIP WILL BE SELECTED
-              // _indexChampionSelection = -1;
-
-              // set the selected championship to none if one item is clicked here
-              // selectedMobileTopItem = '';
-              // _selectedIndex = index;
-              // // load games on event clicking on
-              // // 'Matches','Popular Bets', 'Home & High Odds', 'Away & High Odds',
-              // // clear all data to reload new ones and filtered
-              // data.clear();
-              // // when clicked on match index, load matches with all games
-              // if (_selectedIndex == 0) {
-              //   // set all loading to all matches to be found
-              //   fieldLoadMore = 0;
-              //   // load all games bases on their timestamp
-              //   loadingGames(fieldLoadMore);
-              // }
-              //  else if (_selectedIndex == 1) {
-              //   // set all loading to all popular matches to be found
-              //   fieldLoadMore = 1;
-              //   // load all games bases on their timestamp
-              //   // filter games by most popular ones
-              //   loadingGames(fieldLoadMore);
-              //   // loadingGames(1);
-              // } else if (_selectedIndex == 2) {
-              //   // loadingGames(2); // set all loading to home games and with high odds
-              //   fieldLoadMore = 2;
-              //   // load all games bases on their timestamp
-              //   // filter games by home games and with high odds
-              //   loadingGames(fieldLoadMore);
-              // } else if (_selectedIndex == 3) {
-              //   // set all loading to home games and with low odds
-              //   fieldLoadMore = 3;
-              //   // filter games by home games and with low odds
-              //   loadingGames(fieldLoadMore);
-              // } else if (_selectedIndex == 4) {
-              //   // set all loading to away games and with high odds
-              //   fieldLoadMore = 4;
-              //   // filter games by away games and with high odds
-              //   loadingGames(fieldLoadMore);
-              // } else if (_selectedIndex == 5) {
-              //   // set all loading to away games and with low odds
-              //   fieldLoadMore = 5;
-              //   // filter games by away games and with low odds
-              //   loadingGames(fieldLoadMore);
-              // }
-              // Window.showWindow = 0;
             });
-          // print(_selectedIndex);
         },
         child: Container(
           padding: const EdgeInsets.only(right: 15.0),
@@ -1496,159 +1510,45 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     );
   }
 
-  ScrollController _scrollController = new ScrollController();
-
-  void loadingGames(int choice) async {
-    final _game = await Selection.getPosts(choice);
-    if (mounted)
-      setState(() {
-        checkInternet();
-        // add a condition so that existing members can't be added twice
-        for (var i = 0; i < _game.length; i++) {
-          // do not execute this if data array is empty
-          if (data.length > 0) {
-            // if the array contains at least one element then execute this
-            // loop through elements to get the id
-            int id = 0;
-            for (var j = 0; j < data.length; j++) {
-              // if the new id is equal to one old, do not add it again
-              if ((data[j]
-                      .documentID
-                      .toString()
-                      .compareTo(_game[i].documentID.toString()) ==
-                  0)) {
-                id++;
-              }
-            }
-            if (id == 0) {
-              // print('added for the first time');
-              // if data array does not contain thegame then add it
-              data.add(_game[i]);
-              // else if the match exist already do not add it anyhow
-            }
-            // else{
-            //   print('added already');
-            // }
-          } else {
-            // if the array is empty, add the first element with no condition
-            data.add(_game[i]);
-          }
-        }
-      });
-  }
-
-  var sideDataSortedChamp = [];
-  var sideDataSortedCountry = [];
-
-  void loadSideData() async {
-    //  var results = [];
-    final _thiLocalData = await Selection.getCountData();
-    // we will now check if a championship has been adde so it won't be added again
-    if (mounted)
-      setState(() {
-        for (var i = 0; i < (_thiLocalData.length); i++) {
-          // execute this if the array contains elements
-          if (sideDataSortedChamp.length > 0) {
-            int verifier = 0;
-            // check if the array contains already the championship
-            for (var j = 0; j < sideDataSortedChamp.length; j++) {
-              if (sideDataSortedChamp[j]
-                      .toString()
-                      .compareTo(_thiLocalData[i]['championship'].toString()) ==
-                  0) {
-                verifier++;
-              }
-            }
-            // add the championship if it is not added yet
-            if (verifier == 0) {
-              // add the championship
-              sideDataSortedChamp.add(_thiLocalData[i]['championship']);
-              // add the country or the region
-              sideDataSortedCountry.add(_thiLocalData[i]['country']);
-            }
-          }
-          // else execute this
-          else {
-            // add the championship
-            sideDataSortedChamp.add(_thiLocalData[i]['championship']);
-            // add the country
-            sideDataSortedCountry.add(_thiLocalData[i]['country']);
-          }
-          // print(qn.documents[i]['championship']);
-        }
-        // Save the loaded values into arrays
-      });
-
-    loadSideDataArrayChamp = sideDataSortedChamp;
-    loadSideDataArrayCountry = sideDataSortedCountry;
-
-    // THIS METHOD FILTER THE 5 MAIN CHAMPIONSHIP AT TOP
-    // PREMIER LEAGUE
-    _filterMainChampionships(loadSideDataArrayChamp, loadSideDataArrayCountry,
-        'Premier League', 'England', 0);
-    // BUNDESLIGA
-    _filterMainChampionships(loadSideDataArrayChamp, loadSideDataArrayCountry,
-        'Bundesliga', 'Germany', 1);
-    // ITALY
-    _filterMainChampionships(loadSideDataArrayChamp, loadSideDataArrayCountry,
-        'Serie A', 'Italy', 2);
-    // LA LIGA
-    _filterMainChampionships(loadSideDataArrayChamp, loadSideDataArrayCountry,
-        'La Liga', 'Spain', 3);
-    // LIGUE 1
-    _filterMainChampionships(loadSideDataArrayChamp, loadSideDataArrayCountry,
-        'Ligue 1', 'France', 4);
-  }
-
-// THIS METHOD PUT THE FIVE TOP CHAMPIONSIPS AT THE TOP
-  _filterMainChampionships(var _champs, var _countries, String champ,
-      String country, int _thisIndex) {
-    // CHECK IF WE HAVE ENOUGH DATA IN THE ARRAY OF CHAMPIONSHIPS
-    if (_champs.length <= _thisIndex) {
-      // print('this index is outside of array: $championship');
-      // IF THE CHAMPIONSHIP INDEX IS NOT IN ARRAY LENGHT
-      // THE PUT IT AT THE LAST PLACE
-      _thisIndex = _champs.length - 1;
-    }
-    // print(loadSideDataArrayChamp.length);
-    // print("Index: $_thisIndex");
-    // LET US CHECK IF WE HAVE PREMIER LEAGUE MATCH
-    if (_champs.contains(champ)) {
-      // LET US CREATE A TEMPORARY VALUE WHERE THE CHAMPIONSHIP AT CURRENT INDEX WILL BE STORED
-      // FOR CHAMPIONSHIP
-      String _tempChamp = '';
-      // FOR COUNTRY
-      String _tempCountry = '';
-      // FOR RESIDUAL INDEX
-      int _tempCount = 0;
-      // Store the index of premier league
-      int index = _champs.indexOf(champ);
-      // print('The index is: $index and Premier League catched');
-      // WE STORE THE VALUES TEMPORARILY IN VARIABLES
-      _tempCount = index;
-      _tempChamp = _champs[_thisIndex];
-      _tempCountry = _countries[_thisIndex];
-      // WE PUT 'PREMIER LEAGUE' AT INDEX 0
-      _champs[_thisIndex] = champ;
-      _countries[_thisIndex] = country;
-
-      // WE PUT OLD VALUES AT PREMIER LEAGUE INDEX
-      _champs[_tempCount] = _tempChamp;
-      _countries[_tempCount] = _tempCountry;
-    }
-  }
-
   loadMatchMethod() {
+    // HOLD MATCHES BEFORE UPDATING THE MAIN ARRAY
+    var _newMatches = [];
     // WE FIRST LOAD ALL THE GAMES HERE
-    _fetchMatch.fetchMatchDetails(Selection.loadLimit).then((value) {
+    _fetchMatch.fetchMatchDetails(Selection.loadLimit).then((_getData) {
       // print(value);
       // WE SET THE VALUE TO THE MATCHES ARRAY
-      _matches = value;
+      // LOOPS
+      if (_matches.length > 0) {
+        for (int i = 0; i < _getData.length; i++) {
+          // VALIDATE A NEW MATCH
+          bool _isNotPresent = true;
+          // MATCHES LOOPING
+          for (int j = 0; j < _matches.length; j++) {
+            // WE COMPARE LOADED MATCHES WITH CURRENT MATCHES
+            if (_getData[i].id == _matches[j].id) {
+              // SET TRUE FOR MATCHING
+              _isNotPresent = false;
+              // BREAK THE LOOP FOR PROCESSING
+              break;
+            }
+          }
+          // IF THE MATCH HAS NOT YET BEEN LOADED
+          if (_isNotPresent) {
+            // print('This is a new match ${_getData[i].id}');
+            _newMatches.add(_getData[i]);
+          }
+        }
+      } else {
+        // IF WE HAVE NO GAMES THEN ADD ALL GAMES AUTOMATICALLY HERE
+        _newMatches = _getData;
+      }
       // LET US INSERT DATA INTO THE SELECTION ARRAY
-      for (int i = 0; i < _matches.length; i++) {
+      for (int i = 0; i < _newMatches.length; i++) {
         // print(_matches[i].id);
+        // ADD THE MATCHES TO THE MAIN ARRAY TOO
+        _matches.add(_newMatches[i]);
         // WE ADD ONLY THE ID OF THE GAME TO THE ARRAY COLLECTION
-        oddsGameArray.add(OddsArray.fromDatabase(_matches[i]));
+        oddsGameArray.add(OddsArray.fromDatabase(_newMatches[i]));
       }
     });
   }
@@ -1659,36 +1559,42 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     loadMatchMethod();
     // LET US LOAD LEAGUES HERE
     _fetchMatch.fetchLeagues().then((value) {
-      // WE SET THE VALUE TO THE MATCHES ARRAY
-      // print(value['league']['data'][0]);
-      if (value.length > 0) {
-        _leagues = value[0]['data'];
-        // print(value[0]['data'][0]);
-      }
+      if (mounted)
+        setState(() {
+          // WE SET THE VALUE TO THE MATCHES ARRAY
+          // print(value['league']['data'][0]);
+          if (value.length > 0) {
+            _leagues = value[0]['data'];
+            // print(value[0]['data'][0]);
+          }
+        });
     });
 
     // LET US LOAD LEAGUES HERE
     _fetchMatch.fetchCountries().then((value) {
       // WE SET THE VALUE TO THE MATCHES ARRAY
-      _countries = value;
+      if (mounted)
+        setState(() {
+          _countries = value;
+        });
     });
     // this match check weither matches are still available or have expired
     // checkMatchValidity();
     // New methods loading...
-    removedTheOldMatch();
+    // removedTheOldMatch();
     // keep loading user balance
-    loopUserDetails();
+    // loopUserDetails();
     // placed here because this widget execute only once
     // this method helps us to detect if a certain user was already logged in
-    if (mounted)
-      setState(() {
-        // reload from existing session and set new values
-        // logged the user in if existed before
-        reLoginUser(); // uncomment after coding
-      });
+    // if (mounted)
+    //   setState(() {
+    // reload from existing session and set new values
+    // logged the user in if existed before
+    // reLoginUser(); // uncomment after coding
+    // });
     // this loadingGames method load only once at first lunch
     // loadingGames(fieldLoadMore);
-    loadSideData();
+    // loadSideData();
     super.initState();
     // _data = Selection.getPosts(0);
     // print('Chargement code executed');
@@ -1699,49 +1605,11 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         setState(() {
-          // print('loading new games');
-          // Future thisData;
-          // add and load 10 more games on every bottom list reach
+          // add and load 15 more games on every bottom list reach
           // load more data + condition to filter games already loaded
           Selection.loadLimit = Selection.loadLimit + 15;
           // if (mounted)
-          var _newMatches = [];
-          // WE FIRST LOAD ALL THE GAMES HERE
-          _fetchMatch.fetchMatchDetails(Selection.loadLimit).then((_getData) {
-            // print(value);
-            // WE SET THE VALUE TO THE MATCHES ARRAY
-            _matches = _getData;
-            // LOOPS
-            for (int i = 0; i < _getData.length; i++) {
-              // VALIDATE A NEW MATCH
-              bool _isNotPresent = true;
-              // MATCHES LOOPING
-              for (int j = 0; j < _matches.length; j++) {
-                // WE COMPARE LOADED MATCHES WITH CURRENT MATCHES
-                if (_getData[i] == _matches[j]) {
-                  // SET TRUE FOR MATCHING
-                  _isNotPresent = false;
-                  // BREAK THE LOOP FOR PROCESSING
-                  break;
-                }
-              }
-              // IF THE MATCH HAS NOT YET BEEN LOADED
-              if (_isNotPresent) {
-                // print('This is a new match ${_getData[i].id}');
-                _newMatches.add(_getData[i]);
-              }
-            }
-            // LET US INSERT DATA INTO THE SELECTION ARRAY
-            for (int i = 0; i < _newMatches.length; i++) {
-              // print(_matches[i].id);
-              // WE ADD ONLY THE ID OF THE GAME TO THE ARRAY COLLECTION
-              oddsGameArray.add(OddsArray.fromDatabase(_newMatches[i]));
-            }
-          });
-          // setState(() {
-          //   // execute this method so that new content can be added to the listview
-          //   loadingGames(fieldLoadMore);
-          // });
+          loadMatchMethod();
         });
       }
     });
@@ -1783,9 +1651,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                 if (mounted)
                                   setState(() {
                                     // on click of this item, reload games to check for update
-                                    loadingGames(fieldLoadMore);
+                                    // loadingGames(fieldLoadMore);
                                     // load championship content
-                                    loadSideData();
+                                    // loadSideData();
                                     // hide the error message
                                     isNoInternetNetwork = false;
                                     // isNoInternetNetworkOrOtherError = false;
@@ -1794,7 +1662,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                     if (Selection.userTelephone.compareTo('') !=
                                         0) {
                                       // if the phone is not empty, then reloggin the user
-                                      reLoginUser();
+                                      // reLoginUser();
                                     }
                                   });
                               },
@@ -1860,8 +1728,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // var championship = match['championship'];
     // var country = match['country'];
     // // load time details
-    var championship;
-    var country;
+    var championship = '...';
+    var country = '...';
     int _leagueIndex;
     // LET US LOAD CHAMPIONSHIPS
     // ONLY IF WE HAVE DATA IN THE ARRAY
@@ -1897,6 +1765,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // THIS STORE THE DATA FOR THREE WAY ODDS
     var _threeWayData =
         _thisMatch.threeWayOdds['bookmaker']['data'][0]['odds']['data'];
+    // print(_threeWayData.length);
+    // print(_threeWayData[0]);
+    // print(_thisMatch.id);
 
     return Column(
       children: [
@@ -1920,8 +1791,11 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     _fetchMatch
                         .fetchAllGameOdds(moreOddsMatch.id.toString())
                         .then((value) {
-                      // STORE THE ODDS OF THE MATCH IN THE ARRAY
-                      moreLoadedMatchOdds = value;
+                      if (mounted)
+                        setState(() {
+                          // STORE THE ODDS OF THE MATCH IN THE ARRAY
+                          moreLoadedMatchOdds = value;
+                        });
                       // odds loop
                       // print(value['odds'][0]['id']);
                       // print(value['odds'][0]['name']);
@@ -1944,8 +1818,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     _fetchMatch
                         .fetchAllGameOdds(moreOddsMatch.id.toString())
                         .then((value) {
-                      // STORE THE ODDS OF THE MATCH IN THE ARRAY
-                      moreLoadedMatchOdds = value;
+                      setState(() {
+                        // STORE THE ODDS OF THE MATCH IN THE ARRAY
+                        moreLoadedMatchOdds = value;
+                      });
                     });
                   }
 
@@ -1988,7 +1864,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                           ? 300
                                           : 250,
                               child: Text(
-                                team1 + ' - ' + team2,
+                                team1.toString() + ' - ' + team2.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize:
@@ -2001,14 +1877,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                 overflow: TextOverflow.clip,
                               ),
                             ),
-                            // SizedBox(width: 2.0,),
-                            // if (!ResponsiveWidget.isExtraSmallScreen(context) &&
-                            //     !ResponsiveWidget.isSmallScreen(context))
-                            //   Icon(
-                            //     Icons.bar_chart_rounded,
-                            //     size: 20.0,
-                            //     color: Colors.grey,
-                            //   )
                           ],
                         ),
                       ),
@@ -2020,7 +1888,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                 ? 150
                                 : 250,
                         child: Text(
-                          championship + country,
+                          championship.toString() + country.toString(),
                           style: TextStyle(
                               fontSize: 12.0,
                               color: Colors.grey,
@@ -2526,45 +2394,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     );
   }
 
-  drawWidget(DocumentSnapshot match, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        Selection.gameOddsArray.indexOf(match.documentID) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              topHomeButtonFunction(match, index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: topMatchesButtonDrawDesign(match['oneTimesTwo']['2']),
-      ),
-    );
-  }
-
-  team2Widget(DocumentSnapshot match, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(match.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              topHomeButtonFunction(match, index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: oneTimesTwoContainer(
-            '2', match['team2'], match['oneTimesTwo']['3']),
-      ),
-    );
-  }
-
   Widget betSlip(BuildContext _context) {
     return Container(
       margin: ResponsiveWidget.isMediumScreen(context) ||
@@ -2608,7 +2437,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         children: [
           Expanded(
             child: Container(
-              decoration: BoxDecoration(color: Colors.white70),
+              decoration: BoxDecoration(color: Colors.white),
               child: ListView(
                 padding: EdgeInsets.only(top: 0.0),
                 children: [
@@ -2730,7 +2559,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                           height: 60.0,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                              color: Colors.white70,
+                              color: Colors.white,
                               border: Border(
                                 top: BorderSide(
                                     color: _displayTextError
@@ -3455,7 +3284,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
 
   Widget singleGame() {
     // var _oddData = moreLoadedMatchOdds['odds'];
-
     return Expanded(
       child: Container(
           decoration: BoxDecoration(
@@ -3512,1700 +3340,20 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         // WE SAVE THE ODD DATA AND THE ODD ID
                         oddDataAndOddId(moreLoadedMatchOdds['odds'][_i],
                             moreLoadedMatchOdds['odds'][_i]['id']),
-                    // Text(
-                    //   moreLoadedMatchOdds['odds'][_i]['name'],
-                    //   style: TextStyle(
-                    //     color: Colors.black,
-                    //     fontWeight: FontWeight.bold,
-                    //     fontSize: 15.0,
-                    //     letterSpacing: 1.0,
-                    //   ),
-                    // ),
                     // ELSE DISPLAY A LOADING SCREEN
                     if (moreLoadedMatchOdds == null)
-                      SpinKitCircle(
-                        color: Colors.lightGreen[400],
-                        size: 18.0,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 35.0),
+                        child: SpinKitCircle(
+                          color: Colors.lightBlue,
+                          size: 25.0,
+                        ),
                       )
                   ],
                 ),
-                // Divider(color: Colors.grey, thickness: 0.5),
-                // SizedBox(height: 8.0),
-                // teamToWin(),
-                // overUnder(),
-                // SizedBox(height: 8.0),
-                // Divider(color: Colors.grey, thickness: 0.5),
-                // SizedBox(height: 8.0),
-                // bothTeamsToScore(),
-                // SizedBox(height: 8.0),
-                // Divider(color: Colors.grey, thickness: 0.5),
-                // SizedBox(height: 8.0),
-                // doubleChance(),
-                // SizedBox(height: 8.0),
-                // Divider(color: Colors.grey, thickness: 0.5),
-                // SizedBox(height: 8.0),
-                // oddEven(),
-                // SizedBox(height: 8.0),
-                // Divider(color: Colors.grey, thickness: 0.5),
-                // SizedBox(height: 8.0),
-                // halfOdds(),
-                // SizedBox(height: 8.0),
-                // Divider(color: Colors.grey, thickness: 0.5),
-                // SizedBox(height: 8.0),
-                // cleanSheet(),
-                // Divider(color: Colors.grey, thickness: 0.5),
-                // SizedBox(height: 8.0),
-                // otherBets(),
               ],
             ),
           )),
-    );
-  }
-
-  loadSingleGameButtonAction(int index) {
-    // get the positioned point
-    int getPoint = Selection.gameOddsArray.indexOf(matchMoreOdds.documentID);
-    if (Selection.gameOddsArray[getPoint + index] == true) {
-      // this method unselect all choices for that ID
-      unselectOdds(matchMoreOdds.documentID);
-      // remove the match from the betslip too
-      removeMatchFromBetSlip(matchMoreOdds);
-    } else {
-      // this method selects only the specified index
-      selectOdds(matchMoreOdds.documentID, index);
-      // add match to betslip if clicked
-      addMatchToBetSlip(matchMoreOdds, index);
-    }
-    // Navigator.push(context, MaterialPageRoute(builder: (_) => SkiiyaBet()));
-    loadBetslipMatches();
-  }
-
-  moreOddsMethodContainer(String type, double rate) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          type,
-          style: TextStyle(fontSize: 12.0, color: color),
-        ),
-        Text(double.parse(rate.toString()).toStringAsFixed(2).toString(),
-            style: TextStyle(color: color, fontSize: 12.0)),
-      ],
-    );
-  }
-
-  teamToWin() {
-    // print('loaded before error');
-    // load all 1x2 values attributed to it
-    var rate1x2 = matchMoreOdds['oneTimesTwo'];
-    bool _gamePopularity = false;
-    // try {
-    _gamePopularity = matchMoreOdds['isPopular'];
-    // } catch (e) {
-    //   print('the annoing error is: $e');
-    //   _gamePopularity = false;
-    // }
-    // print('loaded after error');
-    // print(matchMoreOdds['isPopular']);
-    // print(_gamePopularity);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '1X2',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15.0,
-                    letterSpacing: 1.0,
-                  ),
-                ),
-                SizedBox(height: 10.0),
-                Text(
-                  'Plein Temps',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 12.0,
-                  ),
-                ),
-              ],
-            ),
-            if (_gamePopularity == true)
-              Icon(
-                Icons.trending_up,
-                color: Colors.lightGreen[400],
-                size: 25.0,
-              ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            oneTimesTwoTeam1FullTime(rate1x2, 1),
-            SizedBox(width: 5.0),
-            oneTimesTwoTeamDrawFullTime(rate1x2, 2),
-            SizedBox(width: 5.0),
-            oneTimesTwoTeam2FullTime(rate1x2, 3),
-          ],
-        ),
-        Text(
-          '1ère Mi-Temps',
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 12.0,
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            oneTimesTwoTeam1FirstHalf(rate1x2, 4),
-            SizedBox(width: 5.0),
-            oneTimesTwoTeamDrawFirstHalf(rate1x2, 5),
-            SizedBox(width: 5.0),
-            oneTimesTwoTeam2FirstHalf(rate1x2, 6),
-          ],
-        ),
-        Text(
-          '2ème Mi-Temps',
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 12.0,
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            oneTimesTwoTeam1SecondHalf(rate1x2, 7),
-            SizedBox(width: 5.0),
-            oneTimesTwoTeamDrawSecondHalf(rate1x2, 8),
-            SizedBox(width: 5.0),
-            oneTimesTwoTeam2SecondHalf(rate1x2, 9),
-          ],
-        ),
-      ],
-    );
-  }
-
-  oneTimesTwoTeam2SecondHalf(var rate1x2, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: oneTimesTwoContainer('2', matchMoreOdds['team2'], rate1x2['9']),
-      ),
-    );
-  }
-
-  oneTimesTwoTeamDrawSecondHalf(var rate1x2, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: topMatchesButtonDrawDesign(rate1x2['8']),
-      ),
-    );
-  }
-
-  oneTimesTwoTeam1SecondHalf(var rate1x2, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: oneTimesTwoContainer('1', matchMoreOdds['team1'], rate1x2['7']),
-      ),
-    );
-  }
-
-  oneTimesTwoTeam2FirstHalf(var rate1x2, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: oneTimesTwoContainer('2', matchMoreOdds['team2'], rate1x2['6']),
-      ),
-    );
-  }
-
-  oneTimesTwoTeamDrawFirstHalf(var rate1x2, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: topMatchesButtonDrawDesign(rate1x2['5']),
-      ),
-    );
-  }
-
-  oneTimesTwoTeam1FirstHalf(var rate1x2, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: oneTimesTwoContainer('1', matchMoreOdds['team1'], rate1x2['4']),
-      ),
-    );
-  }
-
-  oneTimesTwoTeam2FullTime(var rate1x2, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: oneTimesTwoContainer('2', matchMoreOdds['team2'], rate1x2['3']),
-      ),
-    );
-  }
-
-  oneTimesTwoTeamDrawFullTime(var rate1x2, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: topMatchesButtonDrawDesign(rate1x2['2']),
-      ),
-    );
-  }
-
-  oneTimesTwoTeam1FullTime(var rate1x2, int index) {
-    // print('after the error and bolean is:');
-    // print('the index is: ${Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)}');
-    // print(Selection.gameOddsArray[
-    //     (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: oneTimesTwoContainer('1', matchMoreOdds['team1'], rate1x2['1']),
-      ),
-    );
-  }
-
-  overUnder() {
-    //  load all over under values attributed to it
-    var rateOverUnder = matchMoreOdds['overUnder'];
-    // print(rateOverUnder['1']);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'PLUS DE / SOUS',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 15.0,
-                letterSpacing: 1.0,
-              ),
-            ),
-            SizedBox(height: 10.0),
-            Text(
-              'Plein Temps',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 12.0,
-              ),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-        // over 0.5 and Under 0.5
-        // display only if values are not zeros
-        if ((rateOverUnder['1'] != 0) && (rateOverUnder['2'] != 0))
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              overUnderOver_0_5(rateOverUnder, 10),
-              SizedBox(width: 5.0),
-              overUnderUnder_0_5(rateOverUnder, 11),
-            ],
-          ),
-        // display only if values are not zeros
-        if ((rateOverUnder['3'] != 0) && (rateOverUnder['4'] != 0))
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              overUnderOver_1_5(rateOverUnder, 12),
-              SizedBox(width: 5.0),
-              overUnderUnder_1_5(rateOverUnder, 13),
-            ],
-          ),
-        // display only if values are not zeros
-        if ((rateOverUnder['5'] != 0) && (rateOverUnder['6'] != 0))
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              overUnderOver_2_5(rateOverUnder, 14),
-              SizedBox(width: 5.0),
-              overUnderUnder_2_5(rateOverUnder, 15),
-            ],
-          ),
-        // display only if values are not zeros
-        if ((rateOverUnder['7'] != 0) && (rateOverUnder['8'] != 0))
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              overUnderOver_3_5(rateOverUnder, 16),
-              SizedBox(width: 5.0),
-              overUnderUnder_3_5(rateOverUnder, 17),
-            ],
-          ),
-        // display only if values are not zeros
-        if ((rateOverUnder['9'] != 0) && (rateOverUnder['10'] != 0))
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              overUnderOver_4_5(rateOverUnder, 18),
-              SizedBox(width: 5.0),
-              overUnderUnder_4_5(rateOverUnder, 19),
-            ],
-          ),
-        // display only if values are not zeros
-        if ((rateOverUnder['11'] != 0) && (rateOverUnder['12'] != 0))
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              overUnderOver_5_5(rateOverUnder, 20),
-              SizedBox(width: 5.0),
-              overUnderUnder_5_5(rateOverUnder, 21),
-            ],
-          ),
-      ],
-    );
-  }
-
-  overUnderUnder_5_5(var rateOverUnder, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Under 5.5', rateOverUnder['12']),
-      ),
-    );
-  }
-
-  overUnderOver_5_5(var rateOverUnder, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Over 5.5', rateOverUnder['11']),
-      ),
-    );
-  }
-
-  overUnderUnder_4_5(var rateOverUnder, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Under 4.5', rateOverUnder['10']),
-      ),
-    );
-  }
-
-  overUnderOver_4_5(var rateOverUnder, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Over 4.5', rateOverUnder['9']),
-      ),
-    );
-  }
-
-  overUnderUnder_3_5(var rateOverUnder, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Under 3.5', rateOverUnder['8']),
-      ),
-    );
-  }
-
-  overUnderOver_3_5(var rateOverUnder, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Over 3.5', rateOverUnder['7']),
-      ),
-    );
-  }
-
-  overUnderUnder_2_5(var rateOverUnder, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Under 2.5', rateOverUnder['6']),
-      ),
-    );
-  }
-
-  overUnderOver_2_5(var rateOverUnder, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Over 2.5', rateOverUnder['5']),
-      ),
-    );
-  }
-
-  overUnderUnder_1_5(var rateOverUnder, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Under 1.5', rateOverUnder['4']),
-      ),
-    );
-  }
-
-  overUnderOver_1_5(var rateOverUnder, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Over 1.5', rateOverUnder['3']),
-      ),
-    );
-  }
-
-  overUnderUnder_0_5(var rateOverUnder, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Under 0.5', rateOverUnder['2']),
-      ),
-    );
-  }
-
-  overUnderOver_0_5(var rateOverUnder, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Over 0.5', rateOverUnder['1']),
-      ),
-    );
-  }
-
-  bothTeamsToScore() {
-    //  load all BTS values attributed to it
-    var rateBTS = matchMoreOdds['bothTeamsToScore'];
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'LES DEUX EQUIPES MARQUENT',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 15.0,
-                letterSpacing: 1.0,
-              ),
-            ),
-            SizedBox(height: 10.0),
-            Text(
-              'Plein Temps',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 12.0,
-              ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            bothTeamToScoreYes(rateBTS, 22),
-            SizedBox(width: 5.0),
-            bothTeamToScoreNo(rateBTS, 23),
-          ],
-        ),
-      ],
-    );
-  }
-
-  bothTeamToScoreNo(var rateBTS, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('No', rateBTS['2']),
-      ),
-    );
-  }
-
-  bothTeamToScoreYes(var rateBTS, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Oui', rateBTS['1']),
-      ),
-    );
-  }
-
-  oddEven() {
-    // load odd/even rate
-    var rateOddEven = matchMoreOdds['oddEven'];
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'IMPAIR / PAIR',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 15.0,
-            letterSpacing: 1.0,
-          ),
-        ),
-        SizedBox(height: 10.0),
-        Text(
-          'Plein Temps',
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 12.0,
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            oddEvenFullTimeOdd(rateOddEven, 24),
-            SizedBox(width: 5.0),
-            oddEvenFullTimeEven(rateOddEven, 25),
-          ],
-        ),
-        SizedBox(height: 5.0),
-        // SizedBox(height: 5.0),
-        Text(
-          matchMoreOdds['team1'] + ' - Plein Temps',
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 12.0,
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            oddEvenTeam1Odd(rateOddEven, 26),
-            SizedBox(width: 5.0),
-            oddEvenTeam1Even(rateOddEven, 27),
-          ],
-        ),
-        SizedBox(height: 5.0),
-        // SizedBox(height: 5.0),
-        Text(
-          matchMoreOdds['team2'] + ' - Plein Temps',
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 12.0,
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            oddEvenTeam2Odd(rateOddEven, 28),
-            SizedBox(width: 5.0),
-            oddEvenTeam2Even(rateOddEven, 29),
-          ],
-        ),
-      ],
-    );
-  }
-
-  oddEvenTeam2Even(var rateOddEven, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Pair', rateOddEven['6']),
-      ),
-    );
-  }
-
-  oddEvenTeam2Odd(var rateOddEven, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Impair', rateOddEven['5']),
-      ),
-    );
-  }
-
-  oddEvenTeam1Even(var rateOddEven, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Pair', rateOddEven['4']),
-      ),
-    );
-  }
-
-  oddEvenTeam1Odd(var rateOddEven, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Impair', rateOddEven['3']),
-      ),
-    );
-  }
-
-  oddEvenFullTimeEven(var rateOddEven, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Pair', rateOddEven['2']),
-      ),
-    );
-  }
-
-  oddEvenFullTimeOdd(var rateOddEven, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Impair', rateOddEven['1']),
-      ),
-    );
-  }
-
-  halfOdds() {
-    // load specific array content values
-    var rateHalf = matchMoreOdds['half'];
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Mi-Temps'.toUpperCase(),
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 15.0,
-                letterSpacing: 1.0,
-              ),
-            ),
-            SizedBox(height: 10.0),
-            Text(
-              'La Mi-Temps avec plus de Buts',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 12.0,
-              ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            halfWithMoreGoalsFirst(rateHalf, 30),
-            SizedBox(width: 5.0),
-            halfWithMoreGoalsSecond(rateHalf, 31),
-            SizedBox(width: 5.0),
-            halfWithMoreGoalsEqual(rateHalf, 32),
-          ],
-        ),
-        SizedBox(height: 5.0),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 5.0),
-            Text(
-              matchMoreOdds['team1'] + ' gagner soit une Mi-Temps',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 12.0,
-              ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            team1WinEitherHalfYes(rateHalf, 33),
-            SizedBox(width: 5.0),
-            team1WinEitherHalfNo(rateHalf, 34),
-          ],
-        ),
-        SizedBox(height: 5.0),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 5.0),
-            Text(
-              matchMoreOdds['team2'] + ' gagner soit une Mi-Temps',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 12.0,
-              ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            team2WinEitherHalfYes(rateHalf, 35),
-            SizedBox(width: 5.0),
-            team2WinEitherHalfNo(rateHalf, 36),
-          ],
-        ),
-        SizedBox(height: 5.0),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 5.0),
-            Text(
-              matchMoreOdds['team1'] + ' marquer dans les deux mi-temps',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 12.0,
-              ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            team1ScoreInBothHalvesYes(rateHalf, 37),
-            SizedBox(width: 5.0),
-            team1ScoreInBothHalvesNo(rateHalf, 38),
-          ],
-        ),
-        SizedBox(height: 5.0),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 5.0),
-            Text(
-              matchMoreOdds['team2'] + ' marquer dans les deux mi-temps',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 12.0,
-              ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            team2ScoreInBothHalvesYes(rateHalf, 39),
-            SizedBox(width: 5.0),
-            team2ScoreInBothHalvesNo(rateHalf, 40),
-          ],
-        ),
-      ],
-    );
-  }
-
-  team2ScoreInBothHalvesNo(var rateHalf, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Non', rateHalf['11']),
-      ),
-    );
-  }
-
-  team2ScoreInBothHalvesYes(var rateHalf, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Oui', rateHalf['10']),
-      ),
-    );
-  }
-
-  team1ScoreInBothHalvesNo(var rateHalf, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Non', rateHalf['9']),
-      ),
-    );
-  }
-
-  team1ScoreInBothHalvesYes(var rateHalf, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Oui', rateHalf['8']),
-      ),
-    );
-  }
-
-  team2WinEitherHalfNo(var rateHalf, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Non', rateHalf['7']),
-      ),
-    );
-  }
-
-  team2WinEitherHalfYes(var rateHalf, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Oui', rateHalf['6']),
-      ),
-    );
-  }
-
-  team1WinEitherHalfNo(var rateHalf, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Non', rateHalf['5']),
-      ),
-    );
-  }
-
-  team1WinEitherHalfYes(var rateHalf, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Oui', rateHalf['4']),
-      ),
-    );
-  }
-
-  halfWithMoreGoalsEqual(var rateHalf, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Égale', rateHalf['3']),
-      ),
-    );
-  }
-
-  halfWithMoreGoalsSecond(var rateHalf, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('2eme', rateHalf['2']),
-      ),
-    );
-  }
-
-  halfWithMoreGoalsFirst(var rateHalf, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('1ère', rateHalf['1']),
-      ),
-    );
-  }
-
-  cleanSheet() {
-    // load specific array content values
-    var rateCleanSheet = matchMoreOdds['cleanSheet'];
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'FEUILLE PROPRE',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 15.0,
-                letterSpacing: 1.0,
-              ),
-            ),
-            SizedBox(height: 10.0),
-            Text(
-              matchMoreOdds['team1'] + ' -  Plein Temps',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 12.0,
-              ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            cleanSheetTeam1FullTimeYes(rateCleanSheet, 41),
-            SizedBox(width: 5.0),
-            cleanSheetTeam1FullTimeNo(rateCleanSheet, 42),
-          ],
-        ),
-        SizedBox(height: 5.0),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 5.0),
-            Text(
-              matchMoreOdds['team2'] + ' - Plein Temps',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 12.0,
-              ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            cleanSheetTeam2FullTimeYes(rateCleanSheet, 43),
-            SizedBox(width: 5.0),
-            cleanSheetTeam2FullTimeNo(rateCleanSheet, 44),
-          ],
-        ),
-      ],
-    );
-  }
-
-  cleanSheetTeam2FullTimeNo(var rateCleanSheet, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Non', rateCleanSheet['4']),
-      ),
-    );
-  }
-
-  cleanSheetTeam2FullTimeYes(var rateCleanSheet, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Oui', rateCleanSheet['3']),
-      ),
-    );
-  }
-
-  cleanSheetTeam1FullTimeNo(var rateCleanSheet, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Non', rateCleanSheet['2']),
-      ),
-    );
-  }
-
-  cleanSheetTeam1FullTimeYes(var rateCleanSheet, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('Oui', rateCleanSheet['1']),
-      ),
-    );
-  }
-
-  doubleChance() {
-    var rateDC = matchMoreOdds['doubleChance'];
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'DOUBLE CHANCE',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 15.0,
-                letterSpacing: 1.0,
-              ),
-            ),
-            SizedBox(height: 10.0),
-            Text(
-              'Plein Temps',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 12.0,
-              ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            doubleChance1(rateDC, 45),
-            SizedBox(width: 5.0),
-            doubleChance2(rateDC, 46),
-            SizedBox(width: 5.0),
-            doubleChance3(rateDC, 47),
-          ],
-        ),
-      ],
-    );
-  }
-
-  doubleChance3(var rateDC, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer(
-            '12', rateDC.toString().compareTo('null') == 0 ? 0 : rateDC['3']),
-      ),
-    );
-  }
-
-  doubleChance2(var rateDC, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer(
-            '2X', rateDC.toString().compareTo('null') == 0 ? 0 : rateDC['2']),
-      ),
-    );
-  }
-
-  doubleChance1(var rateDC, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer(
-            '1X', rateDC.toString().compareTo('null') == 0 ? 0 : rateDC['1']),
-      ),
-    );
-  }
-
-  otherBets() {
-    // load specific array content values
-    var rateOther = matchMoreOdds['other'];
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'AUTRES',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 15.0,
-                letterSpacing: 1.0,
-              ),
-            ),
-            SizedBox(height: 10.0),
-            Text(
-              '1X2 et les deux équipes marquent - Plein Temps',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 12.0,
-              ),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            yes1(rateOther, 48),
-            SizedBox(width: 5.0),
-            no1(rateOther, 49),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            yes2(rateOther, 50),
-            SizedBox(width: 5.0),
-            no2(rateOther, 51),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            yesX(rateOther, 52),
-            SizedBox(width: 5.0),
-            noX(rateOther, 53),
-          ],
-        ),
-      ],
-    );
-  }
-
-  noX(var rateOther, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('X - Non', rateOther['6']),
-      ),
-    );
-  }
-
-  yesX(var rateOther, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('X - Oui', rateOther['5']),
-      ),
-    );
-  }
-
-  no2(var rateOther, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('2 - Non', rateOther['4']),
-      ),
-    );
-  }
-
-  yes2(var rateOther, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('2 - Oui', rateOther['3']),
-      ),
-    );
-  }
-
-  no1(var rateOther, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('1 - Non', rateOther['2']),
-      ),
-    );
-  }
-
-  yes1(var rateOther, int index) {
-    // update the coloration of the button
-    updateColors(Selection.gameOddsArray[
-        (Selection.gameOddsArray.indexOf(matchMoreOdds.documentID)) + index]);
-    return Expanded(
-      child: RawMaterialButton(
-        onPressed: () {
-          if (mounted)
-            setState(() {
-              loadSingleGameButtonAction(index);
-            });
-        },
-        fillColor: colorBg,
-        padding: new EdgeInsets.symmetric(horizontal: 5.0),
-        child: moreOddsMethodContainer('1 - Oui', rateOther['1']),
-      ),
     );
   }
 
@@ -5298,25 +3446,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         ),
       ],
     );
-  }
-
-  updateColors(bool select) {
-    // try {
-    // print('the selected boolean value is: $select');
-    if (select) {
-      color = Colors.white;
-      colorBg = Colors.lightGreen[400];
-      colorRounded = Colors.white70;
-      colorCaption = Colors.lightGreen[400];
-    } else {
-      colorCaption = Colors.white70;
-      color = Colors.black;
-      colorBg = Colors.grey[300];
-      colorRounded = Colors.lightGreen[400];
-    }
-    // } catch (e) {
-    //   print('the very stupid error is $e');
-    // }
   }
 
   removeMatchFromBetSlip(DocumentSnapshot match) {
@@ -5588,7 +3717,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 itemCount: _leagues.length,
                 itemBuilder: (context, index) {
                   // LOAD THE LEAGUES AND DISPLAY THEM
-                  return championship(_leagues[index], index);
+                  return championship(_leagues[index]);
                 },
               )
             : Center(
@@ -5693,7 +3822,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // print(_currentPick);
   }
 
-  championship(var _thisLeague, int _ligueIndex) {
+  championship(var _thisLeague) {
     // WE GET THE CURRENT CHAMPIONSHIP NAME
     String _league = _thisLeague['name'];
     int _leagueID = _thisLeague['id'];
@@ -5714,8 +3843,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             setState(() {
               // WE INITIALIZE AND SET THE NEW VALUES AND RESPONSE
               league_Action_Click(_leagueID);
-              // print(_leagueID);
-              // });
             });
         },
         child: Column(
@@ -6232,42 +4359,42 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   }
 
   // sesssion management
-  reLoginUser() async {
-    var session = FlutterSession();
-    // await session.set("email", null);
-    String userID = await session.get("sB1");
-    String userID1 = await session.get("sB2");
-    String customID = await session.get("sB3");
-    String customID1 = await session.get("sB4");
-    // LocalStorage storage = new LocalStorage('SKIIYA_BET');
-    // print(Selection.user.uid);
-    // if (email.compareTo('null') != 0) {
-    //   if (id1.compareTo('null') != 0) {
-    //     if (id2.compareTo('null') != 0) {
-    // print('data logins is different from null');
-    // print('Phone: $userID$userID1 and Passcode: $customID$customID1');
-    // RELOGGIN THE USER IF NO USER IS FOUND
-    if (Selection.user == null) {
-      if (userID == null ||
-          userID1 == null ||
-          customID == null ||
-          customID1 == null) {
-        // print('values are null, No relogin will be made');
-      } else {
-        // print('login process started');
-        doSessionUserLogin((userID + userID1), (customID + customID1));
-      }
-    }
-    //  else {
-    //   print('User logged in already');
-    // }
-    //     }
-    //   }
-    //   // else {
-    //   //   print('password is empty $password');
-    //   // }
-    // }
-  }
+  // reLoginUser() async {
+  //   var session = FlutterSession();
+  //   // await session.set("email", null);
+  //   String userID = await session.get("sB1");
+  //   String userID1 = await session.get("sB2");
+  //   String customID = await session.get("sB3");
+  //   String customID1 = await session.get("sB4");
+  //   // LocalStorage storage = new LocalStorage('SKIIYA_BET');
+  //   // print(Selection.user.uid);
+  //   // if (email.compareTo('null') != 0) {
+  //   //   if (id1.compareTo('null') != 0) {
+  //   //     if (id2.compareTo('null') != 0) {
+  //   // print('data logins is different from null');
+  //   // print('Phone: $userID$userID1 and Passcode: $customID$customID1');
+  //   // RELOGGIN THE USER IF NO USER IS FOUND
+  //   if (Selection.user == null) {
+  //     if (userID == null ||
+  //         userID1 == null ||
+  //         customID == null ||
+  //         customID1 == null) {
+  //       // print('values are null, No relogin will be made');
+  //     } else {
+  //       // print('login process started');
+  //       doSessionUserLogin((userID + userID1), (customID + customID1));
+  //     }
+  //   }
+  //   //  else {
+  //   //   print('User logged in already');
+  //   // }
+  //   //     }
+  //   //   }
+  //   //   // else {
+  //   //   //   print('password is empty $password');
+  //   //   // }
+  //   // }
+  // }
 
   // static setSessionLogin(String telephone, String pass) async {
   //   // Encrypting the email before saving it to user Device
@@ -6294,87 +4421,87 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   //   await session.set("customID1", partPass2.toString());
   // }
 
-  doSessionUserLogin(String telephone, String passCode) async {
-    // String code = '243';
-    checkInternet();
-    String congoCode = '243';
-    // print('The telephone is: $telephone');
-    // print('The passcode is: $passCode');
-    String phone =
-        Encryption.decryptAESCryptoJS(telephone, 'SKIIYA001_Telephone');
-    String email = congoCode + phone + '@gmail.com';
-    String pass = Encryption.decryptAESCryptoJS(passCode, phone);
-    // print('login has been reached and phone is $phone');
-    // print('login has been reached and email is $email');
-    // print('login has been reached and code is $code');
-    // String email =
-    //     Encryption.decryptAESCryptoJS(generatedEmail, generatedEmail);
-    // String email = generatedEmail;
-    await _auth
-        .signInWithEmailAndPassword(email: email, password: pass)
-        .then((result) {
-      Selection.user = result.user;
-      // store credentials to session
-      // setSessionLogin(phone.toString(), passCode.toString());
-      // save the current user into the local storage for upcoming connection
-      // get the right user balance and the right user phone number
-      Firestore.instance
-          .collection('UserInfo')
-          .document(result.user.uid)
-          .get()
-          .then((_result) {
-        // GET THE BLOCKING STATUS
-        // bool isBlocked = false;
-        if (_result['isBlocked'] == null) {
-          // create the column if not there already
-          Firestore.instance
-              .collection('UserInfo')
-              .document(result.user.uid)
-              .updateData({'isBlocked': false});
-          // The column has been created
-          // print('This blocked status is now created');
-        }
-        if (_result['isBlocked'] == true) {
-          // logout the user if he is being blocked in the system
-          Login.doLogout();
-          // print('The user has been blocked');
-        } else {
-          Firestore.instance
-              .collection('UserBalance')
-              .document(result.user.uid)
-              .get()
-              .then((_result) {
-            if (mounted)
-              setState(() {
-                // String id = _result.documentID.toString();
-                // print('the ID is $id');
-                Selection.userTelephone = '0' + phone;
-                Selection.userBalance = _result['balance'];
-                // successMessage(context, 'Login Success!');
-                // hide all messages error based
-                isNoInternetNetwork = false;
-                // isNoInternetNetworkOrOtherError = false;
-              });
-          }).catchError((e) {
-            // print('error: $e');
-          });
-        }
-      });
-    }).catchError((e) {
-      if (mounted)
-        setState(() {
-          if (e.toString().compareTo(
-                  'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
-              0) {
-            // display internet connection problems
-            isNoInternetNetwork = true;
-          } else {
-            // show other error messages
-            isNoInternetNetwork = false;
-          }
-        });
-    });
-  }
+  // doSessionUserLogin(String telephone, String passCode) async {
+  //   // String code = '243';
+  //   checkInternet();
+  //   String congoCode = '243';
+  //   // print('The telephone is: $telephone');
+  //   // print('The passcode is: $passCode');
+  //   String phone =
+  //       Encryption.decryptAESCryptoJS(telephone, 'SKIIYA001_Telephone');
+  //   String email = congoCode + phone + '@gmail.com';
+  //   String pass = Encryption.decryptAESCryptoJS(passCode, phone);
+  //   // print('login has been reached and phone is $phone');
+  //   // print('login has been reached and email is $email');
+  //   // print('login has been reached and code is $code');
+  //   // String email =
+  //   //     Encryption.decryptAESCryptoJS(generatedEmail, generatedEmail);
+  //   // String email = generatedEmail;
+  //   await _auth
+  //       .signInWithEmailAndPassword(email: email, password: pass)
+  //       .then((result) {
+  //     Selection.user = result.user;
+  //     // store credentials to session
+  //     // setSessionLogin(phone.toString(), passCode.toString());
+  //     // save the current user into the local storage for upcoming connection
+  //     // get the right user balance and the right user phone number
+  //     Firestore.instance
+  //         .collection('UserInfo')
+  //         .document(result.user.uid)
+  //         .get()
+  //         .then((_result) {
+  //       // GET THE BLOCKING STATUS
+  //       // bool isBlocked = false;
+  //       if (_result['isBlocked'] == null) {
+  //         // create the column if not there already
+  //         Firestore.instance
+  //             .collection('UserInfo')
+  //             .document(result.user.uid)
+  //             .updateData({'isBlocked': false});
+  //         // The column has been created
+  //         // print('This blocked status is now created');
+  //       }
+  //       if (_result['isBlocked'] == true) {
+  //         // logout the user if he is being blocked in the system
+  //         Login.doLogout();
+  //         // print('The user has been blocked');
+  //       } else {
+  //         Firestore.instance
+  //             .collection('UserBalance')
+  //             .document(result.user.uid)
+  //             .get()
+  //             .then((_result) {
+  //           if (mounted)
+  //             setState(() {
+  //               // String id = _result.documentID.toString();
+  //               // print('the ID is $id');
+  //               Selection.userTelephone = '0' + phone;
+  //               Selection.userBalance = _result['balance'];
+  //               // successMessage(context, 'Login Success!');
+  //               // hide all messages error based
+  //               isNoInternetNetwork = false;
+  //               // isNoInternetNetworkOrOtherError = false;
+  //             });
+  //         }).catchError((e) {
+  //           // print('error: $e');
+  //         });
+  //       }
+  //     });
+  //   }).catchError((e) {
+  //     if (mounted)
+  //       setState(() {
+  //         if (e.toString().compareTo(
+  //                 'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
+  //             0) {
+  //           // display internet connection problems
+  //           isNoInternetNetwork = true;
+  //         } else {
+  //           // show other error messages
+  //           isNoInternetNetwork = false;
+  //         }
+  //       });
+  //   });
+  // }
 
   Widget accountMenu() {
     return Expanded(
@@ -6686,80 +4813,80 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   }
 
   // keep on loading user blance details every 30s
-  loopUserDetails() {
-    // keep loading user balance every t seconds
-    Timer.periodic(new Duration(seconds: 30), (timer) {
-      // load details only if user has logged in
-      if (Selection.user != null) {
-        Firestore.instance
-            .collection('UserBalance')
-            .document(Selection.user.uid)
-            .get()
-            .then((_result) {
-          // if the login is successful then go ack to home Page
-          if (mounted)
-            setState(() {
-              Selection.userBalance =
-                  double.parse(_result['balance'].toString());
-            });
-        }).catchError((e) {
-          print('e: $e');
-        });
-      }
-    });
-  }
+  // loopUserDetails() {
+  //   // keep loading user balance every t seconds
+  //   Timer.periodic(new Duration(seconds: 30), (timer) {
+  //     // load details only if user has logged in
+  //     if (Selection.user != null) {
+  //       Firestore.instance
+  //           .collection('UserBalance')
+  //           .document(Selection.user.uid)
+  //           .get()
+  //           .then((_result) {
+  //         // if the login is successful then go ack to home Page
+  //         if (mounted)
+  //           setState(() {
+  //             Selection.userBalance =
+  //                 double.parse(_result['balance'].toString());
+  //           });
+  //       }).catchError((e) {
+  //         print('e: $e');
+  //       });
+  //     }
+  //   });
+  // }
 
-  removedTheOldMatch() {
-    // LOOP THROUGH THE DATA ARRAY EVERY 1 SECOND TO REMOVE OLD MATCHES ONE BY ONE
-    Timer.periodic(new Duration(seconds: 30), (timer) {
-      // LET'S DO SOME CALCULATION
-      // print(data.length);
-      // loop through all displayed games on the screen to check if they are still valid
-      for (int j = 0; j < data.length; j++) {
-        // This is the timestamp for every single game
-        Timestamp realGameTime = Timestamp.fromDate(new DateTime(
-          int.parse(data[j]['date']['4']),
-          int.parse(data[j]['date']['3']),
-          int.parse(data[j]['date']['2']),
-          int.parse(data[j]['time']['1']),
-          int.parse(data[j]['time']['2']),
-        ));
-        //To TimeStamp
-        // We get the user current date and time
-        Timestamp currentUserTime = Timestamp.fromDate(new DateTime.now());
-        // Let's calcualate the difference of Seconds
-        int diff = realGameTime.seconds - currentUserTime.seconds;
-        // print('This match DIFF is: $diff secs.');
-        if (mounted)
-          setState(() {
-            // REMOVE THE GAME IF IT REMAINS ONLY TWO MINUTES AND HALF OR LESS
-            if (diff <= 150 || diff < 0) {
-              // check if the game has been selected before updating
-              if (BetSlipData.gameIds.contains(data[j].documentID)) {
-                // delete the game from selected games array
-                // TO BE UNCOMMENTED
-                // removeSingleMatch(data[j].documentID);
-                // print('Removing the selected match');
-              }
-              // print('Removing a current match from the list');
-              // if not remove it from the list
-              // Remove the game in the Game Array
-              // TO BE UNCOMMENTED
-              // data.removeAt(j);
-            }
-            // else {
-            //   // IF THE MATCH IS STILL VALID
-            // print('This match will remain actif=> DIFF is: $diff secs.');
-            // }
-            if (data.length <= 20) {
-              // load more games if available remains only 20 or less
-              // THIS WILL LOAD MORE GAMES
-              // TO BE UNCOMMENTED
-              // loadingGames(fieldLoadMore);
-            }
-          });
-        // THIS CONDITION LOADS MORE GAMES IF REMAINING ARE LESS THAN 10
-      }
-    });
-  }
+  // removedTheOldMatch() {
+  //   // LOOP THROUGH THE DATA ARRAY EVERY 1 SECOND TO REMOVE OLD MATCHES ONE BY ONE
+  //   Timer.periodic(new Duration(seconds: 30), (timer) {
+  //     // LET'S DO SOME CALCULATION
+  //     // print(data.length);
+  //     // loop through all displayed games on the screen to check if they are still valid
+  //     for (int j = 0; j < data.length; j++) {
+  //       // This is the timestamp for every single game
+  //       Timestamp realGameTime = Timestamp.fromDate(new DateTime(
+  //         int.parse(data[j]['date']['4']),
+  //         int.parse(data[j]['date']['3']),
+  //         int.parse(data[j]['date']['2']),
+  //         int.parse(data[j]['time']['1']),
+  //         int.parse(data[j]['time']['2']),
+  //       ));
+  //       //To TimeStamp
+  //       // We get the user current date and time
+  //       Timestamp currentUserTime = Timestamp.fromDate(new DateTime.now());
+  //       // Let's calcualate the difference of Seconds
+  //       int diff = realGameTime.seconds - currentUserTime.seconds;
+  //       // print('This match DIFF is: $diff secs.');
+  //       if (mounted)
+  //         setState(() {
+  //           // REMOVE THE GAME IF IT REMAINS ONLY TWO MINUTES AND HALF OR LESS
+  //           if (diff <= 150 || diff < 0) {
+  //             // check if the game has been selected before updating
+  //             if (BetSlipData.gameIds.contains(data[j].documentID)) {
+  //               // delete the game from selected games array
+  //               // TO BE UNCOMMENTED
+  //               // removeSingleMatch(data[j].documentID);
+  //               // print('Removing the selected match');
+  //             }
+  //             // print('Removing a current match from the list');
+  //             // if not remove it from the list
+  //             // Remove the game in the Game Array
+  //             // TO BE UNCOMMENTED
+  //             // data.removeAt(j);
+  //           }
+  //           // else {
+  //           //   // IF THE MATCH IS STILL VALID
+  //           // print('This match will remain actif=> DIFF is: $diff secs.');
+  //           // }
+  //           if (data.length <= 20) {
+  //             // load more games if available remains only 20 or less
+  //             // THIS WILL LOAD MORE GAMES
+  //             // TO BE UNCOMMENTED
+  //             // loadingGames(fieldLoadMore);
+  //           }
+  //         });
+  //       // THIS CONDITION LOADS MORE GAMES IF REMAINING ARE LESS THAN 10
+  //     }
+  //   });
+  // }
 } // 6272
