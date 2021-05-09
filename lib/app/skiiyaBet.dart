@@ -70,7 +70,7 @@ FetchMatch _fetchMatch = new FetchMatch();
 
 // This array stores all the selected indices of championships
 // // THIS VARIABLE ASSIGN THE VALUE OF THE SELECTED CHAMPIONSHIP IN DESKTOP MODE
-int _indexChampionSelection = -1;
+// int _indexChampionSelection = -1;
 
 // Store all fetched matches and ready-to-use
 // ignore: deprecated_member_use
