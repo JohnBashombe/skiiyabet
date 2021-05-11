@@ -519,9 +519,19 @@ class _HistoryState extends State<History> {
     );
   }
 
-  Center askLoginFirst() {
-    return Center(
-      child: ConnexionRequired(),
+  askLoginFirst() {
+    return Column(
+      children: [
+        Text('Mon Historique'.toUpperCase(),
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold)),
+        SizedBox(height: 10.0),
+        Divider(thickness: 0.4, color: Colors.grey),
+        SizedBox(height: 15.0),
+        ConnexionRequired(),
+      ],
     );
   }
 
@@ -568,7 +578,7 @@ class _HistoryState extends State<History> {
                     if (_isHistoryEmpty) SizedBox(height: 5.0),
                     SpinKitCubeGrid(
                       color: Colors.lightGreen[400],
-                      size: 20.0,  
+                      size: 20.0,
                     ),
                   ],
                 ),

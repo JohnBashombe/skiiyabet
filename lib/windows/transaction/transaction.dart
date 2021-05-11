@@ -76,9 +76,22 @@ class _TransactionsState extends State<Transactions> {
                         ),
                 ],
               )
-            : Center(
-                child: ConnexionRequired(),
+            : Column(
+                children: [
+                  Text('Mes Transactions'.toUpperCase(),
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold)),
+                  SizedBox(height: 10.0),
+                  Divider(thickness: 0.4, color: Colors.grey),
+                  SizedBox(height: 15.0),
+                  ConnexionRequired(),
+                ],
               ),
+        // Center(
+        //     child: ConnexionRequired(),
+        //   ),
       ),
     );
   }

@@ -24,21 +24,24 @@ class Contact extends StatelessWidget {
             Container(
               alignment: Alignment.center,
               child: Text(
-                'Nos Contacts',
+                'Nos Contacts'.toUpperCase(),
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 30.0,
+                  fontSize: 25.0,
                   fontWeight: FontWeight.w200,
                 ),
               ),
             ),
+            SizedBox(height: 10.0),
+            Divider(color: Colors.grey, thickness: 0.5),
+            // SizedBox(height: 10.0),
             SizedBox(height: 25.0),
             Text(
               'Service client'.toUpperCase(),
               style: TextStyle(
                 color: Colors.black,
-                fontWeight: FontWeight.w300,
-                fontSize: 13.0,
+                fontWeight: FontWeight.bold,
+                fontSize: 14.0,
               ),
             ),
             SizedBox(height: 10.0),
@@ -48,7 +51,7 @@ class Contact extends StatelessWidget {
               'Nos Programmes',
               style: TextStyle(
                 color: Colors.black,
-                fontWeight: FontWeight.w300,
+                fontWeight: FontWeight.bold,
                 fontSize: 14.0,
               ),
             ),
@@ -57,7 +60,7 @@ class Contact extends StatelessWidget {
               'Nous sommes ouverts du lundi au vendredi de 8h:00 AM à 17h:00 PM',
               style: TextStyle(
                 color: Colors.grey,
-                fontSize: 12.0,
+                fontSize: 13.0,
               ),
             ),
             SizedBox(height: 2.0),
@@ -66,7 +69,7 @@ class Contact extends StatelessWidget {
               style: TextStyle(
                 color: Colors.grey,
                 // fontWeight: FontWeight.bold,
-                fontSize: 12.0,
+                fontSize: 13.0,
               ),
             ),
             SizedBox(height: 15.0),
@@ -77,7 +80,7 @@ class Contact extends StatelessWidget {
               'Contactez-nous directement',
               style: TextStyle(
                 color: Colors.black,
-                fontWeight: FontWeight.w200,
+                fontWeight: FontWeight.bold,
                 fontSize: 14.0,
               ),
             ),
@@ -85,27 +88,18 @@ class Contact extends StatelessWidget {
             Text(
               'Phone: +243-(0)-976-463-775',
               style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 14.0,
+                color: Colors.grey,
+                fontWeight: FontWeight.w300,
+                fontSize: 13.0,
               ),
             ),
-            // SizedBox(height: 3.0),
-            // Text(
-            //   'Airtel: +243 972 977 512',
-            //   style: TextStyle(
-            //     color: Colors.black,
-            //     fontWeight: FontWeight.w300,
-            //     fontSize: 12.0,
-            //   ),
-            // ),
             SizedBox(height: 3.0),
             Text(
               'Email: skiiyasarl@gmail.com',
               style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 14.0,
+                color: Colors.grey,
+                fontWeight: FontWeight.w300,
+                fontSize: 13.0,
               ),
             ),
             SizedBox(height: 15.0),
@@ -113,20 +107,28 @@ class Contact extends StatelessWidget {
             Divider(color: Colors.grey, thickness: 0.4),
             SizedBox(height: 5.0),
             Text(
-              'Adresses de bureau',
+              'Adresse Physique',
               style: TextStyle(
                 color: Colors.black,
-                fontWeight: FontWeight.w200,
+                fontWeight: FontWeight.bold,
                 fontSize: 14.0,
               ),
             ),
             SizedBox(height: 8.0),
             Text(
-              'Nous sommes situés au n ° 16A, Avenue de la Poste ||, \nQuartier Ndendere, \nCommune d\'Ibanda,  \nVille de Bukavu, \nProvince du SUD-KIVU, \nRépublique Démocratique du Congo',
+              'Nous sommes situés au n ° 16A, Avenue de la Poste ||, Quartier Ndendere, Commune d\'Ibanda',
               style: TextStyle(
                 color: Colors.grey,
-                fontWeight: FontWeight.w200,
-                fontSize: 12.0,
+                fontWeight: FontWeight.w300,
+                fontSize: 14.0,
+              ),
+            ),
+            Text(
+              'BUKAVU - SUD-KIVU \nREPUBLIQUE DEMOCRATIQUE DU CONGO',
+              style: TextStyle(
+                color: Colors.grey,
+                fontWeight: FontWeight.bold,
+                fontSize: 14.0,
               ),
             ),
             SizedBox(height: 40.0),
@@ -137,7 +139,7 @@ class Contact extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
-                  fontSize: 11.0,
+                  fontSize: 12.0,
                 ),
               ),
             ),

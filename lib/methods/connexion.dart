@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class ConnexionRequired extends StatelessWidget {
+  String title;
+  ConnexionRequired({this.title});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -17,24 +19,28 @@ class ConnexionRequired extends StatelessWidget {
         left: BorderSide(color: Colors.lightGreen[400], width: 2.0),
         right: BorderSide(color: Colors.lightGreen[400], width: 2.0),
       )),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: [
-          Text(
-            'S\'il vous plaît! \nIdentifiez-Vous d\'abord',
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 14.0,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 5.0),
-            child: SpinKitCubeGrid(
-              color: Colors.lightGreen[400],
-              size: 20.0,
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'S\'il vous plaît! \nIdentifiez-Vous d\'abord',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14.0,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 5.0),
+                child: SpinKitCubeGrid(
+                  color: Colors.lightGreen[400],
+                  size: 20.0,
+                ),
+              ),
+            ],
           ),
         ],
       ),
