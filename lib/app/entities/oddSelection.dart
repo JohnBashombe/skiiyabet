@@ -12,6 +12,7 @@ class OddsArray {
 
   factory OddsArray.fromDatabase(var db) {
     return OddsArray(
+      // WE SHOULD ADD ALL DETAILS NEEDED FOR A BETSLIP TICKET HERE
       // WE ONLY ADD THE GAME ID SINCE OTHER DATA WILL BE CHANGING
       gameID: db.id,
       oddID: null,

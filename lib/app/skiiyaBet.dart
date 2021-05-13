@@ -114,260 +114,31 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               elevation: 0,
               excludeHeaderSemantics: true,
               automaticallyImplyLeading: false,
-              title: Row(
-                children: [
-                  Text(
-                    'Skiiya'.toUpperCase(),
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: ResponsiveWidget.isSmallScreen(context)
-                            ? 17.0
-                            : 15.0,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  SizedBox(width: 3.0),
-                  Text(
-                    'Bet'.toUpperCase(),
-                    style: TextStyle(
-                        color: Colors.lightGreen,
-                        fontSize: ResponsiveWidget.isSmallScreen(context)
-                            ? 17.0
-                            : 15.0,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
+              title: _appTitle(context),
               actions: [
                 Container(
-                  height: ResponsiveWidget.isSmallScreen(context) ? 50.0 : 59.0,
+                  height: 50.0,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
                         alignment: Alignment.centerRight,
                         padding: new EdgeInsets.only(right: 10.0),
-                        width: ResponsiveWidget.isSmallScreen(context)
-                            ? (MediaQuery.of(context).size.width - 60.0) * 0.60
-                            : (MediaQuery.of(context).size.width - 60.0) * 0.25,
+                        width:
+                            (MediaQuery.of(context).size.width - 60.0) * 0.75,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
-                          // scrollDirection: Axis.horizontal,
                           children: [
-                            if (ResponsiveWidget.isLargeScreen(context) ||
-                                ResponsiveWidget.customScreen(context) ||
-                                ResponsiveWidget.isMediumScreen(context))
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 10.0, bottom: 10.0, right: 10.0),
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      border: Border(
-                                          right: BorderSide(
-                                              color: Colors.grey, width: 1.5))),
-                                  // child: IconButton(
-                                  //     icon: Icon(Icons.notifications), onPressed: null),
-                                ),
-                              ),
-                            // SizedBox(width: 10.0),
                             // display this phone number and amount if the user has logged in
                             (Selection.user != null)
-                                ? Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      SizedBox(width: 2.0),
-                                      Text(
-                                        // '0972 977 512',
-                                        Selection.userTelephone.toString(),
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      SizedBox(
-                                        height: 1.0,
-                                      ),
-                                      Text(
-                                        // Price.getWinningValues(Price.balance) +' Fc',
-                                        Price.getWinningValues(
-                                                Selection.userBalance) +
-                                            ' Fc',
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize:
-                                              ResponsiveWidget.isSmallScreen(
-                                                      context)
-                                                  ? 13.0
-                                                  : 14.0,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  )
-                                : GestureDetector(
-                                    onTap: () {
-                                      if (mounted)
-                                        setState(() {
-                                          // on click display the login button
-                                          // redirect to login page
-                                          Window.showWindow = 14;
-                                        });
-                                    },
-                                    child: MouseRegion(
-                                        cursor: SystemMouseCursors.click,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                                height: 35.0,
-                                                // padding: new EdgeInsets.symmetric(
-                                                //     horizontal: 5.0),
-                                                child: ButttonWithIcon(
-                                                  // icon: Icons.login,
-                                                  icon: FontAwesomeIcons
-                                                      .signInAlt,
-                                                  buttonColor:
-                                                      Colors.lightGreen[400],
-                                                  color: Colors.white,
-                                                  title: ResponsiveWidget
-                                                          .isExtraSmallScreen(
-                                                              context)
-                                                      ? 'Mon\nCompte'
-                                                      : 'Mon Compte',
-                                                  onPressed: () {
-                                                    if (mounted)
-                                                      setState(() {
-                                                        // on click display the login button
-                                                        // redirect to login page
-                                                        Window.showWindow = 14;
-                                                      });
-                                                  },
-                                                ))
-                                          ],
-                                        )),
-                                  ),
-                            SizedBox(width: 10.0),
-                            // display the counter in the app bar with NO ACTION
-                            if (!(ResponsiveWidget.isMediumScreen(context) ||
-                                ResponsiveWidget.isSmallScreen(context)))
-                              Container(
-                                padding:
-                                    EdgeInsets.only(top: 10.0, bottom: 10.0),
-                                child: Container(
-                                  padding: EdgeInsets.only(left: 8.0),
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      border: Border(
-                                          left: BorderSide(
-                                              color: Colors.grey, width: 1.5))),
-                                  child: Container(
-                                    // width: 15.0,
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 5.0),
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        top: BorderSide(
-                                            color: Colors.lightGreen[400],
-                                            width: 3.0),
-                                        bottom: BorderSide(
-                                            color: Colors.lightGreen[400],
-                                            width: 3.0),
-                                        left: BorderSide(
-                                            color: Colors.lightGreen[400],
-                                            width: 3.0),
-                                        right: BorderSide(
-                                            color: Colors.lightGreen[400],
-                                            width: 3.0),
-                                      ),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      // color: Colors.lightBlue,
-                                    ),
-                                    child: Text(
-                                      (BetSlipData.gameIds.length.toString()),
-                                      style: TextStyle(
-                                        color: Colors.lightGreen[400],
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                                ? _displayUserData(context)
+                                // APP BAR DISPLAY BUTTON
+                                : _displayLoginButton(),
+
+                            SizedBox(width: 5.0),
                             // display the counter in the app bar with A CLICKING ACTION
-                            if (ResponsiveWidget.isMediumScreen(context) ||
-                                ResponsiveWidget.isSmallScreen(context))
-                              GestureDetector(
-                                onTap: () {
-                                  if (mounted)
-                                    setState(() {
-                                      Window.showWindow = 20;
-                                      // Navigator.push(
-                                      //     context,
-                                      //     MaterialPageRoute(
-                                      //         builder: (_) => SkiiyaBet()));
-                                    });
-                                },
-                                child: MouseRegion(
-                                  cursor: SystemMouseCursors.click,
-                                  child: Container(
-                                    padding: EdgeInsets.only(
-                                        top: 10.0, bottom: 10.0),
-                                    child: Container(
-                                      padding: EdgeInsets.only(left: 8.0),
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                          border: Border(
-                                              left: BorderSide(
-                                                  color: Colors.grey,
-                                                  width: 1.5))),
-                                      child: Container(
-                                        // width: 15.0,
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 5.0),
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          border: Border(
-                                            top: BorderSide(
-                                                color: Colors.lightGreen[400],
-                                                width: 3.0),
-                                            bottom: BorderSide(
-                                                color: Colors.lightGreen[400],
-                                                width: 3.0),
-                                            left: BorderSide(
-                                                color: Colors.lightGreen[400],
-                                                width: 3.0),
-                                            right: BorderSide(
-                                                color: Colors.lightGreen[400],
-                                                width: 3.0),
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          // color: Colors.lightBlue,
-                                        ),
-                                        child: Text(
-                                          (BetSlipData.gameIds.length
-                                              .toString()),
-                                          style: TextStyle(
-                                            color: Colors.lightGreen[400],
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                            // DISPLAY THE MATCHES COUNTER ON A BETSLIP
+                            counterWidget(context),
                           ],
                         ),
                       )
@@ -381,8 +152,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         onTap: () {
           if (mounted)
             setState(() {
+              // IT ENABLES US TO CLOSE THE INPUT WIDGET ON BODY CLICKED
               FocusScope.of(context).requestFocus(new FocusNode());
-              // print('clicked');
             });
         },
         child: SingleChildScrollView(
@@ -435,7 +206,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                     tooltip: 'CONNECTEZ-VOUS'.toUpperCase(),
                                     icon: Icon(
                                       FontAwesomeIcons.signInAlt,
-                                      size: 15,
+                                      size: 18.0,
                                       color: Colors.white,
                                     ),
                                     onPressed: () {
@@ -547,6 +318,41 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                           : Colors.white),
                 ])
           : null,
+    );
+  }
+
+  Column _displayUserData(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        SizedBox(width: 2.0),
+        Text(
+          // '0972 977 512',
+          Selection.userTelephone.toString(),
+          style: TextStyle(
+            color: Colors.grey,
+            fontSize: 12.0,
+            fontWeight: FontWeight.bold,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        SizedBox(
+          height: 1.0,
+        ),
+        Text(
+          // Price.getWinningValues(Price.balance) +' Fc',
+          Price.getWinningValues(Selection.userBalance) + ' Fc',
+          style: TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.bold,
+            fontSize: ResponsiveWidget.isSmallScreen(context) ? 13.0 : 14.0,
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ],
     );
   }
 
@@ -669,9 +475,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        width: ResponsiveWidget.isSmallScreen(context)
-                            ? (MediaQuery.of(context).size.width - 60.0) * 0.40
-                            : (MediaQuery.of(context).size.width - 60.0) * 0.75,
+                        width:
+                            (MediaQuery.of(context).size.width - 60.0) * 0.70,
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: [
@@ -680,33 +485,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                               padding: ResponsiveWidget.isSmallScreen(context)
                                   ? EdgeInsets.symmetric(horizontal: 10.0)
                                   : EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    'Skiiya'.toUpperCase(),
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize:
-                                            ResponsiveWidget.isSmallScreen(
-                                                    context)
-                                                ? 17.0
-                                                : 15.0,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  SizedBox(width: 3.0),
-                                  Text(
-                                    'Bet'.toUpperCase(),
-                                    style: TextStyle(
-                                        color: Colors.lightGreen,
-                                        fontSize:
-                                            ResponsiveWidget.isSmallScreen(
-                                                    context)
-                                                ? 17.0
-                                                : 15.0,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
+                              child: _appTitle(context),
                             ),
                             if (!ResponsiveWidget.isSmallScreen(context))
                               Row(
@@ -726,210 +505,22 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       Container(
                         alignment: Alignment.centerRight,
                         padding: new EdgeInsets.only(right: 5.0),
-                        width: ResponsiveWidget.isSmallScreen(context)
-                            ? (MediaQuery.of(context).size.width - 60.0) * 0.60
-                            : (MediaQuery.of(context).size.width - 60.0) * 0.25,
+                        width:
+                            (MediaQuery.of(context).size.width - 60.0) * 0.30,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           // scrollDirection: Axis.horizontal,
                           children: [
-                            if (ResponsiveWidget.isLargeScreen(context) ||
-                                ResponsiveWidget.customScreen(context) ||
-                                ResponsiveWidget.isMediumScreen(context))
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 10.0, bottom: 10.0, right: 5.0),
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      border: Border(
-                                          right: BorderSide(
-                                              color: Colors.grey, width: 1.0))),
-                                  // child: IconButton(
-                                  //     icon: Icon(Icons.notifications), onPressed: null),
-                                ),
-                              ),
-                            // SizedBox(width: 10.0),
                             // isUserLoggedIn
                             (Selection.user != null)
-                                ? Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      SizedBox(width: 2.0),
-                                      Text(
-                                        Selection.userTelephone.toString(),
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      SizedBox(
-                                        height: 1.0,
-                                      ),
-                                      Text(
-                                        Price.getWinningValues(
-                                                Selection.userBalance) +
-                                            ' Fc',
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize:
-                                              ResponsiveWidget.isSmallScreen(
-                                                      context)
-                                                  ? 13.0
-                                                  : 14.0,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  )
-                                : MouseRegion(
-                                    cursor: SystemMouseCursors.click,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                            height: 35.0,
-                                            // padding: new EdgeInsets.symmetric(
-                                            //     horizontal: 5.0),
-                                            child: ButttonWithIcon(
-                                              icon: FontAwesomeIcons.signInAlt,
-                                              // icon: Icons.login,
-                                              buttonColor:
-                                                  Colors.lightGreen[400],
-                                              color: Colors.white,
-                                              title: 'Mon Compte',
-                                              onPressed: () {
-                                                if (mounted)
-                                                  setState(() {
-                                                    // on click display the login button
-                                                    // redirect to login page
-                                                    Window.showWindow = 14;
-                                                  });
-                                              },
-                                            ))
-                                      ],
-                                    )),
+                                ? _displayUserData(context)
+                                : _displayLoginButton(),
                             // if (ResponsiveWidget.isMediumScreen(context) ||
                             //     ResponsiveWidget.isSmallScreen(context))
                             SizedBox(width: 5.0),
                             // display the counter in the app bar with NO ACTION
-                            if (!(ResponsiveWidget.isMediumScreen(context) ||
-                                ResponsiveWidget.isSmallScreen(context)))
-                              Container(
-                                padding:
-                                    EdgeInsets.only(top: 10.0, bottom: 10.0),
-                                child: Container(
-                                  padding: EdgeInsets.only(left: 5.0),
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      border: Border(
-                                          left: BorderSide(
-                                              color: Colors.grey.shade300,
-                                              width: 1.0))),
-                                  child: Container(
-                                    // width: 15.0,
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 5.0),
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        top: BorderSide(
-                                            color: Colors.lightGreen[400],
-                                            width: 3.0),
-                                        bottom: BorderSide(
-                                            color: Colors.lightGreen[400],
-                                            width: 3.0),
-                                        left: BorderSide(
-                                            color: Colors.lightGreen[400],
-                                            width: 3.0),
-                                        right: BorderSide(
-                                            color: Colors.lightGreen[400],
-                                            width: 3.0),
-                                      ),
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      // color: Colors.lightBlue,
-                                    ),
-                                    child: Text(
-                                      (BetSlipData.gameIds.length.toString()),
-                                      style: TextStyle(
-                                        color: Colors.lightGreen[400],
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            // display the counter in the app bar with A CLICKING ACTION
-                            if (ResponsiveWidget.isMediumScreen(context) ||
-                                ResponsiveWidget.isSmallScreen(context))
-                              GestureDetector(
-                                onTap: () {
-                                  if (mounted)
-                                    setState(() {
-                                      Window.showWindow = 20;
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) => SkiiyaBet()));
-                                    });
-                                },
-                                child: Container(
-                                  padding:
-                                      EdgeInsets.only(top: 10.0, bottom: 10.0),
-                                  child: Container(
-                                    padding: EdgeInsets.only(left: 8.0),
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                        border: Border(
-                                            left: BorderSide(
-                                                color: Colors.grey,
-                                                width: 1.5))),
-                                    child: Container(
-                                      // width: 15.0,
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 5.0),
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        border: Border(
-                                          top: BorderSide(
-                                              color: Colors.lightGreen[400],
-                                              width: 3.0),
-                                          bottom: BorderSide(
-                                              color: Colors.lightGreen[400],
-                                              width: 3.0),
-                                          left: BorderSide(
-                                              color: Colors.lightGreen[400],
-                                              width: 3.0),
-                                          right: BorderSide(
-                                              color: Colors.lightGreen[400],
-                                              width: 3.0),
-                                        ),
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                        // color: Colors.lightBlue,
-                                      ),
-                                      child: Text(
-                                        (BetSlipData.gameIds.length.toString()),
-                                        style: TextStyle(
-                                          color: Colors.lightGreen[400],
-                                          fontSize: 14.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
+                            // DISPLAY THE MATCH COUNTER WIDGET HERE
+                            counterWidget(context),
                           ],
                         ),
                       )
@@ -961,6 +552,135 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         ),
         appBody(context),
       ],
+    );
+  }
+
+  Row _appTitle(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          'Skiiya'.toUpperCase(),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: ResponsiveWidget.isSmallScreen(context) ? 17.0 : 15.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(width: 3.0),
+        Text(
+          'Bet'.toUpperCase(),
+          style: TextStyle(
+              color: Colors.lightGreen,
+              fontSize: ResponsiveWidget.isSmallScreen(context) ? 17.0 : 15.0,
+              fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+
+  MouseRegion _displayLoginButton() {
+    return MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Tooltip(
+          message: 'Connectez-vous ici svp!',
+                  child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container( 
+                  height: 35.0, 
+                  // padding: new EdgeInsets.symmetric(
+                  //     horizontal: 5.0),
+                  child: ButttonWithIcon(
+                    icon: FontAwesomeIcons.signInAlt,
+                    // icon: Icons.login,
+                    buttonColor: Colors.lightGreen[400],
+                    color: Colors.white,
+                    title: ' Mon Compte',
+                    onPressed: () {
+                      if (mounted)
+                        setState(() {
+                          // on click display the login button
+                          // redirect to login page
+                          Window.showWindow = 14;
+                        });
+                    },
+                  ))
+            ],
+          ),
+        ));
+  }
+
+  GestureDetector counterWidget(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        if (mounted)
+          setState(() {
+            if (ResponsiveWidget.isMediumScreen(context) ||
+                ResponsiveWidget.isSmallScreen(context)) {
+              Window.showWindow = 20;
+              // print('small screen');
+              // print('display custom betslip panel');
+            }
+            // else {
+            //   print('large screen and no special betslip panel to display');
+            // }
+          });
+      },
+      child: Tooltip(
+        message: 'Nombre de matches sur le ticket',
+        // decoration: BoxDecoration(color: Colors.grey.shade300),
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: Row(
+            children: [
+              Container(
+                height: 40.0,
+                padding: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 5.0),
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      border: Border(
+                          left: BorderSide(color: Colors.grey, width: 1.5))),
+                ),
+              ),
+              Stack(
+                children: [
+                  Container(
+                    height: 45.0,
+                    width: 35.0,
+                    child: Icon(Icons.sports_soccer_outlined,
+                        size: 25.0, color: Colors.black),
+                  ),
+                  Positioned(
+                    right: 0.0,
+                    top: 0.0,
+                    child: Container(
+                      width: 20.0,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: Colors.orange[600],
+                          borderRadius: BorderRadius.circular(18.0)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.5),
+                        child: Text(
+                          // COUNT THE NUMBER OF MATCHES REMAINING IN BETSLIP
+                          countWidget().toString(),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -1002,32 +722,29 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         },
         child: Container(
           padding: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-          margin: new EdgeInsets.symmetric(
-              // SHOW NO MARGIN ON BIG SCREEN
-              vertical: ResponsiveWidget.isSmallScreen(context) ? 5.0 : 0.0),
+          // margin: new EdgeInsets.symmetric(
+          //     // SHOW NO MARGIN ON BIG SCREEN
+          //     vertical: ResponsiveWidget.isSmallScreen(context) ? 5.0 : 0.0),
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
             // borderRadius: BorderRadius.circular(18.0),
             border: Border(
-              // SHOW ONLY ON SMALL SCREENS
-              left: ResponsiveWidget.isSmallScreen(context)
-                  ? (Window.showJackpotIndex == index
-                      ? BorderSide(
-                          color: Colors.lightGreen[400],
-                          width: 3.0,
-                        )
-                      : BorderSide.none)
-                  : BorderSide.none,
-              // DO NOT DISPLAY ON SMALL SCREEN
-              bottom: !ResponsiveWidget.isSmallScreen(context)
-                  ? (Window.showJackpotIndex == index
-                      ? BorderSide(
-                          color: Colors.lightGreen[400],
-                          width: 3.0,
-                        )
-                      : BorderSide.none)
-                  : BorderSide.none,
-            ),
+                // SHOW ONLY ON SMALL SCREENS
+                // left: ResponsiveWidget.isSmallScreen(context)
+                //     ? (Window.showJackpotIndex == index
+                //         ? BorderSide(
+                //             color: Colors.lightGreen[400],
+                //             width: 3.0,
+                //           )
+                //         : BorderSide.none)
+                //     : BorderSide.none,
+                // DO NOT DISPLAY ON SMALL SCREEN
+                bottom: Window.showJackpotIndex == index
+                    ? BorderSide(
+                        color: Colors.lightGreen[400],
+                        width: 3.0,
+                      )
+                    : BorderSide.none),
           ),
           child: Text(
             _topMenu[index],
@@ -1184,7 +901,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           setState(() {
             setState(() {
               // WE INITIALIZE AND SET THE NEW VALUES AND RESPONSE
-              league_Action_Click(_leagueID);
+              _league_action_click(_leagueID);
             });
           });
       },
@@ -1524,6 +1241,24 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         oddsGameArray.add(OddsArray.fromDatabase(_newMatches[i]));
       }
     });
+  }
+
+  // RETURN THE NUMBER OF SELCTED MATCHES ON THE BETSLIP
+  int countWidget() {
+    int _thisCounter = 0;
+    // WE LOOP THROUGH THE GAMES ODDS ARRAY TO GET SELECTED GAMES
+    for (int _i = 0; _i < oddsGameArray.length; _i++) {
+      // CHECK GAME AFTER GAME
+      if (oddsGameArray[_i].oddID != null &&
+          oddsGameArray[_i].oddName != null &&
+          oddsGameArray[_i].oddIndex != null &&
+          oddsGameArray[_i].oddLabel != null &&
+          oddsGameArray[_i].oddValue != null) {
+        // INSCREASE THE COUNTER + 1 OR REDUCE IT ACCORDINGLY
+        _thisCounter++;
+      }
+    }
+    return _thisCounter;
   }
 
   @override
@@ -1933,141 +1668,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     );
   }
 
-  oneTimesTwoContainer(String identifier, String team, double rate) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        ResponsiveWidget.isExtraSmallScreen(context)
-            ? Text(
-                identifier,
-                style: TextStyle(
-                  color: color,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14.0,
-                ),
-              )
-            : ResponsiveWidget.isSmallScreen(context)
-                ? Container(
-                    width: 35.0,
-                    height: 27.0,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      border: Border(
-                        top: BorderSide(color: colorRounded, width: 1.0),
-                        bottom: BorderSide(color: colorRounded, width: 1.0),
-                        left: BorderSide(color: colorRounded, width: 1.0),
-                        right: BorderSide(color: colorRounded, width: 1.0),
-                      ),
-                      borderRadius: BorderRadius.circular(10.0),
-                      color: colorCaption,
-                    ),
-                    child: Text(
-                      identifier,
-                      style: TextStyle(
-                        color: colorRounded,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15.0,
-                      ),
-                      maxLines: 4,
-                    ),
-                  )
-                : Container(
-                    width: ResponsiveWidget.customScreen(context)
-                        ? 120.0
-                        : ResponsiveWidget.isLargeScreen(context)
-                            ? 80.0
-                            : ResponsiveWidget.isExtraLargeScreen(context)
-                                ? 150.0
-                                : ResponsiveWidget.isMediumScreen(context)
-                                    ? 80
-                                    : 80,
-                    child: Text(
-                      team,
-                      style: TextStyle(
-                        color: color,
-                        fontWeight: FontWeight.normal,
-                        fontSize: 11.0,
-                      ),
-                      maxLines: 4,
-                    ),
-                  ),
-        Container(
-          width: 32.0,
-          alignment: Alignment.centerRight,
-          child: Text(rate.toStringAsFixed(2),
-              style: TextStyle(color: color, fontSize: 12.0)),
-        ),
-      ],
-    );
-  }
-
-  topMatchesButtonDrawDesign(double rate) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        ResponsiveWidget.isExtraSmallScreen(context)
-            ? Text(
-                'X',
-                style: TextStyle(
-                  color: color,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14.0,
-                ),
-              )
-            : ResponsiveWidget.isSmallScreen(context)
-                ? Container(
-                    width: 35.0,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Text(
-                      'X',
-                      style: TextStyle(
-                        color: color,
-                        fontWeight: FontWeight.normal,
-                        fontSize: 12.0,
-                      ),
-                      maxLines: 4,
-                    ),
-                  )
-                : Text(
-                    'X',
-                    style: TextStyle(
-                      // fontSize: 12.0,
-                      color: color,
-                      fontWeight: FontWeight.normal,
-                      fontSize: 11.0,
-                    ),
-                    maxLines: 4,
-                  ),
-        Container(
-          width: 32.0,
-          alignment: Alignment.centerRight,
-          child: Text(rate.toStringAsFixed(2),
-              style: TextStyle(color: color, fontSize: 12.0)),
-        ),
-      ],
-    );
-  }
-
-  topHomeButtonFunction(DocumentSnapshot match, int index) {
-    // get the positioned point
-    int getPoint = Selection.gameOddsArray.indexOf(match.documentID);
-    if (Selection.gameOddsArray[getPoint + index] == true) {
-      // this method unselect all choices for that ID
-      unselectOdds(match.documentID);
-      // remove the match from the betslip too
-      removeMatchFromBetSlip(match);
-    } else {
-      // this method selects only the specified index
-      selectOdds(match.documentID, index);
-      // add match to betslip if clicked
-      addMatchToBetSlip(match, index);
-    }
-    loadBetslipMatches();
-  }
-
   unselectOddsButton(int _gameOddIndex) {
     // THIS BUTTON UNSELECT THE CURRENT GAME INDEX AND UPDATE COLORS
     oddsGameArray[_gameOddIndex].oddID = null;
@@ -2384,12 +1984,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   ? MediaQuery.of(context).size.height - 80.0
                   // web view and padding limits
                   : MediaQuery.of(context).size.height - 120 - 20 - 27 - 10.0),
-      // mobile view and padding limits
-      // : MediaQuery.of(context).size.height -
-      //     (120.0 - 20.0 - 27.0 - 10.0 - 40.0)),
       padding: ResponsiveWidget.isSmallScreen(context)
           ? EdgeInsets.all(5.0)
-          : EdgeInsets.all(10.0),
+          : EdgeInsets.all(10.0), 
       decoration: BoxDecoration(
         color: ResponsiveWidget.isLargeScreen(context)
             ? Colors.grey[300]
@@ -3734,7 +3331,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     return _country;
   }
 
-  league_Action_Click(int _leagueID) {
+  _league_action_click(int _leagueID) {
 // WE SET THE PRESENT LEAGUE TO THIS
     _currentLeagueID = _leagueID;
     // WE SET THE STATE TO LOADING STATE
@@ -3815,7 +3412,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           if (mounted)
             setState(() {
               // WE INITIALIZE AND SET THE NEW VALUES AND RESPONSE
-              league_Action_Click(_leagueID);
+              _league_action_click(_leagueID);
             });
         },
         child: Column(

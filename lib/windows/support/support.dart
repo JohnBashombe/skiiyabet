@@ -57,10 +57,10 @@ class Contact extends StatelessWidget {
             ),
             SizedBox(height: 8.0),
             Text(
-              'Nous sommes ouverts du lundi au vendredi de 8h:00 AM à 17h:00 PM',
+              'Nous sommes ouverts du lundi au vendredi de 8h:00 du matin à 17h:00 du soir',
               style: TextStyle(
                 color: Colors.grey,
-                fontSize: 13.0,
+                fontSize: 14.0,
               ),
             ),
             SizedBox(height: 2.0),
@@ -69,7 +69,7 @@ class Contact extends StatelessWidget {
               style: TextStyle(
                 color: Colors.grey,
                 // fontWeight: FontWeight.bold,
-                fontSize: 13.0,
+                fontSize: 14.0,
               ),
             ),
             SizedBox(height: 15.0),
@@ -90,7 +90,7 @@ class Contact extends StatelessWidget {
               style: TextStyle(
                 color: Colors.grey,
                 fontWeight: FontWeight.w300,
-                fontSize: 13.0,
+                fontSize: 14.0,
               ),
             ),
             SizedBox(height: 3.0),
@@ -99,7 +99,7 @@ class Contact extends StatelessWidget {
               style: TextStyle(
                 color: Colors.grey,
                 fontWeight: FontWeight.w300,
-                fontSize: 13.0,
+                fontSize: 14.0,
               ),
             ),
             SizedBox(height: 15.0),
@@ -127,7 +127,7 @@ class Contact extends StatelessWidget {
               'BUKAVU - SUD-KIVU \nREPUBLIQUE DEMOCRATIQUE DU CONGO',
               style: TextStyle(
                 color: Colors.grey,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w300,
                 fontSize: 14.0,
               ),
             ),
