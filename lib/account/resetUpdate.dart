@@ -36,8 +36,7 @@ class _RecoverPasswordState extends State<RecoverPassword> {
       return Expanded(
         child: Container(
           width: double.infinity,
-          margin: EdgeInsets.only(
-              left: ResponsiveWidget.isBigScreen(context) ? 15.0 : 10.0),
+          margin: EdgeInsets.only(left: 10.0),
           padding: new EdgeInsets.all(15.0),
           decoration: BoxDecoration(
             border: Border(
@@ -93,8 +92,7 @@ class _RecoverPasswordState extends State<RecoverPassword> {
       return Expanded(
         child: Container(
           width: double.infinity,
-          margin: EdgeInsets.only(
-              left: ResponsiveWidget.isBigScreen(context) ? 15.0 : 10.0),
+          margin: EdgeInsets.only(left: 10.0),
           padding: new EdgeInsets.all(15.0),
           decoration: BoxDecoration(
             border: Border(
@@ -212,7 +210,7 @@ class _RecoverPasswordState extends State<RecoverPassword> {
               // SizedBox(height: 10.0),
               Row(
                 children: [
-                   Icon(
+                  Icon(
                     Icons.vpn_key,
                     color: Colors.black,
                     size: 18.0,
@@ -277,7 +275,7 @@ class _RecoverPasswordState extends State<RecoverPassword> {
               // SizedBox(height: 10.0),
               Row(
                 children: [
-                   Icon(
+                  Icon(
                     Icons.vpn_key,
                     color: Colors.black,
                     size: 18.0,
@@ -285,7 +283,8 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                   SizedBox(width: 5.0),
                   Text(
                     'Confirmer le mot de passe',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
                   ),
                 ],
               ),

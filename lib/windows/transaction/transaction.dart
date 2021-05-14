@@ -15,8 +15,7 @@ class _TransactionsState extends State<Transactions> {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        margin: EdgeInsets.only(
-            left: ResponsiveWidget.isBigScreen(context) ? 15.0 : 10.0),
+        margin: EdgeInsets.only(left: 10.0),
         padding: new EdgeInsets.all(10.0),
         width: double.infinity,
         decoration: BoxDecoration(

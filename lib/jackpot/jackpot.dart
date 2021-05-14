@@ -23,7 +23,7 @@
 //           )),
 //       padding: new EdgeInsets.all(10.0),
 //       margin: EdgeInsets.only(
-//           left: ResponsiveWidget.isBigScreen(context) ? 15.0 : 10.0),
+//           left: 10.0),
 //       child: ListView(
 //           // children: [
 //           //   Container(

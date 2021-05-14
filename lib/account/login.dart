@@ -89,7 +89,7 @@ class _LoginState extends State<Login> {
       child: Container(
         width: double.infinity,
         margin: EdgeInsets.only(
-            left: ResponsiveWidget.isBigScreen(context) ? 15.0 : 10.0),
+            left: 10.0),
         padding: new EdgeInsets.all(15.0),
         decoration: BoxDecoration(
           border: Border(

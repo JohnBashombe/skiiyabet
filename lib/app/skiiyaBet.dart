@@ -583,12 +583,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         cursor: SystemMouseCursors.click,
         child: Tooltip(
           message: 'Connectez-vous ici svp!',
-                  child: Column(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container( 
-                  height: 35.0, 
+              Container(
+                  height: 35.0,
                   // padding: new EdgeInsets.symmetric(
                   //     horizontal: 5.0),
                   child: ButttonWithIcon(
@@ -628,7 +628,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           });
       },
       child: Tooltip(
-        message: 'Nombre de matches sur le ticket',
+        message: 'Nombre de matches sur le billet de pari',
         // decoration: BoxDecoration(color: Colors.grey.shade300),
         child: MouseRegion(
           cursor: SystemMouseCursors.click,
@@ -780,7 +780,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               // ? MediaQuery.of(context).size.height - 100.0 - 55.5 - 40.0
               : MediaQuery.of(context).size.height - 60.0,
           padding: ResponsiveWidget.isLargeScreen(context)
-              ? EdgeInsets.all(20.0)
+              ? EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0, bottom: 10.0)
               : EdgeInsets.only(top: 10.0, right: 10.0, bottom: 10.0),
           decoration: BoxDecoration(color: Colors.white),
           child: Row(
@@ -810,11 +810,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                           // margin: new EdgeInsets.only(
                           //     left: 15.0, bottom: 15.0, top: 5.0),
                           margin: EdgeInsets.only(
-                              left: ResponsiveWidget.isBigScreen(context)
-                                  ? 15.0
-                                  : 10.0,
-                              bottom: 15.0,
-                              top: 5.0),
+                              left: 10.0, bottom: 15.0, top: 5.0),
                           // padding: new EdgeInsets.symmetric(horizontal: 8.0),
                           child: _leagues.length > 0
                               ? ListView.builder(
@@ -854,14 +850,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       //     ResponsiveWidget.customScreen(context))
                       Container(
                         width: double.infinity,
-                        // padding: EdgeInsets.all(15.0),
-                        margin: EdgeInsets.only(
-                            left: ResponsiveWidget.isBigScreen(context)
-                                ? 15.0
-                                : 10.0),
+                        padding: EdgeInsets.all(0.0),
+                        margin: EdgeInsets.only(left: 10.0),
                         decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8.0)),
+                          color: Colors.white,
+                          // borderRadius: BorderRadius.circular(8.0),
+                        ), 
                         child: _betFilters(),
                       ),
                     // SizedBox(height: 10.0),
@@ -1093,7 +1087,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   }
 
   List<String> _betMenuList = [
-    'Tous les Matches | ',
+    'Tous les Matches ',
     // 'Matches Populaires | ',
     // 'Domicile + Grand Points | ',
     // 'Domicile + Petits Points | ',
@@ -1137,11 +1131,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 style: TextStyle(
                   color: _selectedIndex == index
                       ? Colors.lightGreen[400]
-                      : Colors.grey,
-                  fontSize: 14.0,
-                  fontWeight: _selectedIndex == index
-                      ? FontWeight.bold
-                      : FontWeight.normal,
+                      : Colors.black87,
+                  fontSize: 13.0,
+                  fontWeight: FontWeight.bold,
+                  // decoration: TextDecoration.underline,
                 ),
               ),
             ],
@@ -1156,15 +1149,16 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       width: double.infinity,
       // margin: EdgeInsets.only(right: 0),
       decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: Colors.grey, width: 0.4),
-          left: BorderSide(color: Colors.grey, width: 0.4),
-          right: BorderSide(color: Colors.grey, width: 0.4),
-        ),
+        color: Colors.white,
+        // border: Border(
+        //   top: BorderSide(color: Colors.grey, width: 0.4),
+        //   left: BorderSide(color: Colors.grey, width: 0.4),
+        //   right: BorderSide(color: Colors.grey, width: 0.4),
+        // ),
       ),
       child: Container(
-        height: 35.0,
-        padding: EdgeInsets.all(10.0),
+        height: 25.0,
+        padding: EdgeInsets.only(bottom: 10.0, right: 10.0),
         child: ListView(
           scrollDirection: Axis.horizontal,
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1190,9 +1184,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           Text(
             'Tournois & Pays',
             style: TextStyle(
-                color: Colors.grey,
-                // fontWeight: FontWeight.bold,
-                fontSize: 12.0),
+                color: Colors.black87,
+                fontWeight: FontWeight.bold,
+                fontSize: 13.0),
           ),
           // Icon(Icons.format_line_spacing, color: Colors.grey, size: 20.0),
         ],
@@ -1330,14 +1324,15 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           child: Container(
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: Colors.grey, width: 0.3),
-            bottom: BorderSide(color: Colors.grey, width: 0.3),
-            left: BorderSide(color: Colors.grey, width: 0.3),
-            right: BorderSide(color: Colors.grey, width: 0.3),
+            top: BorderSide(color: Colors.grey.shade300),
+            bottom: BorderSide(color: Colors.grey.shade300),
+            left: BorderSide(color: Colors.grey.shade300),
+            right: BorderSide(color: Colors.grey.shade300),
           ),
         ),
         margin: EdgeInsets.only(
-            left: ResponsiveWidget.isBigScreen(context) ? 15.0 : 10.0),
+            left : 10.0,
+            top: 0.0),
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.all(8.0),
@@ -1969,102 +1964,162 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
 
   Widget betSlip(BuildContext _context) {
     return Container(
-      margin: ResponsiveWidget.isMediumScreen(context) ||
-              ResponsiveWidget.isSmallScreen(context)
-          ? EdgeInsets.only(left: 10.0)
-          : null,
-      width: ResponsiveWidget.isLargeScreen(context)
-          ? 300.0
-          : (ResponsiveWidget.customScreen(context) ? 300.0 : double.infinity),
-      height: ResponsiveWidget.isLargeScreen(context)
+      margin: ResponsiveWidget.isBigScreen(context)
+          ? EdgeInsets.only(top: 10.0) // ADD MARGIN TO BIG SCREEN
+          : EdgeInsets.only(left: 10.0), // ADD LEFT MARGIN TO TABLET AND PHONES
+      // 992px - UP
+      width: ResponsiveWidget.isBigScreen(context) ? 300.0 : double.infinity,
+      height: ResponsiveWidget.isBigScreen(context) // 992px - UP
           ? MediaQuery.of(context).size.height - 60.0
-          : (ResponsiveWidget.customScreen(context)
-              ? MediaQuery.of(context).size.height - 60.0
-              : ResponsiveWidget.isMediumScreen(context)
-                  ? MediaQuery.of(context).size.height - 80.0
-                  // web view and padding limits
-                  : MediaQuery.of(context).size.height - 120 - 20 - 27 - 10.0),
-      padding: ResponsiveWidget.isSmallScreen(context)
-          ? EdgeInsets.all(5.0)
-          : EdgeInsets.all(10.0), 
+          : ResponsiveWidget.isMediumScreen(context) // tablet
+              ? MediaQuery.of(context).size.height - 80.0 // tablet display
+              // Phones
+              : MediaQuery.of(context).size.height - 176.0,
+      // SO THAT THE HEIGHT WILL BE IDENTICALS
+      // padding: EdgeInsets.only(top: 5.0),
       decoration: BoxDecoration(
-        color: ResponsiveWidget.isLargeScreen(context)
-            ? Colors.grey[300]
-            : (ResponsiveWidget.customScreen(context)
-                ? Colors.grey[300]
-                : Colors.white70),
-        border: (ResponsiveWidget.isLargeScreen(context) ||
-                ResponsiveWidget.customScreen(context))
-            ? null
-            : Border(
-                top: BorderSide(color: Colors.grey),
-                bottom: BorderSide(color: Colors.grey),
-                left: BorderSide(color: Colors.grey),
-                right: BorderSide(color: Colors.grey),
-              ),
+        color: Colors.white70,
+        // border: Border(
+        //   top: BorderSide(color: Colors.grey.shade300),
+        //   bottom: BorderSide(color: Colors.grey.shade300),
+        //   left: BorderSide(color: Colors.grey.shade300),
+        //   right: BorderSide(color: Colors.grey.shade300),
+        // ),
       ),
       child: Column(
         children: [
+          Container(
+            alignment: Alignment.centerLeft,
+            height: 25.0,
+            padding: EdgeInsets.only(bottom: 10.0, right: 10.0),
+            child: Text(
+              'Mon billet de pari',
+              style: TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13.0),
+            ),
+          ),
           Expanded(
             child: Container(
-              decoration: BoxDecoration(color: Colors.white),
+              margin: EdgeInsets.only(right: 10.0), // TO LEAVE SPACE ON RIGHT
+              // padding: EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  top: BorderSide(color: Colors.grey.shade300),
+                  bottom: BorderSide(color: Colors.grey.shade300),
+                  left: BorderSide(color: Colors.grey.shade300),
+                  right: BorderSide(color: Colors.grey.shade300),
+                ),
+              ),
               child: ListView(
                 padding: EdgeInsets.only(top: 0.0),
                 children: [
                   Container(
-                    padding: (ResponsiveWidget.isLargeScreen(context) ||
-                            ResponsiveWidget.customScreen(context))
-                        ? EdgeInsets.all(10.0)
-                        : EdgeInsets.all(5.0),
-                    child: Container(
-                      width: double.infinity,
-                      alignment: Alignment.centerLeft,
-                      padding: EdgeInsets.all(10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.lightGreen[100],
-                        border: Border(
-                          top: BorderSide(color: Colors.lightGreen, width: 2),
-                          bottom:
-                              BorderSide(color: Colors.lightGreen, width: 2),
-                          left: BorderSide(color: Colors.lightGreen, width: 2),
-                          right: BorderSide(color: Colors.lightGreen, width: 2),
+                    width: double.infinity,
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.all(10.0),
+                    margin: EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white70,
+                      border: Border(
+                          top: BorderSide(color: Colors.grey.shade300),
+                          bottom: BorderSide(color: Colors.grey.shade300),
+                          left: BorderSide(color: Colors.grey.shade300),
+                          right: BorderSide(color: Colors.grey.shade300)),
+                    ),
+                    child: Column(
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          Method.displayUserBonus(),
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 13.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          // maxLines: 1,
+                          // overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                      child: Text(
-                        Method.displayUserBonus(),
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 11.0,
-                          // fontWeight: FontWeight.bold,
+                        SizedBox(height: 8.0),
+                        Tooltip(
+                          message:
+                              'Clique ici pour voir tous les details sur le bonus',
+                          child: MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              onTap: () {
+                                // DISPLAY THE DIALOG BOX FOR BONUS DETAILS
+                                print('Bonus more details');
+                              },
+                              child: Text(
+                                'Apprendre plus...',
+                                style: TextStyle(
+                                  color: Colors.lightBlue,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w400,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                        // maxLines: 1,
-                        // overflow: TextOverflow.ellipsis,
-                      ),
+                      ],
                     ),
                   ),
-                  SizedBox(height: 8.0),
-                  Divider(
-                    color: Colors.grey,
-                    thickness: 0.4,
-                    height: 0,
+                  // SHOW A MATCH TEMPLATE ON THE BETSLIP FOR A BETTER VIEW
+                  Container(
+                    margin: new EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 8.0),
+                        Divider(
+                          color: Colors.grey,
+                          thickness: 0.4,
+                          height: 0,
+                        ),
+                      ],
+                    ),
                   ),
                   if (BetSlipData.gameIds.length == 0)
                     Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 10.0),
-                      child: Text(
-                        'Aucun Match Ajouté'.toUpperCase(),
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 11.0,
-                            fontStyle: FontStyle.italic),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 10.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Ton billet de pari est vide'.toUpperCase(),
+                            style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 13.0,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text( 
+                            'Ajouter au moins un match sur ton billet de pari pour voir ton gain possible.',
+                            style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ],
                       ),
                     ),
                   if (BetSlipData.gameIds.length == 0)
-                    Divider(
-                      color: Colors.grey,
-                      thickness: 0.4,
-                      height: 0,
+                    Container(
+                      margin: new EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Column(
+                        children: [
+                          // SizedBox(height: 8.0),
+                          Divider(
+                            color: Colors.grey,
+                            thickness: 0.4,
+                            height: 0,
+                          ),
+                        ],
+                      ),
                     ),
                   if (BetSlipData.gameIds.length > 0) loadBetslipMatches(),
                   Container(
@@ -2152,7 +2207,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                         : Colors.lightGreen[400],
                                     width: 2.0),
                               )),
-                          child: TextField(
+                          child: TextFormField(
+                            initialValue: '100',
                             cursorColor: _displayTextError
                                 ? Colors.red
                                 : Colors.lightGreen,
@@ -2325,425 +2381,328 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 10.0),
-                        // Divider(color: Colors.red, height: 1.0),
-                        // SizedBox(height: 5.0),
-                        if (showBetslipMessagePanel)
-                          GestureDetector(
-                            onTap: () {
-                              if (mounted)
-                                setState(() {
-                                  showBetslipMessagePanel = false;
-                                });
-                            },
-                            child: Container(
-                              alignment: Alignment.centerLeft,
-                              padding: new EdgeInsets.all(10.0),
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  color: showBetslipMessageColorBg,
-                                  border: Border(
-                                    top: BorderSide(
-                                        color: showBetslipMessageColor,
-                                        width: 1.0),
-                                    bottom: BorderSide(
-                                        color: showBetslipMessageColor,
-                                        width: 1.0),
-                                    left: BorderSide(
-                                        color: showBetslipMessageColor,
-                                        width: 1.0),
-                                    right: BorderSide(
-                                        color: showBetslipMessageColor,
-                                        width: 1.0),
-                                  )),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  MouseRegion(
-                                      cursor: SystemMouseCursors.click,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            'MESSAGE'.toUpperCase(),
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 10.0,
-                                              fontWeight: FontWeight.bold,
-                                              // fontStyle: FontStyle.italic,
-                                            ),
-                                          ),
-                                          Icon(
-                                            Icons.close,
-                                            size: 15.0,
-                                            color: Colors.black,
-                                          ),
-                                        ],
-                                      )),
-                                  Divider(color: Colors.black, thickness: 0.4),
-                                  SizedBox(height: 4.0),
-                                  Text(
-                                    showBetslipMessage,
-                                    style: TextStyle(
-                                      color: showBetslipMessageColor,
-                                      fontSize: 12.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    maxLines: 4,
-                                    overflow: TextOverflow.clip,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        // SizedBox(height: 5.0),
-                        // Divider(color: Colors.red, height: 1.0),
+
                         SizedBox(height: 10.0),
                         Container(
                           width: double.infinity,
-                          child: _loadingBettingButton
-                              ? RawMaterialButton(
-                                  padding:
-                                      new EdgeInsets.symmetric(vertical: 15.0),
-                                  onPressed: null,
-                                  fillColor: Colors.lightGreen[200],
-                                  disabledElevation: 1.0,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Placement du Pari',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15.0,
-                                        ),
-                                      ),
-                                      SizedBox(width: 3.0),
-                                      SpinKitCubeGrid(
-                                        color: Colors.white,
-                                        size: 15.0,
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : RawMaterialButton(
-                                  padding: new EdgeInsets.all(15.0),
-                                  onPressed: () {
-                                    if (mounted)
-                                      setState(() {
-                                        // print(Selection.userBalance);
-                                        // print(Price.minimumBetPrice);
-                                        // print(Price.stake);
-                                        // show the loading state button
-                                        _loadingBettingButton = true;
-                                        if (BetSlipData.gameIds.length <= 0) {
-                                          // showMessage(context,Colors.red, 'Add Match First');
-                                          // show the error panel and the message alongside
-                                          showBetslipMessagePanel = true;
-                                          showBetslipMessage =
-                                              'S\'IL VOUS PLAÎT! \nSelectionnez un Match d\'abord';
-                                          // these are panel border color and the bg color
-                                          showBetslipMessageColor =
-                                              Colors.black;
-                                          showBetslipMessageColorBg =
-                                              Colors.red[200];
-                                          // hide the loading state button
-                                          _loadingBettingButton = false;
-                                          // print('Add Match first');
-                                        } else if (Selection.user == null) {
-                                          // show the error panel and the message alongside
-                                          showBetslipMessagePanel = true;
-                                          showBetslipMessage =
-                                              'S\'IL VOUS PLAÎT! \nConnectez-Vous d\'abord.';
-                                          // showMessage(context, Colors.red,
-                                          //     'Please! Login First');
-                                          // these are panel border color and the bg color
-                                          showBetslipMessageColor =
-                                              Colors.black;
-                                          showBetslipMessageColorBg =
-                                              Colors.red[200];
-                                          // hide the loading state button
-                                          _loadingBettingButton = false;
-                                          // print('Please Login First');
-                                        }
-                                        // check if the user provided a balance amount
-                                        else if (Price.stake <
-                                            Price.minimumBetPrice) {
-                                          // show the error panel and the message alongside
-                                          showBetslipMessagePanel = true;
-                                          showBetslipMessage =
-                                              'S\'IL VOUS PLAÎT! \nLe Montant minimum est ${Price.minimumBetPrice} Fc.';
-                                          // showMessage(context, Colors.red,
-                                          //     'Please! Login First');
-                                          // these are panel border color and the bg color
-                                          showBetslipMessageColor =
-                                              Colors.black;
-                                          showBetslipMessageColorBg =
-                                              Colors.red[200];
-                                          // hide the loading state button
-                                          _loadingBettingButton = false;
-                                        }
-                                        // check if the maximum games is respected
-                                        else if (BetSlipData.gameIds.length >
-                                            Price.maxGames) {
-                                          // show the error panel and the message alongside
-                                          showBetslipMessagePanel = true;
-                                          showBetslipMessage =
-                                              'S\'IL VOUS PLAÎT! \nLa Limite pour un Pari est de [ ${Price.maxGames} ] Matches';
-                                          // showMessage(context, Colors.red,
-                                          //     'Please! Login First');
-                                          // these are panel border color and the bg color
-                                          showBetslipMessageColor =
-                                              Colors.black;
-                                          showBetslipMessageColorBg =
-                                              Colors.red[200];
-                                          // hide the loading state button
-                                          _loadingBettingButton = false;
-                                        }
+                          child: RawMaterialButton(
+                            padding: new EdgeInsets.all(15.0),
+                            onPressed: () {
+                              if (mounted)
+                                setState(() {
+                                  // print(Selection.userBalance);
+                                  // print(Price.minimumBetPrice);
+                                  // print(Price.stake);
+                                  // show the loading state button
+                                  // _loadingBettingButton = true;
+                                  if (BetSlipData.gameIds.length <= 0) {
+                                    // showMessage(context,Colors.red, 'Add Match First');
+                                    // show the error panel and the message alongside
+                                    // showBetslipMessagePanel = true;
+                                    // showBetslipMessage =
+                                    //     'S\'IL VOUS PLAÎT! \nSelectionnez un Match d\'abord';
+                                    show_dialog_panel(
+                                        'Billet de pari vide!'.toUpperCase(),
+                                        'Selectionnez au moins un match d\'abord',
+                                        'assets/images/fail.png');
+                                    // these are panel border color and the bg color
+                                    // showBetslipMessageColor =
+                                    //     Colors.black;
+                                    // showBetslipMessageColorBg =
+                                    //     Colors.red[200];
+                                    // hide the loading state button
+                                    // _loadingBettingButton = false;
+                                    // print('Add Match first');
+                                  } else if (Selection.user == null) {
+                                    // show the error panel and the message alongside
+                                    // showBetslipMessagePanel = true;
+                                    // showBetslipMessage =
+                                    //     'S\'IL VOUS PLAÎT! \nConnectez-Vous d\'abord.';
+                                    // // showMessage(context, Colors.red,
+                                    show_dialog_panel(
+                                        'Connexion requise!'.toUpperCase(),
+                                        'connectez d\'abord votre compte avant de placer un pari',
+                                        'assets/images/fail.png');
+                                    // //     'Please! Login First');
+                                    // // these are panel border color and the bg color
+                                    // showBetslipMessageColor =
+                                    //     Colors.black;
+                                    // showBetslipMessageColorBg =
+                                    //     Colors.red[200];
+                                    // // hide the loading state button
+                                    // _loadingBettingButton = false;
+                                    // print('Please Login First');
+                                  }
+                                  // check if the user provided a balance amount
+                                  else if (Price.stake <
+                                      Price.minimumBetPrice) {
+                                    // show the error panel and the message alongside
+                                    // showBetslipMessagePanel = true;
+                                    // showBetslipMessage =
+                                    //     'S\'IL VOUS PLAÎT! \nLe Montant minimum est ${Price.minimumBetPrice} Fc.';
+                                    show_dialog_panel(
+                                        'Solde requis!'.toUpperCase(),
+                                        'Le Montant minimum est ${Price.minimumBetPrice} ${Price.currency_symbol}.',
+                                        'assets/images/fail.png');
+                                    // showMessage(context, Colors.red,
+                                    //     'Please! Login First');
+                                    // these are panel border color and the bg color
+                                    // showBetslipMessageColor =
+                                    //     Colors.black;
+                                    // showBetslipMessageColorBg =
+                                    //     Colors.red[200];
+                                    // // hide the loading state button
+                                    // _loadingBettingButton = false;
+                                  }
+                                  // check if the maximum games is respected
+                                  else if (BetSlipData.gameIds.length >
+                                      Price.maxGames) {
+                                    // show the error panel and the message alongside
+                                    showBetslipMessagePanel = true;
+                                    showBetslipMessage =
+                                        'S\'IL VOUS PLAÎT! \nLa Limite pour un Pari est de [ ${Price.maxGames} ] Matches';
+                                    // showMessage(context, Colors.red,
+                                    //     'Please! Login First');
+                                    // these are panel border color and the bg color
+                                    showBetslipMessageColor = Colors.black;
+                                    showBetslipMessageColorBg = Colors.red[200];
+                                    // hide the loading state button
+                                    _loadingBettingButton = false;
+                                  }
 
-                                        // check if the user has balance in his account
-                                        // we check if the user balance is greater than 200
-                                        // and if the user balance is greater or equal to stake
-                                        else if ((Selection.userBalance >=
-                                                Price.minimumBetPrice) &&
-                                            (Selection.userBalance >=
-                                                Price.stake)) {
-                                          // place a bet logic database process should go in here
-                                          // this variable told us if we can keep doing processes if everything is ok
-                                          int continueProcess = 0;
-                                          // String getStartedMatch = '';
-                                          // TO DO
-                                          // check if selected match are still available
-                                          for (int v = 0;
-                                              v < BetSlipData.gameIds.length;
-                                              v++) {
-                                            Firestore.instance
-                                                .collection('Games')
-                                                .document(
-                                                    BetSlipData.gameIds[v])
-                                                .get()
+                                  // check if the user has balance in his account
+                                  // we check if the user balance is greater than 200
+                                  // and if the user balance is greater or equal to stake
+                                  else if ((Selection.userBalance >=
+                                          Price.minimumBetPrice) &&
+                                      (Selection.userBalance >= Price.stake)) {
+                                    // place a bet logic database process should go in here
+                                    // this variable told us if we can keep doing processes if everything is ok
+                                    int continueProcess = 0;
+                                    // String getStartedMatch = '';
+                                    // TO DO
+                                    // check if selected match are still available
+                                    for (int v = 0;
+                                        v < BetSlipData.gameIds.length;
+                                        v++) {
+                                      Firestore.instance
+                                          .collection('Games')
+                                          .document(BetSlipData.gameIds[v])
+                                          .get()
+                                          .then((value) {
+                                        if ((value['status']
+                                                    .toString()
+                                                    .compareTo('pending') ==
+                                                0) &&
+                                            (value.exists == true)) {
+                                          // when the last game will be checked and the keep process if true then continue execution process
+                                          // if (v ==
+                                          //     BetSlipData.gameIds.length -
+                                          //         1) {
+                                          //   // print('last element is: at $v');
+                                          //   // games availability is checked then continue with adding it to betslip
+
+                                          // }
+                                          // print(
+                                          //     '${BetSlipData.gameIds[v]} is still available bro!');
+                                        } else {
+                                          // update the window if new elements are to be rendered
+                                          if (mounted)
+                                            setState(() {
+                                              // set the keep process variable to false
+                                              continueProcess = 1;
+                                              // this will display if a game has already started
+                                              // show the error panel and the message alongside
+                                              showBetslipMessagePanel = true;
+                                              showBetslipMessage =
+                                                  ' ${BetSlipData.team1s[v]} VS ${BetSlipData.team2s[v]} a déjà commencé';
+                                              // showMessage(context, Colors.red,
+                                              //     'Please! Login First');
+                                              // these are panel border color and the bg color
+                                              showBetslipMessageColor =
+                                                  Colors.black;
+                                              showBetslipMessageColorBg =
+                                                  Colors.red[200];
+                                              // showBetslipMessagePanel = true;
+                                              // print(
+                                              //     '${BetSlipData.gameIds[v]} is no longer available bro!');
+
+                                              // hide the loading state button
+                                              _loadingBettingButton = false;
+                                            });
+                                        }
+                                      });
+                                      // check if the current match is still available to keep looping
+                                      if (continueProcess == 1) {
+                                        // if one match from the betslip has already started then stop looping
+                                        break;
+                                      }
+                                    }
+
+                                    if (continueProcess == 0) {
+                                      if (mounted)
+                                        setState(() {
+                                          // update user balance in users collection
+                                          Method.updateUserBalance()
+                                              .then((value) {
+                                            // add the transaction in the transaction collection
+                                            // Firebase;
+                                            Method.addTransactionRecords(
+                                                    'Betting',
+                                                    Selection.user.uid,
+                                                    Price.stake)
                                                 .then((value) {
-                                              if ((value['status']
-                                                          .toString()
-                                                          .compareTo(
-                                                              'pending') ==
-                                                      0) &&
-                                                  (value.exists == true)) {
-                                                // when the last game will be checked and the keep process if true then continue execution process
-                                                // if (v ==
-                                                //     BetSlipData.gameIds.length -
-                                                //         1) {
-                                                //   // print('last element is: at $v');
-                                                //   // games availability is checked then continue with adding it to betslip
-
-                                                // }
-                                                // print(
-                                                //     '${BetSlipData.gameIds[v]} is still available bro!');
-                                              } else {
-                                                // update the window if new elements are to be rendered
+                                              // print(value);
+                                              // if all conditions are verified keep doing the betting process
+                                              // Add the match in the betslip collection
+                                              Method.addBetslipToRecords()
+                                                  .then((value) {
+                                                // if the game was placed successfully then reload user info data
+                                                Firestore.instance
+                                                    .collection('UserBalance')
+                                                    .document(
+                                                        Selection.user.uid)
+                                                    .get()
+                                                    .then((_result) {
+                                                  if (mounted)
+                                                    setState(() {
+                                                      // AFTER PLACING A BET, DARE UPDATE THE USER BALANCE ON SCREEN
+                                                      Selection.userBalance =
+                                                          _result['balance'];
+                                                      // print(
+                                                      //     'balance changed to ${Selection.userBalance}');
+                                                    });
+                                                });
+                                                // display the success message if everything went right
+                                                showBetslipMessagePanel = true;
+                                                showBetslipMessage =
+                                                    'FÉLICITATIONS! PARI AJOUTÉ';
+                                                // these are displaying colors for the success message
+                                                showBetslipMessageColor =
+                                                    Colors.white;
+                                                showBetslipMessageColorBg =
+                                                    Colors.lightGreen[400];
+                                                // showMessage(context, Colors.lightGreen[400],
+                                                //     'Placing your Bets');
+                                                clearGamesSelected();
+                                                // after everything completed, hide the placing bet loading status buttton
                                                 if (mounted)
                                                   setState(() {
-                                                    // set the keep process variable to false
-                                                    continueProcess = 1;
-                                                    // this will display if a game has already started
-                                                    // show the error panel and the message alongside
-                                                    showBetslipMessagePanel =
-                                                        true;
-                                                    showBetslipMessage =
-                                                        ' ${BetSlipData.team1s[v]} VS ${BetSlipData.team2s[v]} a déjà commencé';
-                                                    // showMessage(context, Colors.red,
-                                                    //     'Please! Login First');
-                                                    // these are panel border color and the bg color
-                                                    showBetslipMessageColor =
-                                                        Colors.black;
-                                                    showBetslipMessageColorBg =
-                                                        Colors.red[200];
-                                                    // showBetslipMessagePanel = true;
-                                                    // print(
-                                                    //     '${BetSlipData.gameIds[v]} is no longer available bro!');
-
                                                     // hide the loading state button
                                                     _loadingBettingButton =
                                                         false;
                                                   });
-                                              }
-                                            });
-                                            // check if the current match is still available to keep looping
-                                            if (continueProcess == 1) {
-                                              // if one match from the betslip has already started then stop looping
-                                              break;
-                                            }
-                                          }
+                                                // print('Placing your bets');
+                                              }).catchError((e) {
+                                                if (mounted)
+                                                  setState(() {
+                                                    // hide the loading state button
+                                                    _loadingBettingButton =
+                                                        false;
+                                                    showBetslipMessagePanel =
+                                                        true;
 
-                                          if (continueProcess == 0) {
+                                                    if (e.toString().compareTo(
+                                                            'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
+                                                        0) {
+                                                      showBetslipMessage =
+                                                          'Pas d\'Internet';
+                                                      // print('Pas d\'Internet');
+                                                    } else {
+                                                      // print('Error 1: $e');
+                                                      showBetslipMessage =
+                                                          'Unknown Error';
+                                                    }
+                                                  });
+                                                // print(
+                                                //     'error while adding to betslip is: $e');
+                                              });
+                                            }).catchError((e) {
+                                              if (mounted)
+                                                setState(() {
+                                                  // hide the loading state button
+                                                  _loadingBettingButton = false;
+                                                  showBetslipMessagePanel =
+                                                      true;
+
+                                                  if (e.toString().compareTo(
+                                                          'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
+                                                      0) {
+                                                    showBetslipMessage =
+                                                        'Pas d\'Internet';
+                                                    // print('Pas d\'Internet');
+                                                  } else {
+                                                    // print('Error 2: $e');
+                                                    showBetslipMessage =
+                                                        'Unknown Error';
+                                                  }
+                                                });
+                                              print(
+                                                  'The error is while adding transaction $e');
+                                            });
+                                          }).catchError((e) {
                                             if (mounted)
                                               setState(() {
-                                                // update user balance in users collection
-                                                Method.updateUserBalance()
-                                                    .then((value) {
-                                                  // add the transaction in the transaction collection
-                                                  // Firebase;
-                                                  Method.addTransactionRecords(
-                                                          'Betting',
-                                                          Selection.user.uid,
-                                                          Price.stake)
-                                                      .then((value) {
-                                                    // print(value);
-                                                    // if all conditions are verified keep doing the betting process
-                                                    // Add the match in the betslip collection
-                                                    Method.addBetslipToRecords()
-                                                        .then((value) {
-                                                      // if the game was placed successfully then reload user info data
-                                                      Firestore.instance
-                                                          .collection(
-                                                              'UserBalance')
-                                                          .document(Selection
-                                                              .user.uid)
-                                                          .get()
-                                                          .then((_result) {
-                                                        if (mounted)
-                                                          setState(() {
-                                                            // AFTER PLACING A BET, DARE UPDATE THE USER BALANCE ON SCREEN
-                                                            Selection
-                                                                    .userBalance =
-                                                                _result[
-                                                                    'balance'];
-                                                            // print(
-                                                            //     'balance changed to ${Selection.userBalance}');
-                                                          });
-                                                      });
-                                                      // display the success message if everything went right
-                                                      showBetslipMessagePanel =
-                                                          true;
-                                                      showBetslipMessage =
-                                                          'FÉLICITATIONS! PARI AJOUTÉ';
-                                                      // these are displaying colors for the success message
-                                                      showBetslipMessageColor =
-                                                          Colors.white;
-                                                      showBetslipMessageColorBg =
-                                                          Colors
-                                                              .lightGreen[400];
-                                                      // showMessage(context, Colors.lightGreen[400],
-                                                      //     'Placing your Bets');
-                                                      clearGamesSelected();
-                                                      // after everything completed, hide the placing bet loading status buttton
-                                                      if (mounted)
-                                                        setState(() {
-                                                          // hide the loading state button
-                                                          _loadingBettingButton =
-                                                              false;
-                                                        });
-                                                      // print('Placing your bets');
-                                                    }).catchError((e) {
-                                                      if (mounted)
-                                                        setState(() {
-                                                          // hide the loading state button
-                                                          _loadingBettingButton =
-                                                              false;
-                                                          showBetslipMessagePanel =
-                                                              true;
+                                                // hide the loading state button
+                                                _loadingBettingButton = false;
+                                                showBetslipMessagePanel = true;
 
-                                                          if (e
-                                                                  .toString()
-                                                                  .compareTo(
-                                                                      'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
-                                                              0) {
-                                                            showBetslipMessage =
-                                                                'Pas d\'Internet';
-                                                            // print('Pas d\'Internet');
-                                                          } else {
-                                                            // print('Error 1: $e');
-                                                            showBetslipMessage =
-                                                                'Unknown Error';
-                                                          }
-                                                        });
-                                                      // print(
-                                                      //     'error while adding to betslip is: $e');
-                                                    });
-                                                  }).catchError((e) {
-                                                    if (mounted)
-                                                      setState(() {
-                                                        // hide the loading state button
-                                                        _loadingBettingButton =
-                                                            false;
-                                                        showBetslipMessagePanel =
-                                                            true;
-
-                                                        if (e.toString().compareTo(
-                                                                'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
-                                                            0) {
-                                                          showBetslipMessage =
-                                                              'Pas d\'Internet';
-                                                          // print('Pas d\'Internet');
-                                                        } else {
-                                                          // print('Error 2: $e');
-                                                          showBetslipMessage =
-                                                              'Unknown Error';
-                                                        }
-                                                      });
-                                                    print(
-                                                        'The error is while adding transaction $e');
-                                                  });
-                                                }).catchError((e) {
-                                                  if (mounted)
-                                                    setState(() {
-                                                      // hide the loading state button
-                                                      _loadingBettingButton =
-                                                          false;
-                                                      showBetslipMessagePanel =
-                                                          true;
-
-                                                      if (e.toString().compareTo(
-                                                              'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
-                                                          0) {
-                                                        showBetslipMessage =
-                                                            'Pas d\'Internet';
-                                                        // print('Pas d\'Internet');
-                                                      } else {
-                                                        // print('Error 3: $e');
-                                                        showBetslipMessage =
-                                                            'Unknown Error';
-                                                      }
-                                                    });
-                                                  // print(
-                                                  //     'error while updating user balance in main is: $e');
-                                                });
+                                                if (e.toString().compareTo(
+                                                        'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
+                                                    0) {
+                                                  showBetslipMessage =
+                                                      'Pas d\'Internet';
+                                                  // print('Pas d\'Internet');
+                                                } else {
+                                                  // print('Error 3: $e');
+                                                  showBetslipMessage =
+                                                      'Unknown Error';
+                                                }
                                               });
-                                          }
-                                        } else {
-                                          // show the error panel and the message alongside
-                                          showBetslipMessagePanel = true;
-                                          showBetslipMessage =
-                                              'Désolez! \nVotre solde est insuffisant.';
-                                          // showMessage(context, Colors.red,
-                                          //     'Please! Login First');
-                                          // these are panel border color and the bg color
-                                          showBetslipMessageColor =
-                                              Colors.black;
-                                          showBetslipMessageColorBg =
-                                              Colors.red[200];
-                                          // hide the loading state button
-                                          _loadingBettingButton = false;
-                                        }
-                                      });
-                                  },
-                                  fillColor: Colors.lightGreen[400],
-                                  disabledElevation: 5.0,
-                                  child: Text(
-                                    'Pariez Ici'.toUpperCase(),
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15.0),
-                                  ),
-                                ),
+                                            // print(
+                                            //     'error while updating user balance in main is: $e');
+                                          });
+                                        });
+                                    }
+                                  } else {
+                                    show_dialog_panel(
+                                        'solde insuffisant!'.toUpperCase(),
+                                        'Désolez! Votre solde est insuffisant.',
+                                        'assets/images/fail.png');
+                                    // show the error panel and the message alongside
+                                    // showBetslipMessagePanel = true;
+                                    // showBetslipMessage =
+                                    //     'Désolez! \nVotre solde est insuffisant.';
+                                    // // showMessage(context, Colors.red,
+                                    // //     'Please! Login First');
+                                    // // these are panel border color and the bg color
+                                    // showBetslipMessageColor =
+                                    //     Colors.black;
+                                    // showBetslipMessageColorBg =
+                                    //     Colors.red[200];
+                                    // // hide the loading state button
+                                    // _loadingBettingButton = false;
+                                  }
+                                });
+                            },
+                            fillColor: Colors.lightGreen[400],
+                            disabledElevation: 5.0,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0)),
+                            child: Text(
+                              'Pariez maintenant'.toUpperCase(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14.0),
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  )
+                  ),
+                  // THIS WILL ALLOW US TO CLEARLY SEE THE END OF THE LIST VIEW
+                  SizedBox(height: 200.0),
                 ],
               ),
             ),
@@ -2751,6 +2710,91 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         ],
       ),
     );
+  }
+
+  Future show_dialog_panel(String title, String description, String imgUrl) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0)),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  padding: new EdgeInsets.only(
+                      top: 100.0, bottom: 16.0, left: 16.0, right: 16.0),
+                  margin: new EdgeInsets.only(top: 16.0),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(17.0),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 10.0,
+                            offset: Offset(0.0, 10.0))
+                      ]),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(title,
+                          style: TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.w700)),
+                      SizedBox(height: 20.0),
+                      Text(
+                        description,
+                        style: TextStyle(
+                            fontSize: 14.0, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 25.0),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: RawMaterialButton(
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.0)),
+                          // fillColor: Colors.grey.shade300,
+                          hoverColor: Colors.grey.shade100,
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15.0, vertical: 5.0),
+                            child: Text(
+                              'ok and close'.toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: 0.0,
+                  left: 16.0,
+                  right: 16.0,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 60.0,
+                    child: Image.asset(
+                      imgUrl,
+                      // color: Colors.lightGreen[400],
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        });
   }
 
   loadBetslipMatches() {
@@ -2865,7 +2909,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             ),
           ),
           margin: EdgeInsets.only(
-              left: ResponsiveWidget.isBigScreen(context) ? 15.0 : 10.0),
+              left: 10.0),
           child: Container(
             width: double.infinity,
             padding: EdgeInsets.all(10.0),
@@ -3276,10 +3320,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         decoration: BoxDecoration(
           color: Colors.white70,
           border: Border(
-            top: BorderSide(color: Colors.grey, width: 0.1),
-            bottom: BorderSide(color: Colors.grey, width: 0.1),
-            left: BorderSide(color: Colors.grey, width: 0.1),
-            right: BorderSide(color: Colors.grey, width: 0.1),
+            top: BorderSide(color: Colors.grey.shade300),
+            bottom: BorderSide(color: Colors.grey.shade300),
+            left: BorderSide(color: Colors.grey.shade300),
+            right: BorderSide(color: Colors.grey.shade300),
           ),
         ),
         child: _leagues.length > 0
@@ -3508,7 +3552,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       child: Container(
         width: double.infinity,
         margin: EdgeInsets.only(
-            left: ResponsiveWidget.isBigScreen(context) ? 15.0 : 10.0),
+            left:  10.0),
         padding: new EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           border: Border(
@@ -4497,4 +4541,4 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   //   });
   // }
 } // 6272
-// was 6700 lines of fresh codes
+// was 6700 lines of fresh codes --- still

@@ -8,9 +8,7 @@ class Help extends StatelessWidget {
       child: Container(
         width: double.infinity,
         margin: new EdgeInsets.only(left: 10.0),
-        padding: EdgeInsets.only(
-            left: ResponsiveWidget.isBigScreen(context) ? 15.0 : 10.0,
-            top: 10.0),
+        padding: EdgeInsets.only(left: 10.0, top: 10.0),
         decoration: BoxDecoration(
           border: Border(
             top: BorderSide(color: Colors.grey, width: 0.5),
@@ -64,13 +62,13 @@ class Help extends StatelessWidget {
             ),
             SizedBox(height: 8.0),
             Text(
-                'Les parties de chaque pari sont d\'une part la société et d\'autre part le client (dans la suite des présentes, « l\'usager »).',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 14.0,
-                ),
-                textAlign: TextAlign.justify, 
+              'Les parties de chaque pari sont d\'une part la société et d\'autre part le client (dans la suite des présentes, « l\'usager »).',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 14.0,
               ),
+              textAlign: TextAlign.justify,
+            ),
             SizedBox(height: 8.0),
             Text(
               'A1.2 Personnes non autorisées à parier',

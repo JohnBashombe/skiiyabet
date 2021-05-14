@@ -42,96 +42,96 @@ class Method {
     String bonus = '';
     if (counter == 0) {
       bonus =
-          'S\'IL VOUS PLAÎT! \nSelectionnez au moins un match pour voir le BONUS';
+          'S\'IL VOUS PLAÎT! \nAjoutez au moins un match sur le ticket pour voir le bonus à gagner.';
     } else if ((counter > 0) && (counter <= 3)) {
       int len = 4 - counter;
       // pourcentageRate = Bonus.bonus1;
       bonus =
-          'S\'IL VOUS PLAÎT! \nAjoutez $len selection(s) de plus et recevez plutôt ${Bonus.bonus1}% de BONUS';
+          'S\'IL VOUS PLAÎT! \nAjoutez $len selection(s) de plus et recevez plutôt ${Bonus.bonus1}% en bonus.';
     } else if (counter == 4) {
       int len = 5 - counter;
       pourcentageRate = Bonus.bonus1;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus1}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus2}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus1}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus2}% de bonus';
     } else if (counter == 5) {
       int len = 6 - counter;
       pourcentageRate = Bonus.bonus2;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus2}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus3}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus2}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus3}% de bonus';
     } else if (counter == 6) {
       int len = 7 - counter;
       pourcentageRate = Bonus.bonus3;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus3}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus4}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus3}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus4}% de bonus';
     } else if (counter == 7) {
       int len = 8 - counter;
       pourcentageRate = Bonus.bonus4;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus4}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus5}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus4}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus5}% de bonus';
     } else if (counter == 8) {
       int len = 9 - counter;
       pourcentageRate = Bonus.bonus5;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus5}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus6}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus5}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus6}% de bonus';
     } else if (counter == 9) {
       int len = 10 - counter;
       pourcentageRate = Bonus.bonus6;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus6}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus7}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus6}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus7}% de bonus';
     } else if (counter == 10) {
       int len = 11 - counter;
       pourcentageRate = Bonus.bonus7;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus7}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus8}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus7}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus8}% de bonus';
     } else if (counter == 11) {
       int len = 12 - counter;
       pourcentageRate = Bonus.bonus8;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus8}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus9}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus8}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus9}% de bonus';
     } else if (counter == 12) {
       int len = 13 - counter;
       pourcentageRate = Bonus.bonus9;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus9}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus10}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus9}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus10}% de bonus';
     } else if (counter == 13) {
       int len = 14 - counter;
       pourcentageRate = Bonus.bonus10;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus10}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus11}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus10}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus11}% de bonus';
     } else if (counter == 14) {
       int len = 15 - counter;
       pourcentageRate = Bonus.bonus11;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus11}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus12}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus11}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus12}% de bonus';
     } else if (counter == 15) {
       int len = 16 - counter;
       pourcentageRate = Bonus.bonus12;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus12}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus13}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus12}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus13}% de bonus';
     } else if (counter == 16) {
       int len = 17 - counter;
       pourcentageRate = Bonus.bonus13;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus13}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus14}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus13}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus14}% de bonus';
     } else if (counter == 17) {
       int len = 18 - counter;
       pourcentageRate = Bonus.bonus14;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus14}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus15}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus14}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus15}% de bonus';
     } else if (counter == 18) {
       int len = 19 - counter;
       pourcentageRate = Bonus.bonus15;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus15}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus16}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus15}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus16}% de bonus';
     } else if (counter == 19) {
       int len = 20 - counter;
       pourcentageRate = Bonus.bonus16;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus16}% de Bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus17}% de BONUS';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus16}% en bonus.\nAjoutez $len de plus et recevez plutôt ${Bonus.bonus17}% de bonus';
     } else if (counter >= 20) {
       pourcentageRate = Bonus.bonus17;
       bonus =
-          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus17}% de Bonus.';
+          'FÉLICITATIONS! \n$counter selections valent ${Bonus.bonus17}% en bonus.';
     }
     return bonus;
   }
