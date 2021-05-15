@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_awesome_buttons/flutter_awesome_buttons.dart';
 import 'package:skiiyabet/account/login.dart';
 import 'package:skiiyabet/app/entities/oddSelection.dart';
+import 'package:skiiyabet/database/bonus.dart';
 import 'package:skiiyabet/encryption/encryption.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -665,7 +666,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         padding: const EdgeInsets.all(2.5),
                         child: Text(
                           // COUNT THE NUMBER OF MATCHES REMAINING IN BETSLIP
-                          countWidget().toString(),
+                          countTicketLegs().toString(),
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 13.0,
@@ -855,7 +856,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           // borderRadius: BorderRadius.circular(8.0),
-                        ), 
+                        ),
                         child: _betFilters(),
                       ),
                     // SizedBox(height: 10.0),
@@ -1238,7 +1239,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   }
 
   // RETURN THE NUMBER OF SELCTED MATCHES ON THE BETSLIP
-  int countWidget() {
+  int countTicketLegs() {
     int _thisCounter = 0;
     // WE LOOP THROUGH THE GAMES ODDS ARRAY TO GET SELECTED GAMES
     for (int _i = 0; _i < oddsGameArray.length; _i++) {
@@ -1330,9 +1331,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             right: BorderSide(color: Colors.grey.shade300),
           ),
         ),
-        margin: EdgeInsets.only(
-            left : 10.0,
-            top: 0.0),
+        margin: EdgeInsets.only(left: 10.0, top: 0.0),
         child: Container(
           width: double.infinity,
           padding: EdgeInsets.all(8.0),
@@ -2046,13 +2045,14 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         SizedBox(height: 8.0),
                         Tooltip(
                           message:
-                              'Clique ici pour voir tous les details sur le bonus',
+                              'Cliquer ici pour voir tous les details sur le bonus',
                           child: MouseRegion(
                             cursor: SystemMouseCursors.click,
                             child: GestureDetector(
                               onTap: () {
                                 // DISPLAY THE DIALOG BOX FOR BONUS DETAILS
-                                print('Bonus more details');
+                                // print('Bonus more details');
+                                show_dialog_bonus();
                               },
                               child: Text(
                                 'Apprendre plus...',
@@ -2078,36 +2078,26 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         Divider(
                           color: Colors.grey,
                           thickness: 0.4,
-                          height: 0,
+                          // height: 0,
                         ),
                       ],
                     ),
                   ),
-                  if (BetSlipData.gameIds.length == 0)
+                  // CHECK IF WE HAVE DATA ON THE TICKET
+                  if (countTicketLegs() == 0)
                     Container(
                       alignment: Alignment.center,
                       padding: EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 10.0),
-                      child: Column(
-                        children: [
-                          Text(
-                            'Ton billet de pari est vide'.toUpperCase(),
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 13.0,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text( 
-                            'Ajouter au moins un match sur ton billet de pari pour voir ton gain possible.',
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ],
+                      child: Text(
+                        'Ton billet de pari est vide'.toUpperCase(),
+                        style: TextStyle(
+                            color: Colors.black87,
+                            fontSize: 13.0,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
-                  if (BetSlipData.gameIds.length == 0)
+                  if (countTicketLegs() == 0)
                     Container(
                       margin: new EdgeInsets.symmetric(horizontal: 10.0),
                       child: Column(
@@ -2116,12 +2106,15 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                           Divider(
                             color: Colors.grey,
                             thickness: 0.4,
-                            height: 0,
+                            // height: 0,
                           ),
                         ],
                       ),
                     ),
-                  if (BetSlipData.gameIds.length > 0) loadBetslipMatches(),
+                  // DISPLAY MATCHES SELECTED RIGHT HERE
+                  if (countTicketLegs() > 0) SizedBox(height: 5.0),
+                  if (countTicketLegs() > 0) loadBetslipMatches(),
+
                   Container(
                     padding: (ResponsiveWidget.isLargeScreen(context) ||
                             ResponsiveWidget.customScreen(context))
@@ -2131,7 +2124,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // SizedBox(height: 3.0),
-                        if (BetSlipData.gameIds.length > 0)
+                        if (countTicketLegs() > 0)
                           MouseRegion(
                             cursor: SystemMouseCursors.click,
                             child: GestureDetector(
@@ -2285,7 +2278,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Taux total',
+                            Text('Total de points',
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 12.0)),
                             Row(
@@ -2308,7 +2301,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Gains Possible',
+                            Text('Gain Total',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 12.0,
@@ -2712,6 +2705,122 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     );
   }
 
+  Future show_dialog_bonus() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0)),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  padding: new EdgeInsets.only(
+                      top: 100.0, bottom: 16.0, left: 16.0, right: 16.0),
+                  margin: new EdgeInsets.only(top: 16.0),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(17.0),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 10.0,
+                            offset: Offset(0.0, 10.0))
+                      ]),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('DETAILS DU BONUS',
+                          style: TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 20.0),
+                      Text(
+                        'SKiiYa BET te permet de gagner beaucoup plus encore avec notre système incroyable de bonus.',
+                        style: TextStyle(
+                            fontSize: 14.0, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 5.0),
+                      Text(
+                        'Vous pouvez gagner jusqu\'à 100% de bonus sur un billet de pari de 20 Matches et plus',
+                        style: TextStyle(
+                            fontSize: 14.0, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 25.0),
+                      Expanded(
+                        child: ListView(
+                          children: [
+                            _displayBonusDataTable(4, '', Bonus.bonus1),
+                            _displayBonusDataTable(5, '', Bonus.bonus2),
+                            _displayBonusDataTable(6, '', Bonus.bonus3),
+                            _displayBonusDataTable(7, '', Bonus.bonus4),
+                            _displayBonusDataTable(8, '', Bonus.bonus5),
+                            _displayBonusDataTable(9, '', Bonus.bonus6),
+                            _displayBonusDataTable(10, '', Bonus.bonus7),
+                            _displayBonusDataTable(11, '', Bonus.bonus8),
+                            _displayBonusDataTable(12, '', Bonus.bonus9),
+                            _displayBonusDataTable(13, '', Bonus.bonus10),
+                            _displayBonusDataTable(14, '', Bonus.bonus11),
+                            _displayBonusDataTable(15, '', Bonus.bonus12),
+                            _displayBonusDataTable(16, '', Bonus.bonus13),
+                            _displayBonusDataTable(17, '', Bonus.bonus14),
+                            _displayBonusDataTable(18, '', Bonus.bonus15),
+                            _displayBonusDataTable(19, '', Bonus.bonus16),
+                            _displayBonusDataTable(20, '+', Bonus.bonus17),
+                          ],
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: RawMaterialButton(
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.0)),
+                          // fillColor: Colors.grey.shade300,
+                          hoverColor: Colors.grey.shade100,
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15.0, vertical: 5.0),
+                            child: Text(
+                              'ok and close'.toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: 0.0,
+                  left: 16.0,
+                  right: 16.0,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    radius: 60.0,
+                    child: Image.asset(
+                      'assets/images/info.png',
+                      color: Colors.lightBlue,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        });
+  }
+
   Future show_dialog_panel(String title, String description, String imgUrl) {
     return showDialog(
         context: context,
@@ -2798,103 +2907,140 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   }
 
   loadBetslipMatches() {
+    // THIS WILL HOLD ONLY SELECTED GAMES
+    var _oddSimplified = [];
+    // WE LOOP THROUGH THE ARRAY AND ADD ONLY SELECTED GAMES
+    for (var _game in oddsGameArray) {
+      // CHECKING FOR SELECTED GAMES
+      if (_game.oddID != null &&
+          _game.oddName != null &&
+          _game.oddIndex != null &&
+          _game.oddLabel != null &&
+          _game.oddValue != null) {
+        // ADDING THE GAME TO THIS TEMPORARILY ARRAY
+        _oddSimplified.add(_game);
+      }
+      // print(_game.gameID);
+      // print(' - - - - - - - - up');
+    }
+
     return Column(
-      children: BetSlipData.gameIds
-          .asMap()
-          .entries
-          .map(
-            (MapEntry map) => slipMatches(
-                BetSlipData.team1s[map.key],
-                BetSlipData.team2s[map.key],
-                // BetSlipData.oddTypes[map.key],
-                BetSlipData.gameChoices[map.key],
-                BetSlipData.rates[map.key],
-                BetSlipData.gameIds[map.key]),
-          )
-          .toList(),
+      children: _oddSimplified.asMap().entries.map(
+        (MapEntry map) {
+          // LOAD THE CURRENT GAME TO THE VIEW OF THE USER
+          return slipMatches(map.value);
+        },
+      ).toList(),
     );
   }
 
-  Widget slipMatches(
-      String team1, String team2, String choice, double rate, String id) {
+  int _hoveredIndex = -1;
+
+  Widget slipMatches(var _matchTicket) {
     return Column(
       children: [
         Container(
-          padding: (ResponsiveWidget.isLargeScreen(context) ||
-                  ResponsiveWidget.customScreen(context))
-              ? EdgeInsets.all(10.0)
-              : EdgeInsets.all(5.0),
-          child: Row(
+          padding: EdgeInsets.symmetric(horizontal: 10.0),
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Expanded(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    IconButton(
-                        tooltip: 'Supprimez ce Match',
-                        alignment: Alignment.centerLeft,
-                        constraints:
-                            BoxConstraints(maxHeight: 25.0, maxWidth: 35.0),
-                        icon: Icon(Icons.close, size: 18.0, color: Colors.grey),
-                        onPressed: () {
-                          if (mounted)
-                            setState(() {
-                              // remove a single match from betslip
-                              removeSingleMatch(id);
-                            });
-                        }),
-                    Column(
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'Liverpool vs Chelsea',
+                      style: TextStyle(
+                        fontSize: 13.0,
+                        color: Colors.black87,
+                        // fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              // Divider(color: Colors.grey.shade300, thickness: 0.4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // ODD VALUES AND NAMES
+                  Expanded(
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: ResponsiveWidget.isExtraSmallScreen(context)
-                              ? 140.0
-                              : 180.0,
-                          child: Text(
-                            team1 + ' - ' + team2,
-                            style: TextStyle(
-                              fontSize: 11.0,
-                              color: Colors.grey,
-                              // letterSpacing: 1.0,
-                            ),
-                            overflow: TextOverflow.clip,
-                            maxLines: 4,
-                          ),
-                        ),
-                        SizedBox(height: 5.0),
+                        SizedBox(height: 3.0),
                         Text(
-                          choice,
+                          _matchTicket.oddName.toString() +
+                              ' ( ' +
+                              _matchTicket.oddLabel +
+                              ' )',
                           style: TextStyle(
-                              fontSize: 11.0,
+                              fontSize: 12.0,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black),
+                              color: Colors.black87),
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          padding: new EdgeInsets.only(right: 5.0),
+                          child: Text(
+                            _matchTicket.oddValue.toString(),
+                            style: TextStyle(
+                              fontSize: 13.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  ],
-                ),
-              ),
-              Text(
-                rate.toStringAsFixed(2).toString(),
-                style: TextStyle(
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+                  ),
+                  // CLOSING ICONS
+                  Container(
+                    width: 20.0,
+                    height: 20.0,
+                    decoration: BoxDecoration(
+                      color: _closeMatchHoverColor,
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    alignment: Alignment.center,
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      onHover: (e) {
+                        setState(() {
+                          _hoveredIndex = _matchTicket.gameID;
+                          if (_hoveredIndex == _matchTicket.gameID) {
+                            _closeMatchHoverColor = Colors.grey.shade300;
+                          }
+                          print('Hover detected');
+                        });
+                      },
+                      onExit: (e) {
+                        if (_hoveredIndex == _matchTicket.gameID) {
+                          _closeMatchHoverColor = Colors.white;
+                        }
+                        print('Hover not detected');
+                      },
+                      child: Tooltip(
+                        message: 'Supprimer',
+                        child: Icon(Icons.close,
+                            size: 18.0, color: Colors.black87),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
-        Divider(
-          color: Colors.grey,
-          thickness: 0.4,
-          height: 0,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Divider(color: Colors.grey.shade300),
         ),
       ],
     );
   }
+
+  Color _closeMatchHoverColor = Colors.white;
 
   Widget singleGame() {
     // var _oddData = moreLoadedMatchOdds['odds'];
@@ -2908,8 +3054,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               right: BorderSide(color: Colors.grey, width: 0.3),
             ),
           ),
-          margin: EdgeInsets.only(
-              left: 10.0),
+          margin: EdgeInsets.only(left: 10.0),
           child: Container(
             width: double.infinity,
             padding: EdgeInsets.all(10.0),
@@ -3376,7 +3521,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   }
 
   _league_action_click(int _leagueID) {
-// WE SET THE PRESENT LEAGUE TO THIS
+    // WE SET THE PRESENT LEAGUE TO THIS
     _currentLeagueID = _leagueID;
     // WE SET THE STATE TO LOADING STATE
     _currentPick = 1;
@@ -3551,8 +3696,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     return Expanded(
       child: Container(
         width: double.infinity,
-        margin: EdgeInsets.only(
-            left:  10.0),
+        margin: EdgeInsets.only(left: 10.0),
         padding: new EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           border: Border(
@@ -4431,7 +4575,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         BetSlipData.gameChoices.clear();
         BetSlipData.rates.clear(); // clear all rates
         BetSlipData.gameIds.clear(); // clear all id
-        loadBetslipMatches();
+        // loadBetslipMatches();
         // set the default price to 100 Fc
         Price.stake = 0.0;
       });
@@ -4460,7 +4604,47 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     BetSlipData.rates.removeAt(index); // clear index rates
     BetSlipData.gameIds.removeAt(index); // clear index id
 
-    loadBetslipMatches();
+    // loadBetslipMatches();
+  }
+
+  _displayBonusDataTable(int matchNumber, String substring, int bonus) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            '$matchNumber$substring',
+            style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 16.0),
+          ),
+          Text(
+            ' Matches =',
+            style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+                fontSize: 14.0),
+          ),
+          Text(
+            ' $bonus%',
+            style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 16.0),
+          ),
+          Text(
+            ' Bonus',
+            style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w500,
+                fontSize: 14.0),
+          ),
+        ],
+      ),
+    );
   }
 
   // keep on loading user blance details every 30s
