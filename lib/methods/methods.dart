@@ -1,3 +1,4 @@
+import 'package:skiiyabet/app/skiiyaBet.dart';
 import 'package:skiiyabet/database/betslip.dart';
 import 'package:skiiyabet/database/bonus.dart';
 // import 'package:skiiyabet/database/game.dart';
@@ -5,36 +6,49 @@ import 'package:skiiyabet/database/price.dart';
 import 'package:skiiyabet/database/selection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 
 class Method {
   static int pourcentageRate = 0;
   static String transactionID;
 
-  static showUserBettingStake() {
-    return Container(
-      // padding: EdgeInsets.all(10.0),
-      height: 40.0,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          color: Colors.white70,
-          border: Border(
-            top: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-            bottom: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-            left: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-            right: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-          )),
-      child: Text(
-        // Price.stake.toString(),
-        Price.getCommaValue(Price.stake),
-        style: TextStyle(
-            color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold),
-      ),
-    );
-  }
+  // static showUserBettingStake() {
+  //   return Container(
+  //     // padding: EdgeInsets.all(10.0),
+  //     height: 40.0,
+  //     alignment: Alignment.center,
+  //     decoration: BoxDecoration(
+  //         color: Colors.white70,
+  //         border: Border(
+  //           top: BorderSide(color: Colors.lightGreen[400], width: 2.0),
+  //           bottom: BorderSide(color: Colors.lightGreen[400], width: 2.0),
+  //           left: BorderSide(color: Colors.lightGreen[400], width: 2.0),
+  //           right: BorderSide(color: Colors.lightGreen[400], width: 2.0),
+  //         )),
+  //     child: Text(
+  //       // Price.stake.toString(),
+  //       Price.getCommaValue(Price.stake),
+  //       style: TextStyle(
+  //           color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold),
+  //     ),
+  //   );
+  // }
 
   static String displayUserBonus() {
-    int counter = BetSlipData.gameIds.length;
+    // COUNT THE MATCHES ON THE TICKET
+    int counter = 0;
+    // WE LOOP THROUGH THE GAMES ODDS ARRAY TO GET SELECTED GAMES
+    for (int _i = 0; _i < oddsGameArray.length; _i++) {
+      // CHECK GAME AFTER GAME
+      if (oddsGameArray[_i].oddID != null &&
+          oddsGameArray[_i].oddName != null &&
+          oddsGameArray[_i].oddIndex != null &&
+          oddsGameArray[_i].oddLabel != null &&
+          oddsGameArray[_i].oddValue != null) { 
+        // INSCREASE THE COUNTER + 1 OR REDUCE IT ACCORDINGLY
+        counter++;
+      }
+    }
     // print('This is counter: $counter');
     // print('This is bonus rate: $pourcentageRate');
     // int counter = 20;
@@ -136,10 +150,16 @@ class Method {
     return bonus;
   }
 
+  // ADD THE RATES OF ALL SELECTED ODDS
   static double totalRate() {
     double totalRate = 0;
-    for (int i = 0; i < BetSlipData.gameIds.length; i++) {
-      totalRate += BetSlipData.rates[i];
+    // WE LOOP THROUGH THE ODDS GAME ARRAY
+    for (int i = 0; i < oddsGameArray.length; i++) {
+      // CHECK THE CONDITION BEFORE SUMMING UP
+      if (oddsGameArray[i].oddValue != null) {
+        // WE ADD THE NON NULL RATE TO THE VARIABLE
+        totalRate += double.parse(oddsGameArray[i].oddValue);
+      }
     }
     return totalRate;
   }

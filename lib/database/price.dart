@@ -1,6 +1,6 @@
 class Price {
   static double minimumBetPrice = 100;
-  static double stake = 0; // minimum betting stake
+  static double stake = 200; // minimum betting stake
   static double maxStake = 1000000; // maximum betting stake
   static double maxWinning = 15000000; // maximum winning amount
   // static double balance = 50000;

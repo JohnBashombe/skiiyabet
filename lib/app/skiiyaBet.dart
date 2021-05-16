@@ -47,8 +47,7 @@ int _selectedIndex = 0;
 // this variable indicated which field should have load more
 // int fieldLoadMore = 0;
 // display the betslip error message
-bool _displayTextError = false;
-bool _displayTextMaxError = false;
+int displayInputErrorMessage = -1;
 // variable from search panel
 // store loaded results
 var _queryResults = [];
@@ -1964,12 +1963,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   Widget betSlip(BuildContext _context) {
     return Container(
       margin: ResponsiveWidget.isBigScreen(context)
-          ? EdgeInsets.only(top: 10.0) // ADD MARGIN TO BIG SCREEN
+          ? EdgeInsets.only(bottom: 10.0) // ADD MARGIN TO BIG SCREEN
           : EdgeInsets.only(left: 10.0), // ADD LEFT MARGIN TO TABLET AND PHONES
       // 992px - UP
       width: ResponsiveWidget.isBigScreen(context) ? 300.0 : double.infinity,
       height: ResponsiveWidget.isBigScreen(context) // 992px - UP
-          ? MediaQuery.of(context).size.height - 60.0
+          ? MediaQuery.of(context).size.height - 80.0
           : ResponsiveWidget.isMediumScreen(context) // tablet
               ? MediaQuery.of(context).size.height - 80.0 // tablet display
               // Phones
@@ -1989,8 +1988,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         children: [
           Container(
             alignment: Alignment.centerLeft,
-            height: 25.0,
-            padding: EdgeInsets.only(bottom: 10.0, right: 10.0),
+            height: 25.0, 
+            padding: EdgeInsets.only(bottom:5.0, right: 10.0),
+            // margin: EdgeInsets.only( bottom: 0.0),
             child: Text(
               'Mon billet de pari',
               style: TextStyle(
@@ -1999,6 +1999,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   fontSize: 13.0),
             ),
           ),
+          // SizedBox(height: 10.0),
           Expanded(
             child: Container(
               margin: EdgeInsets.only(right: 10.0), // TO LEAVE SPACE ON RIGHT
@@ -2059,7 +2060,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                 style: TextStyle(
                                   color: Colors.lightBlue,
                                   fontSize: 14.0,
-                                  fontWeight: FontWeight.w400,
+                                  fontWeight: FontWeight.w500,
                                   decoration: TextDecoration.underline,
                                 ),
                               ),
@@ -2074,16 +2075,18 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     margin: new EdgeInsets.symmetric(horizontal: 10.0),
                     child: Column(
                       children: [
-                        SizedBox(height: 8.0),
-                        Divider(
-                          color: Colors.grey,
-                          thickness: 0.4,
-                          // height: 0,
-                        ),
+                        SizedBox(height: 5.0),
+                        // SHOW THIS ONLY IF WE HAVE NO DATA AT ALL ON THE TICKET
+                        if (countTicketLegs() == 0)
+                          Divider(
+                            color: Colors.grey,
+                            thickness: 0.3,
+                            height: 0.0,
+                          ),
                       ],
                     ),
                   ),
-                  // CHECK IF WE HAVE DATA ON THE TICKET
+                  // CHECK IF WE HAVE NO DATA ON THE TICKET TO DISPLAAY THIS MESSAGE
                   if (countTicketLegs() == 0)
                     Container(
                       alignment: Alignment.center,
@@ -2097,6 +2100,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             fontWeight: FontWeight.bold),
                       ),
                     ),
+                  // DISPLAY THE DIVIDER ONLY IF WE HAVE NO SELECTION
                   if (countTicketLegs() == 0)
                     Container(
                       margin: new EdgeInsets.symmetric(horizontal: 10.0),
@@ -2105,15 +2109,17 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                           // SizedBox(height: 8.0),
                           Divider(
                             color: Colors.grey,
-                            thickness: 0.4,
-                            // height: 0,
+                            thickness: 0.3,
+                            height: 0,
                           ),
                         ],
                       ),
                     ),
                   // DISPLAY MATCHES SELECTED RIGHT HERE
-                  if (countTicketLegs() > 0) SizedBox(height: 5.0),
+                  // if (countTicketLegs() > 0) SizedBox(height: 5.0),
                   if (countTicketLegs() > 0) loadBetslipMatches(),
+                  // slipMatches(null, 1),
+                  // slipMatches(null, 2),
 
                   Container(
                     padding: (ResponsiveWidget.isLargeScreen(context) ||
@@ -2129,32 +2135,33 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             cursor: SystemMouseCursors.click,
                             child: GestureDetector(
                               onTap: () {
+                                if (mounted)
+                                  setState(() {
+                                    // WE LOOP THROUGH ALL ODDS TO GET THE RIGHT GAME INDEX
+                                    for (int _j = 0;
+                                        _j < oddsGameArray.length;
+                                        _j++) {
+                                      // print('We have found the game to remove here');
+                                      // REMOVING ALL MATCHES FROM THE TICKET
+                                      unselectOddsButton(_j);
+                                    }
+                                  });
                                 // hide the show error panel on the BETSLIP panel
-                                showBetslipMessagePanel = false;
+                                // showBetslipMessagePanel = false;
                                 // clear all games logic goes here
-                                clearGamesSelected();
+                                // clearGamesSelected();
                               },
                               child: Container(
                                 alignment: Alignment.centerRight,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      'EFFACEZ TOUT',
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500,
-                                          // fontStyle: FontStyle.italic,
-                                          // decoration: TextDecoration.underline,
-                                          fontSize: 12.0),
-                                    ),
-                                    // SizedBox(width: 2.0),
-                                    Icon(
-                                      Icons.clear,
-                                      color: Colors.black,
-                                      size: 15.0,
-                                    ),
-                                  ],
+                                child: Text(
+                                  'Tout Supprimer',
+                                  style: TextStyle(
+                                    color: Colors.orange[600],
+                                    fontWeight: FontWeight.bold,
+                                    // fontStyle: FontStyle.italic,
+                                    decoration: TextDecoration.underline,
+                                    fontSize: 13.0,
+                                  ),
                                 ),
                               ),
                             ),
@@ -2162,49 +2169,57 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         // Text('Stake:',
                         //     style: TextStyle(fontWeight: FontWeight.bold)),
                         // SizedBox(height: 5.0),
-                        // SizedBox(height: 3.0),
+                        SizedBox(height: 5.0),
                         Text(
-                          'Montant Min: ' +
+                          'Montant Minimum: ' +
                               Price.minimumBetPrice.toString() +
-                              ' Fc',
-                          style: TextStyle(color: Colors.grey, fontSize: 11.0),
+                              ' ' +
+                              Price.currency_symbol,
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12.0,
+                            // fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        SizedBox(height: 2.0),
+                        SizedBox(height: 5.0),
                         // Method.showUserBettingStake(),
-                        SizedBox(height: 3.0),
+                        // SizedBox(height: 3.0),
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12.0),
-                          height: 60.0,
+                          padding: EdgeInsets.only(
+                              left: 10.0, right: 10.0, bottom: 15.0),
+                          height: 50.0,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               color: Colors.white,
                               border: Border(
                                 top: BorderSide(
-                                    color: _displayTextError
-                                        ? Colors.red
-                                        : Colors.lightGreen[400],
-                                    width: 2.0),
+                                    color: displayInputErrorMessage != -1
+                                        ? Colors.red.shade300
+                                        : Colors.grey.shade300,
+                                    width: 1.0),
                                 bottom: BorderSide(
-                                    color: _displayTextError
-                                        ? Colors.red
-                                        : Colors.lightGreen[400],
-                                    width: 2.0),
+                                    color: displayInputErrorMessage != -1
+                                        ? Colors.red.shade300
+                                        : Colors.grey.shade300,
+                                    width: 1.0),
                                 left: BorderSide(
-                                    color: _displayTextError
-                                        ? Colors.red
-                                        : Colors.lightGreen[400],
-                                    width: 2.0),
+                                    color: displayInputErrorMessage != -1
+                                        ? Colors.red.shade300
+                                        : Colors.grey.shade300,
+                                    width: 1.0),
                                 right: BorderSide(
-                                    color: _displayTextError
-                                        ? Colors.red
-                                        : Colors.lightGreen[400],
-                                    width: 2.0),
+                                    color: displayInputErrorMessage != -1
+                                        ? Colors.red.shade300
+                                        : Colors.grey.shade300,
+                                    width: 1.0),
                               )),
                           child: TextFormField(
-                            initialValue: '100',
-                            cursorColor: _displayTextError
+                            initialValue: Price.stake.toString(),
+                            cursorColor: displayInputErrorMessage != -1
                                 ? Colors.red
-                                : Colors.lightGreen,
+                                : Colors.lightBlue,
+                            // cursorWidth: 3.0,
+                            cursorHeight: 5.0,
                             maxLines: 1,
                             keyboardType: TextInputType.number,
                             inputFormatters: <TextInputFormatter>[
@@ -2213,7 +2228,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 15.0,
-                                fontWeight: FontWeight.w500,
+                                fontWeight: FontWeight.bold,
                                 letterSpacing: 0.5),
                             decoration: InputDecoration(
                                 border: InputBorder.none,
@@ -2229,100 +2244,82 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                 setState(() {
                                   //   try {
                                   // hide the display message status panel
-                                  showBetslipMessagePanel = false;
+                                  // showBetslipMessagePanel = false;
                                   if (value.isEmpty) {
                                     Price.stake = 0;
-                                    _displayTextError = false;
+                                    // DISPLAY NONE
+                                    displayInputErrorMessage = -1;
                                   } else {
                                     Price.stake = double.parse(value);
                                     if (Price.stake < Price.minimumBetPrice) {
-                                      _displayTextError = true;
-                                      _displayTextMaxError = false;
+                                      // DISPLAY MINIMUM ERROR
+                                      displayInputErrorMessage = 1;
                                     } else if (Price.stake > Price.maxStake) {
-                                      _displayTextMaxError = true;
-                                      _displayTextError = false;
+                                      // DISPLAY MAXIMUM ERROR
+                                      displayInputErrorMessage = 2;
                                     } else {
-                                      _displayTextError = false;
-                                      _displayTextMaxError = false;
+                                      // DISPLAY NONE
+                                      displayInputErrorMessage = -1;
                                     }
                                   }
                                 });
                             },
                           ),
                         ),
-                        _displayTextError
-                            ? Text(
-                                'Montant Min est: ${Price.getCommaValue(Price.minimumBetPrice)} Fc',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 11.0,
-                                  // fontStyle: FontStyle.italic,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                            : _displayTextMaxError
-                                ? Text(
-                                    'Montant Max est: ${Price.getCommaValue(Price.maxStake)} Fc',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 11.0,
-                                      // fontStyle: FontStyle.italic,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )
-                                : Text(
-                                    '',
-                                    style: TextStyle(fontSize: 1.0),
-                                  ),
-                        SizedBox(height: 10.0),
+                        // DISPLAY THE MINIMUM STAKE ERROR
+                        if (displayInputErrorMessage == 1)
+                          displayInputError('Montant minimum:',
+                              Price.getCommaValue(Price.minimumBetPrice)),
+                        // DISPLAY THE MAXIMUM STAKE EXCEED ERROR
+                        if (displayInputErrorMessage == 2)
+                          displayInputError('Montant maximum:',
+                              Price.getCommaValue(Price.maxStake)),
+                        SizedBox(height: 15.0),
+                        // Divider(color: Colors.grey, thickness: 0.4),
+                        // SizedBox(height: 10.0),
+                        // SizedBox(height: 10.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Total de points',
+                            Text('Somme de points',
                                 style: TextStyle(
-                                    color: Colors.black, fontSize: 12.0)),
-                            Row(
-                              children: [
-                                Text(
-                                  Method.totalRate()
-                                      .toStringAsFixed(2)
-                                      .toString(),
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+                                  color: Colors.black,
+                                  fontSize: 14.0,
+                                )),
+                            Text(
+                              Method.totalRate().toStringAsFixed(2).toString(),
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14.0,
+                                // fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 5.0),
+                        SizedBox(height: 8.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('Gain Total',
                                 style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 12.0,
+                                  fontSize: 14.0,
                                 )),
-                            Row(
-                              children: [
-                                Text(
-                                  // possibleWinning().toStringAsFixed(2),
+                            Text(
+                              // possibleWinning().toStringAsFixed(2),
+                              Price.currency_symbol +
+                                  ' ' +
                                   Price.getWinningValues(
                                       Method.possibleWinning()),
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14.0,
+                                // fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 5.0),
+                        SizedBox(height: 8.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -2332,48 +2329,47 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                 // Text(pourcentageRate.toString() + '% win Bonus',
                                 style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 12.0,
+                                  fontSize: 14.0,
                                 )),
-                            Row(
-                              children: [
-                                Text(
+                            Text(
+                              Price.currency_symbol +
+                                  ' ' +
                                   Price.getWinningValues(Method.bonusAmount()),
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14.0,
+                                // fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
                         SizedBox(height: 10.0),
-                        Divider(color: Colors.grey, thickness: 0.5),
-                        SizedBox(height: 10.0),
+                        Divider(color: Colors.grey, thickness: 0.4),
+                        SizedBox(height: 5.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('Paiement Total'.toUpperCase(),
                                 style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 13.0,
+                                  fontSize: 14.0,
                                   fontWeight: FontWeight.w500,
                                 )),
-                            Row(
-                              children: [
-                                Text(
+                            Text(
+                              Price.currency_symbol +
+                                  ' ' +
                                   Price.getWinningValues(Method.totalPayout()),
-                                  style: TextStyle(
-                                    color: Colors.lightGreen,
-                                    fontSize: 13.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
+                        SizedBox(height: 5.0),
+                        Divider(color: Colors.grey, thickness: 0.3),
+                        // SizedBox(height: 10.0),
 
                         SizedBox(height: 10.0),
                         Container(
@@ -2705,6 +2701,19 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     );
   }
 
+  Text displayInputError(String message, String value) {
+    return Text(
+      message + ' ' + value.toString() + ' ' + Price.currency_symbol,
+      // 'Montant Min est: ${Price.getCommaValue(Price.minimumBetPrice)} Fc',
+      style: TextStyle(
+        color: Colors.red.shade300,
+        fontSize: 12.0,
+        // fontStyle: FontStyle.italic,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
   Future show_dialog_bonus() {
     return showDialog(
         context: context,
@@ -2937,110 +2946,154 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   int _hoveredIndex = -1;
 
   Widget slipMatches(var _matchTicket) {
+    // WE SET THE GAME ID HERE
+    int _id = _matchTicket.gameID;
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.symmetric(horizontal: 10.0),
-          child: Column(
+          height: 55.0,
+          margin: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 3.0),
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(color: Colors.grey.shade300),
+              bottom: BorderSide(color: Colors.grey.shade300),
+              // left: BorderSide(color: Colors.grey.shade300),
+              right: BorderSide(color: Colors.grey.shade300),
+            ),
+            color: Colors.white,
+          ),
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Liverpool vs Chelsea',
-                      style: TextStyle(
-                        fontSize: 13.0,
-                        color: Colors.black87,
-                        // fontWeight: FontWeight.bold,
-                      ),
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: double.infinity,
+                      color: _hoveredIndex == _id
+                          ? Colors.grey.shade300
+                          : Colors.grey.shade200,
+                      alignment: Alignment.center,
+                      child: MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          onHover: (e) {
+                            if (mounted)
+                              setState(() {
+                                _hoveredIndex = _id;
+                                // print(_hoveredIndex);
+                              });
+                            // Color _colors = Colors.grey;
+                          },
+                          onExit: (e) {
+                            if (mounted)
+                              setState(() {
+                                _hoveredIndex = -1;
+                                // print(_hoveredIndex);
+                              });
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 1.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                // ON TAP, REMOVE THE MATCH FROM THE TICKET
+                                setState(() {
+                                  // WE NEED TO GET THE INDEX OF THIS GAME IN THE ODDS ARRAY
+                                  // WE LOOP THROUGH ALL ODDS TO GET THE RIGHT GAME INDEX
+                                  for (int _j = 0;
+                                      _j < oddsGameArray.length;
+                                      _j++) {
+                                    // ADDING THE CONDITION HERE
+                                    if (oddsGameArray[_j].gameID == _id) {
+                                      // print('We have found the game to remove here');
+                                      // REMOVING THE MATCH FROM THE TICKET
+                                      unselectOddsButton(_j);
+                                    }
+                                  }
+                                  // print('Removing this match from the ticket');
+                                });
+                              },
+                              child: Icon(
+                                FontAwesomeIcons.times,
+                                size: 18.0,
+                                color: _hoveredIndex == _id
+                                    ? Colors.redAccent
+                                    : Colors.black54,
+                              ),
+                            ),
+                          )),
                     ),
-                  ),
-                ],
-              ),
-              // Divider(color: Colors.grey.shade300, thickness: 0.4),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // ODD VALUES AND NAMES
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 3.0),
-                        Text(
-                          _matchTicket.oddName.toString() +
-                              ' ( ' +
-                              _matchTicket.oddLabel +
-                              ' )',
-                          style: TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87),
-                        ),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          padding: new EdgeInsets.only(right: 5.0),
-                          child: Text(
-                            _matchTicket.oddValue.toString(),
-                            style: TextStyle(
-                              fontSize: 13.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: ResponsiveWidget.isExtraSmallScreen(context)
+                                ? 140.0
+                                : 180.0,
+                            // width: ,
+                            child: Text(
+                              'F.C. Barcelona' + ' vs ' + 'F.C. Real Madrid',
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                color: Colors.grey,
+                                // fontWeight: FontWeight.bold,
+                                // letterSpacing: 1.0,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // CLOSING ICONS
-                  Container(
-                    width: 20.0,
-                    height: 20.0,
-                    decoration: BoxDecoration(
-                      color: _closeMatchHoverColor,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    alignment: Alignment.center,
-                    child: MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      onHover: (e) {
-                        setState(() {
-                          _hoveredIndex = _matchTicket.gameID;
-                          if (_hoveredIndex == _matchTicket.gameID) {
-                            _closeMatchHoverColor = Colors.grey.shade300;
-                          }
-                          print('Hover detected');
-                        });
-                      },
-                      onExit: (e) {
-                        if (_hoveredIndex == _matchTicket.gameID) {
-                          _closeMatchHoverColor = Colors.white;
-                        }
-                        print('Hover not detected');
-                      },
-                      child: Tooltip(
-                        message: 'Supprimer',
-                        child: Icon(Icons.close,
-                            size: 18.0, color: Colors.black87),
+                          SizedBox(height: 3.0),
+                          Container(
+                            width: ResponsiveWidget.isExtraSmallScreen(context)
+                                ? 140.0
+                                : 180.0,
+                            // width: ,
+                            child: Text(
+                              _matchTicket.oddName.toString() +
+                                  ' (' +
+                                  _matchTicket.oddLabel
+                                      .toString()
+                                      .toLowerCase() +
+                                  ')',
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
+                          ),
+
+                          // SizedBox(height: 5.0),
+                        ],
                       ),
                     ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 5.0, right: 5.0),
+                child: Text(
+                  _matchTicket.oddValue.toString(),
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
-                ],
+                ),
               ),
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Divider(color: Colors.grey.shade300),
-        ),
       ],
     );
   }
-
-  Color _closeMatchHoverColor = Colors.white;
 
   Widget singleGame() {
     // var _oddData = moreLoadedMatchOdds['odds'];
