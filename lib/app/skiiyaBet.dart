@@ -35,15 +35,9 @@ import 'package:http/http.dart' as http;
 
 import 'entities/fetching.dart';
 
-// create a variable that loads game details
-// DocumentSnapshot matchMoreOdds;
+// COLOR ATTRIBUTES
 Color color, colorBg, colorRounded, colorCaption;
 int _selectedIndex = 0;
-// store loaded games
-// var data = [];
-// this array contains
-// var loadSideDataArrayChamp = [];
-// var loadSideDataArrayCountry = [];
 // this variable indicated which field should have load more
 // int fieldLoadMore = 0;
 // display the betslip error message
@@ -64,17 +58,12 @@ Color showBetslipMessageColorBg = Colors.red[200];
 // bool _resendCode = false;
 FirebaseAuth _auth = FirebaseAuth.instance;
 // boolean that displays the loading process.. on buttons
-bool _loadingBettingButton = false;
+// bool _loadingBettingButton = false;
 
 // FTECH MATCH INSTAMCE
 FetchMatch _fetchMatch = new FetchMatch();
 
-// This array stores all the selected indices of championships
-// // THIS VARIABLE ASSIGN THE VALUE OF THE SELECTED CHAMPIONSHIP IN DESKTOP MODE
-// int _indexChampionSelection = -1;
-
 // Store all fetched matches and ready-to-use
-// ignore: deprecated_member_use
 var _matches = []; // CONTAINS ALL MATCHES
 var _leagues = []; // CONTAINS ALL LEAGUES
 var _countries = []; // CONTAINS ALL COUNTRIES
@@ -93,6 +82,10 @@ bool switchToMoreMatchOddsWindow = false;
 var moreOddsMatch;
 // IT STORE THE ODDS OF THE GAME WE WILL NEDD
 var moreLoadedMatchOdds;
+
+// THIS CHECK WEITHER WE HAVE INTERNET NETWORK OR NOT
+bool isNoInternetNetwork = false;
+// bool isNoInternetNetworkOrOtherError = false;
 
 // SCROOL CONTROLLER
 ScrollController _scrollController = new ScrollController();
@@ -436,7 +429,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   color: Window.selectedMenu == index
                       ? Colors.lightGreen[400]
                       : Colors.grey,
-                  size: Window.selectedMenu == index ? 25.0 : 20.0),
+                  size: Window.selectedMenu == index ? 22.0 : 20.0),
               onPressed: null,
             ),
           ),
@@ -591,12 +584,37 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   height: 35.0,
                   // padding: new EdgeInsets.symmetric(
                   //     horizontal: 5.0),
-                  child: ButttonWithIcon(
-                    icon: FontAwesomeIcons.signInAlt,
+                  child: RawMaterialButton(
+                    fillColor: Colors.lightGreen[400],
+                    // focusColor: Colors.lightGreen[100],
+                    padding: new EdgeInsets.symmetric(horizontal: 10.0),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          FontAwesomeIcons.signInAlt,
+                          color: Colors.white,
+                          size: 16.0,
+                        ),
+                        SizedBox(width: 5.0),
+                        Text(
+                          'Mon Compte',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                    // icon: FontAwesomeIcons.signInAlt,
                     // icon: Icons.login,
-                    buttonColor: Colors.lightGreen[400],
-                    color: Colors.white,
-                    title: ' Mon Compte',
+                    // buttonColor: Colors.lightGreen[400],
+                    // color: Colors.white,
+                    // title: ' Mon Compte',
                     onPressed: () {
                       if (mounted)
                         setState(() {
@@ -1411,6 +1429,45 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     }
   }
 
+  // int getLeagueIndex(int _leagueIndex) {
+  //   return _leagueIndex;
+  // }
+
+  int leagueIndex;
+
+  String _getCountry(int _leagueIndex) {
+    String country = '...';
+    // LET US GET THE CORRECT COUNTRY HERE
+    // ONLY IF WE HAVE DATA IN THE ARRAY
+    if (_countries.length > 0)
+      for (int j = 0; j < _countries.length; j++) {
+        if (_leagues[_leagueIndex]['country_id'] == _countries[j]['id']) {
+          country = _countries[j]['name'];
+          // print('the country name is ${_countries[j]['name']}');
+          // WE BREAK THE LOOP FOR BETTER PROCESSING
+          break;
+        }
+      }
+    return country;
+  }
+
+  String _getLeague(var _thisMatch) {
+    String championship = '...';
+// ONLY IF WE HAVE DATA IN THE ARRAY
+    if (_leagues.length > 0)
+      for (int j = 0; j < _leagues.length; j++) {
+        if (_leagues[j]['id'] == _thisMatch.league_id) {
+          championship = _leagues[j]['name'];
+          // getLeagueIndex(j);
+          leagueIndex = j;
+          // print('the ligue is ${_leagues[_lpLg]['name']}');
+          // WE BREAK THE LOOP FOR BETTER PROCESSING
+          break;
+        }
+      }
+    return championship;
+  }
+
   Widget singleMatch(var _thisMatch, int index) {
     // we assign the context at position Index to the document snapshot document
     // DocumentSnapshot match = _thisData[index];
@@ -1419,8 +1476,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // print(match);
     var id = _thisMatch.id;
     // var team1 = match['team1'];
-    var team1 = _thisMatch.localTeam['data']['name'];
-    var team2 = _thisMatch.visitorTeam['data']['name'];
+    var _localTeam = _thisMatch.localTeam['data']['name'];
+    var _visitorTeam = _thisMatch.visitorTeam['data']['name'];
     // var team2 = match['team2'];
     // GET THE TIME OF THE MATCH
     var time = _thisMatch.time['starting_at']['time'];
@@ -1429,33 +1486,14 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // var championship = match['championship'];
     // var country = match['country'];
     // // load time details
-    var championship = '...';
-    var country = '...';
-    int _leagueIndex;
+    var championship = _getLeague(_thisMatch);
+    // int _leagueIndex = leagueIndex;
+    // THIS IS A STORING VARIBALE IN MATCH INSTANCE
+    var country = _getCountry(leagueIndex);
+    // WE ADD A DASH FOR A BETTER DISPLAY OF THE COUNTRY
+    var _countryDisplay = ' - ' + _getCountry(leagueIndex);
     // LET US LOAD CHAMPIONSHIPS
-    // ONLY IF WE HAVE DATA IN THE ARRAY
-    if (_leagues.length > 0)
-      for (int j = 0; j < _leagues.length; j++) {
-        if (_leagues[j]['id'] == _thisMatch.league_id) {
-          championship = _leagues[j]['name'];
-          _leagueIndex = j;
-          // print('the ligue is ${_leagues[_lpLg]['name']}');
-          // WE BREAK THE LOOP FOR BETTER PROCESSING
-          break;
-        }
-      }
 
-    // LET US GET THE CORRECT COUNTRY HERE
-    // ONLY IF WE HAVE DATA IN THE ARRAY
-    if (_countries.length > 0)
-      for (int j = 0; j < _countries.length; j++) {
-        if (_leagues[_leagueIndex]['country_id'] == _countries[j]['id']) {
-          country = ' - ' + _countries[j]['name'];
-          // print('the country name is ${_countries[j]['name']}');
-          // WE BREAK THE LOOP FOR BETTER PROCESSING
-          break;
-        }
-      }
     // print(_thisMatch.threeWayOdds['id']);
     // print(_thisMatch.threeWayOdds['name']);
     // print(_thisMatch.threeWayOdds['bookmaker']['data'][0]['id']);
@@ -1565,7 +1603,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                           ? 300
                                           : 250,
                               child: Text(
-                                team1.toString() + ' - ' + team2.toString(),
+                                _localTeam.toString() +
+                                    ' - ' +
+                                    _visitorTeam.toString(),
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize:
@@ -1589,7 +1629,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                 ? 150
                                 : 250,
                         child: Text(
-                          championship.toString() + country.toString(),
+                          championship.toString() + _countryDisplay.toString(),
                           style: TextStyle(
                               fontSize: 12.0,
                               color: Colors.grey,
@@ -1647,12 +1687,17 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             // WE LOOP THE AMOUNT OF DATA AVAILABLE IN THE ARRAY
             for (int _i = 0; _i < _threeWayData.length; _i++)
               threeWayWidget(
-                index, // INDEX OF GAME IN THE ARRAY
-                _thisMatch.threeWayOdds['bookmaker']['data'][0]['odds']['data'],
-                _thisMatch.threeWayOdds['id'], // CONTAINS THE ID OF THE ODD
-                _thisMatch.threeWayOdds['name'], // CONTAINS THE NAME OF THE ODD
-                _i, // CONTAINS THE INDEX OF THE ODD
-              ),
+                  index, // INDEX OF GAME IN THE ARRAY
+                  _thisMatch.threeWayOdds['bookmaker']['data'][0]['odds']
+                      ['data'],
+                  _thisMatch.threeWayOdds['id'], // CONTAINS THE ID OF THE ODD
+                  _thisMatch
+                      .threeWayOdds['name'], // CONTAINS THE NAME OF THE ODD
+                  _i, // CONTAINS THE INDEX OF THE ODD
+                  championship,
+                  country,
+                  _localTeam,
+                  _visitorTeam),
           ],
         ),
         SizedBox(height: 5.0),
@@ -1668,13 +1713,26 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     oddsGameArray[_gameOddIndex].oddIndex = null;
     oddsGameArray[_gameOddIndex].oddLabel = null;
     oddsGameArray[_gameOddIndex].oddValue = null;
+    oddsGameArray[_gameOddIndex].total = null;
+    oddsGameArray[_gameOddIndex].handicap = null;
     // CHANGE THE COLORS TO DEFAULTS COLORS
     _buttonColor = Colors.grey.shade200;
     _labelColor = Colors.black87;
   }
 
-  selectOddsButton(int _gameOddIndex, int _oddId, String _oddName,
-      int _oddIndex, String _label, String _value) {
+  selectOddsButton(
+      int _gameOddIndex,
+      int _oddId,
+      String _oddName,
+      int _oddIndex,
+      String _label,
+      String _value,
+      String _championship,
+      String _country,
+      String _localTeam,
+      String _visitorTeam,
+      var _total,
+      var _handicap) {
     // WE SET THE VALUES OF THE GAME INTO THE ARRAY
     // WE UPDATE THE VALUES AND THE COLORS
     oddsGameArray[_gameOddIndex].oddID = _oddId;
@@ -1682,6 +1740,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     oddsGameArray[_gameOddIndex].oddIndex = _oddIndex;
     oddsGameArray[_gameOddIndex].oddLabel = _label;
     oddsGameArray[_gameOddIndex].oddValue = _value;
+    oddsGameArray[_gameOddIndex].total = _total;
+    oddsGameArray[_gameOddIndex].handicap = _handicap;
+    oddsGameArray[_gameOddIndex].localTeam = _localTeam;
+    oddsGameArray[_gameOddIndex].visitorTeam = _visitorTeam;
+    oddsGameArray[_gameOddIndex].championship = _championship;
+    oddsGameArray[_gameOddIndex].country = _country;
     // WE PRECISE THE RIGHT BUTTON FOR SELECTION
     // UPDATE THE COLOR OF THE BUTTON AND OF THE LABEL
     customColors();
@@ -1739,7 +1803,15 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   }
 
   threeWayWidget(
-      int _gameIndex, var _match, int _oddId, String _oddName, int _oddIndex) {
+      int _gameIndex,
+      var _match,
+      int _oddId,
+      String _oddName,
+      int _oddIndex,
+      String _championship,
+      String _country,
+      String _localTeam,
+      String _visitorTeam) {
     // GET THE RIGHT DATA WITH THE RIGHT INDEX
     var _threeWayData = _match[_oddIndex];
     // GET THE LENGTH OF THE THREE WAY ODDS DATA
@@ -1748,6 +1820,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     var _label = _threeWayData['label'];
     // CONTAINS THE VALUE OF THE BUTTON
     var _value = _threeWayData['value'];
+    // CONTAINS THE TOTAL OF AN ODD
+    var _total = _threeWayData['total'];
+    // CONTAINS THE HANDICAP VALUE IF N0T NULL
+    var _handicap = _threeWayData['handicap'];
 
     // INDEX OF GAME IN THE ARRAY OF ODDS
     // GETTING THE ID OF THE GAME
@@ -1773,8 +1849,19 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     // UPDATE ALSO IF THE INDEX IS NOT THE SAME
                     oddsGameArray[_gameOddIndex].oddIndex != _oddIndex) {
                   // UPDATE THE VALUES IN THE ARRAY
-                  selectOddsButton(_gameOddIndex, _oddId, _oddName, _oddIndex,
-                      _label, _value);
+                  selectOddsButton(
+                      _gameOddIndex,
+                      _oddId,
+                      _oddName,
+                      _oddIndex,
+                      _label,
+                      _value,
+                      _championship,
+                      _country,
+                      _localTeam,
+                      _visitorTeam,
+                      _total,
+                      _handicap);
                 } else {
                   // WE SET THE VALUES TO NULL TO UNSELECT EVERY THING HERE
                   unselectOddsButton(_gameOddIndex);
@@ -1814,9 +1901,15 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     );
   }
 
-  oddDataAndOddId(var oddData, int _oddId) {
+  oddDataAndOddId(var oddData, int _oddId, String _championship,
+      String _country, String _localTeam, String _visitorTeam) {
     // oddData = moreLoadedMatchOdds['odds'][0]
     // print(moreLoadedMatchOdds['odds'][3]['id']);
+    // print(_localTeam);
+    // print(_visitorTeam);
+    // print(_championship);
+    // print(_country);
+    // print('----------------');
     // print(moreLoadedMatchOdds['odds'][3]['name']);
     // print(moreLoadedMatchOdds['odds'][0]['bookmaker']['data'][0]['id']);
     // print(moreLoadedMatchOdds['odds'][0]['bookmaker']['data'][0]
@@ -1848,8 +1941,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             if (oddArray.length <= 3)
               Row(
                 children: [
+                  // LOOP THROUGH ODDS INDEX
                   for (int j = 0; j < oddArray.length; j++)
-                    allOddsWidget(oddArray, _oddId, oddData['name'], j),
+                    allOddsWidget(oddArray, _oddId, oddData['name'], j,
+                        _championship, _country, _localTeam, _visitorTeam),
                 ],
               ),
             // IF ODDS VALUES ARE GREATER THAN 3
@@ -1857,8 +1952,11 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               for (int j = 0; j < oddArray.length - 1; j = j + 2)
                 Row(
                   children: [
-                    allOddsWidget(oddArray, _oddId, oddData['name'], j),
-                    allOddsWidget(oddArray, _oddId, oddData['name'], (j + 1)),
+                    // LOOP THROUGH ODDS INDEXES
+                    allOddsWidget(oddArray, _oddId, oddData['name'], j,
+                        _championship, _country, _localTeam, _visitorTeam),
+                    allOddsWidget(oddArray, _oddId, oddData['name'], (j + 1),
+                        _championship, _country, _localTeam, _visitorTeam),
                   ],
                 ),
             // SizedBox(height: 10.0),
@@ -1871,7 +1969,17 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     );
   }
 
-  allOddsWidget(var data, int _oddId, String _oddName, int _oddIndex) {
+  allOddsWidget(
+      var data,
+      int _oddId,
+      String _oddName,
+      int _oddIndex,
+      String _championship,
+      String _country,
+      String _localTeam,
+      String _visitorTeam) {
+    // String _championship = '...';
+    // String _country = '...';
     // data = ['bookmaker']['data'][0]['odds']['data']
     // INDEX OF GAME IN THE ARRAY OF ODDS
     // GETTING THE ID OF THE GAME
@@ -1883,20 +1991,22 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // CONTAINS THE VALUE OF THE BUTTON
     var _value = data[_oddIndex]['value'];
 
-    var total;
+    var _total = data[_oddIndex]['total'];
+
+    // ONLY FOR DISPLAY
+    var _thisTotalDisplay = '';
     // GET THE TOTAL ATTRIBUTE BEFORE UPDATING
-    if (data[_oddIndex]['total'] == null) {
-      total = '';
-    } else {
-      total = ' ' + data[_oddIndex]['total'];
+    if (data[_oddIndex]['total'] != null) {
+      _thisTotalDisplay = ' ' + data[_oddIndex]['total'];
     }
 
-    var handicap;
+    var _handicap = data[_oddIndex]['handicap'];
+
+    // ONLY FOR DISPLAY
+    var _thisHandicapDisplay = '';
     // GET THE HANDICAP ATTRIBUTE BEFORE UPDATING
-    if (data[_oddIndex]['handicap'] == null) {
-      handicap = '';
-    } else {
-      handicap = ' (' + data[_oddIndex]['handicap'] + ')';
+    if (data[_oddIndex]['handicap'] != null) {
+      _thisHandicapDisplay = ' (' + data[_oddIndex]['handicap'] + ')';
     }
 
     // LET US GET THE INDEX OF GAME ID
@@ -1923,8 +2033,19 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     // UPDATE ALSO IF THE INDEX IS NOT THE SAME
                     oddsGameArray[_gameOddIndex].oddIndex != _oddIndex) {
                   // UPDATE THE VALUES IN THE ARRAY
-                  selectOddsButton(_gameOddIndex, _oddId, _oddName, _oddIndex,
-                      _label, _value);
+                  selectOddsButton(
+                      _gameOddIndex,
+                      _oddId,
+                      _oddName,
+                      _oddIndex,
+                      _label,
+                      _value,
+                      _championship,
+                      _country,
+                      _localTeam,
+                      _visitorTeam,
+                      _total,
+                      _handicap);
                 } else {
                   // WE SET THE VALUES TO NULL TO UNSELECT EVERY THING HERE
                   unselectOddsButton(_gameOddIndex);
@@ -1937,7 +2058,11 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                _label.toString() + total.toString() + handicap.toString(),
+                _label.toString() +
+                    // TOTAL VALUES
+                    _thisTotalDisplay.toString() +
+                    // HANDICAP NO NULL VALUE
+                    _thisHandicapDisplay.toString(),
                 style: TextStyle(
                   color: _labelColor,
                   fontWeight: FontWeight.bold,
@@ -1962,35 +2087,27 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
 
   Widget betSlip(BuildContext _context) {
     return Container(
+      // padding: new EdgeInsets.only(top: 0.0),
       margin: ResponsiveWidget.isBigScreen(context)
-          ? EdgeInsets.only(bottom: 10.0) // ADD MARGIN TO BIG SCREEN
+          ? null // ADD MARGIN TO BIG SCREEN
           : EdgeInsets.only(left: 10.0), // ADD LEFT MARGIN TO TABLET AND PHONES
       // 992px - UP
       width: ResponsiveWidget.isBigScreen(context) ? 300.0 : double.infinity,
-      height: ResponsiveWidget.isBigScreen(context) // 992px - UP
-          ? MediaQuery.of(context).size.height - 80.0
-          : ResponsiveWidget.isMediumScreen(context) // tablet
-              ? MediaQuery.of(context).size.height - 80.0 // tablet display
-              // Phones
-              : MediaQuery.of(context).size.height - 176.0,
+      height: ResponsiveWidget.isSmallScreen(context)
+          ? MediaQuery.of(context).size.height - 176.0 // 767.98px and LOW
+          : MediaQuery.of(context).size.height - 80.0, // 767.98px and UP
+      // Phones
       // SO THAT THE HEIGHT WILL BE IDENTICALS
-      // padding: EdgeInsets.only(top: 5.0),
       decoration: BoxDecoration(
         color: Colors.white70,
-        // border: Border(
-        //   top: BorderSide(color: Colors.grey.shade300),
-        //   bottom: BorderSide(color: Colors.grey.shade300),
-        //   left: BorderSide(color: Colors.grey.shade300),
-        //   right: BorderSide(color: Colors.grey.shade300),
-        // ),
       ),
       child: Column(
         children: [
           Container(
             alignment: Alignment.centerLeft,
-            height: 25.0, 
-            padding: EdgeInsets.only(bottom:5.0, right: 10.0),
-            // margin: EdgeInsets.only( bottom: 0.0),
+            height: 20.0,
+            padding: EdgeInsets.only(bottom: 5.0, right: 10.0),
+            // margin: EdgeInsets.only( bottom: 10.0),
             child: Text(
               'Mon billet de pari',
               style: TextStyle(
@@ -2002,7 +2119,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           // SizedBox(height: 10.0),
           Expanded(
             child: Container(
-              margin: EdgeInsets.only(right: 10.0), // TO LEAVE SPACE ON RIGHT
+              margin: ResponsiveWidget.isBigScreen(context)
+                  ? EdgeInsets.only(right: 10.0) // ONLY ON BIG SCREEN
+                  : null, // NULL ON SMALL SCREEN
               // padding: EdgeInsets.all(5.0),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -2018,7 +2137,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 children: [
                   Container(
                     width: double.infinity,
-                    alignment: Alignment.centerLeft,
+                    alignment: Alignment.center,
                     padding: EdgeInsets.all(10.0),
                     margin: EdgeInsets.all(10.0),
                     decoration: BoxDecoration(
@@ -2030,8 +2149,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                           right: BorderSide(color: Colors.grey.shade300)),
                     ),
                     child: Column(
-                      // crossAxisAlignment: CrossAxisAlignment.center,
-                      // mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           Method.displayUserBonus(),
@@ -2384,7 +2503,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                   // print(Price.stake);
                                   // show the loading state button
                                   // _loadingBettingButton = true;
-                                  if (BetSlipData.gameIds.length <= 0) {
+                                  if (countTicketLegs() <= 0) {
                                     // showMessage(context,Colors.red, 'Add Match First');
                                     // show the error panel and the message alongside
                                     // showBetslipMessagePanel = true;
@@ -2402,26 +2521,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                     // hide the loading state button
                                     // _loadingBettingButton = false;
                                     // print('Add Match first');
-                                  } else if (Selection.user == null) {
-                                    // show the error panel and the message alongside
-                                    // showBetslipMessagePanel = true;
-                                    // showBetslipMessage =
-                                    //     'S\'IL VOUS PLAÎT! \nConnectez-Vous d\'abord.';
-                                    // // showMessage(context, Colors.red,
-                                    show_dialog_panel(
-                                        'Connexion requise!'.toUpperCase(),
-                                        'connectez d\'abord votre compte avant de placer un pari',
-                                        'assets/images/fail.png');
-                                    // //     'Please! Login First');
-                                    // // these are panel border color and the bg color
-                                    // showBetslipMessageColor =
-                                    //     Colors.black;
-                                    // showBetslipMessageColorBg =
-                                    //     Colors.red[200];
-                                    // // hide the loading state button
-                                    // _loadingBettingButton = false;
-                                    // print('Please Login First');
-                                  }
+                                  } 
                                   // check if the user provided a balance amount
                                   else if (Price.stake <
                                       Price.minimumBetPrice) {
@@ -2431,8 +2531,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                     //     'S\'IL VOUS PLAÎT! \nLe Montant minimum est ${Price.minimumBetPrice} Fc.';
                                     show_dialog_panel(
                                         'Solde requis!'.toUpperCase(),
-                                        'Le Montant minimum est ${Price.minimumBetPrice} ${Price.currency_symbol}.',
-                                        'assets/images/fail.png');
+                                        'Le montant minimum est de ${Price.currency_symbol} ${Price.minimumBetPrice}',
+                                        'assets/images/fail.png'); 
                                     // showMessage(context, Colors.red,
                                     //     'Please! Login First');
                                     // these are panel border color and the bg color
@@ -2444,19 +2544,44 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                     // _loadingBettingButton = false;
                                   }
                                   // check if the maximum games is respected
-                                  else if (BetSlipData.gameIds.length >
+                                  else if (countTicketLegs() >
                                       Price.maxGames) {
+                                        // WE CANNOT PLACE MORE THAN THE MAXIMUM GAMES ON A BETSLIP
+                                         show_dialog_panel(
+                                        'limite Dépassée!'.toUpperCase(),
+                                        'La Limite de matches pour un billet de pari est de ${Price.maxGames} matches',
+                                        'assets/images/fail.png');
                                     // show the error panel and the message alongside
-                                    showBetslipMessagePanel = true;
-                                    showBetslipMessage =
-                                        'S\'IL VOUS PLAÎT! \nLa Limite pour un Pari est de [ ${Price.maxGames} ] Matches';
+                                    // showBetslipMessagePanel = true;
+                                    // showBetslipMessage =
+                                    //     'S\'IL VOUS PLAÎT! \nLa Limite pour un Pari est de [ ${Price.maxGames} ] Matches';
                                     // showMessage(context, Colors.red,
                                     //     'Please! Login First');
                                     // these are panel border color and the bg color
-                                    showBetslipMessageColor = Colors.black;
-                                    showBetslipMessageColorBg = Colors.red[200];
+                                    // showBetslipMessageColor = Colors.black;
+                                    // showBetslipMessageColorBg = Colors.red[200];
                                     // hide the loading state button
-                                    _loadingBettingButton = false;
+                                    // _loadingBettingButton = false;
+                                  }
+                                  else if (Selection.user == null) {
+                                    // show the error panel and the message alongside
+                                    // showBetslipMessagePanel = true;
+                                    // showBetslipMessage =
+                                    //     'S\'IL VOUS PLAÎT! \nConnectez-Vous d\'abord.';
+                                    // // showMessage(context, Colors.red,
+                                    show_dialog_panel(
+                                        'Connexion requise!'.toUpperCase(),
+                                        'Connecter d\'abord votre compte avant de placer un pari',
+                                        'assets/images/fail.png');
+                                    // //     'Please! Login First');
+                                    // // these are panel border color and the bg color
+                                    // showBetslipMessageColor =
+                                    //     Colors.black; 
+                                    // showBetslipMessageColorBg =
+                                    //     Colors.red[200];
+                                    // // hide the loading state button
+                                    // _loadingBettingButton = false;
+                                    // print('Please Login First');
                                   }
 
                                   // check if the user has balance in his account
@@ -2517,7 +2642,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                               //     '${BetSlipData.gameIds[v]} is no longer available bro!');
 
                                               // hide the loading state button
-                                              _loadingBettingButton = false;
+                                              // _loadingBettingButton = false;
                                             });
                                         }
                                       });
@@ -2573,23 +2698,23 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                                     Colors.lightGreen[400];
                                                 // showMessage(context, Colors.lightGreen[400],
                                                 //     'Placing your Bets');
-                                                clearGamesSelected();
+                                                // clearGamesSelected();
                                                 // after everything completed, hide the placing bet loading status buttton
                                                 if (mounted)
                                                   setState(() {
                                                     // hide the loading state button
-                                                    _loadingBettingButton =
-                                                        false;
+                                                    // _loadingBettingButton =
+                                                    false;
                                                   });
                                                 // print('Placing your bets');
                                               }).catchError((e) {
                                                 if (mounted)
                                                   setState(() {
                                                     // hide the loading state button
-                                                    _loadingBettingButton =
-                                                        false;
-                                                    showBetslipMessagePanel =
-                                                        true;
+                                                    // _loadingBettingButton =
+                                                    //     false;
+                                                    // showBetslipMessagePanel =
+                                                    //     true;
 
                                                     if (e.toString().compareTo(
                                                             'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
@@ -2610,20 +2735,20 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                               if (mounted)
                                                 setState(() {
                                                   // hide the loading state button
-                                                  _loadingBettingButton = false;
-                                                  showBetslipMessagePanel =
-                                                      true;
+                                                  // _loadingBettingButton = false;
+                                                  // showBetslipMessagePanel =
+                                                  //     true;
 
                                                   if (e.toString().compareTo(
                                                           'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
                                                       0) {
-                                                    showBetslipMessage =
-                                                        'Pas d\'Internet';
+                                                    // showBetslipMessage =
+                                                    //     'Pas d\'Internet';
                                                     // print('Pas d\'Internet');
                                                   } else {
                                                     // print('Error 2: $e');
-                                                    showBetslipMessage =
-                                                        'Unknown Error';
+                                                    // showBetslipMessage =
+                                                    //     'Unknown Error';
                                                   }
                                                 });
                                               print(
@@ -2633,7 +2758,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                             if (mounted)
                                               setState(() {
                                                 // hide the loading state button
-                                                _loadingBettingButton = false;
+                                                // _loadingBettingButton = false;
                                                 showBetslipMessagePanel = true;
 
                                                 if (e.toString().compareTo(
@@ -2677,7 +2802,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             fillColor: Colors.lightGreen[400],
                             disabledElevation: 5.0,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16.0)),
+                                borderRadius: BorderRadius.circular(8.0)),
                             child: Text(
                               'Pariez maintenant'.toUpperCase(),
                               style: TextStyle(
@@ -2720,7 +2845,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         builder: (context) {
           return Dialog(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.0)),
+                borderRadius: BorderRadius.circular(8.0)),
             elevation: 0,
             backgroundColor: Colors.transparent,
             child: Stack(
@@ -2788,7 +2913,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         child: RawMaterialButton(
                           elevation: 0,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.0)),
+                              borderRadius: BorderRadius.circular(8.0)),
                           // fillColor: Colors.grey.shade300,
                           hoverColor: Colors.grey.shade100,
                           onPressed: () {
@@ -2836,7 +2961,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         builder: (context) {
           return Dialog(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.0)),
+                borderRadius: BorderRadius.circular(8.0)),
             elevation: 0,
             backgroundColor: Colors.transparent,
             child: Stack(
@@ -2873,7 +2998,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         child: RawMaterialButton(
                           elevation: 0,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.0)),
+                              borderRadius: BorderRadius.circular(8.0)),
                           // fillColor: Colors.grey.shade300,
                           hoverColor: Colors.grey.shade100,
                           onPressed: () {
@@ -2948,6 +3073,22 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   Widget slipMatches(var _matchTicket) {
     // WE SET THE GAME ID HERE
     int _id = _matchTicket.gameID;
+    //  oddsGameArray[_gameOddIndex].total = _total;
+    // oddsGameArray[_gameOddIndex].handicap = _handicap;
+    // oddsGameArray[_gameOddIndex].localTeam = _localTeam;
+    // oddsGameArray[_gameOddIndex].visitorTeam = _visitorTeam;
+    // oddsGameArray[_gameOddIndex].championship = _championship;
+    // oddsGameArray[_gameOddIndex].country = _country;
+    var _total = '';
+    // SET THE TOTAL IF NOT NULL
+    if (_matchTicket.total != null)
+      _total = ' ' + _matchTicket.total.toString().toLowerCase();
+
+    var _handicap = '';
+    // SET THE HANDICAP IF NOT NULL
+    if (_matchTicket.handicap != null)
+      _handicap = ' ' + _matchTicket.handicap.toString().toLowerCase();
+
     return Column(
       children: [
         Container(
@@ -3036,7 +3177,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                 : 180.0,
                             // width: ,
                             child: Text(
-                              'F.C. Barcelona' + ' vs ' + 'F.C. Real Madrid',
+                              _matchTicket.localTeam +
+                                  ' vs ' +
+                                  _matchTicket.visitorTeam,
                               style: TextStyle(
                                 fontSize: 12.0,
                                 color: Colors.grey,
@@ -3059,6 +3202,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                   _matchTicket.oddLabel
                                       .toString()
                                       .toLowerCase() +
+                                  _total +
+                                  _handicap +
                                   ')',
                               style: TextStyle(
                                 fontSize: 12.0,
@@ -3097,6 +3242,17 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
 
   Widget singleGame() {
     // var _oddData = moreLoadedMatchOdds['odds'];
+    var _localTeam = moreOddsMatch.localTeam['data']['name'];
+    var _visitorTeam = moreOddsMatch.visitorTeam['data']['name'];
+    var _championship = _getLeague(moreOddsMatch);
+    var _country = _getCountry(leagueIndex);
+
+    // print(_localTeam);
+    // print(_visitorTeam);
+    // print(_championship);
+    // print(_country);
+    // print('----------------');
+
     return Expanded(
       child: Container(
           decoration: BoxDecoration(
@@ -3138,7 +3294,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     },
                   ),
                 ),
-                matchIntro(),
+                matchIntro(_championship, _country),
                 SizedBox(height: 8.0),
                 Divider(color: Colors.grey, thickness: 0.5),
                 SizedBox(height: 8.0),
@@ -3150,8 +3306,13 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                           _i < moreLoadedMatchOdds['odds'].length;
                           _i++)
                         // WE SAVE THE ODD DATA AND THE ODD ID
-                        oddDataAndOddId(moreLoadedMatchOdds['odds'][_i],
-                            moreLoadedMatchOdds['odds'][_i]['id']),
+                        oddDataAndOddId(
+                            moreLoadedMatchOdds['odds'][_i],
+                            moreLoadedMatchOdds['odds'][_i]['id'],
+                            _championship,
+                            _country,
+                            _localTeam,
+                            _visitorTeam),
                     // ELSE DISPLAY A LOADING SCREEN
                     if (moreLoadedMatchOdds == null)
                       Padding(
@@ -3169,7 +3330,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     );
   }
 
-  matchIntro() {
+  matchIntro(String _championship, String _country) {
     // moreOddsMatch
     var team1 = moreOddsMatch.localTeam['data']['name'];
     var team2 = moreOddsMatch.visitorTeam['data']['name'];
@@ -3179,33 +3340,33 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // GET THE DATE OF THE GAME
     var date = moreOddsMatch.time['starting_at']['date'];
 
-    var championship;
-    var country;
-    int _leagueIndex;
+    var championship = _championship;
+    var country = _country;
+    // int _leagueIndex;
     // LET US LOAD CHAMPIONSHIPS
     // ONLY IF WE HAVE DATA IN THE ARRAY
-    if (_leagues.length > 0)
-      for (int j = 0; j < _leagues.length; j++) {
-        if (_leagues[j]['id'] == moreOddsMatch.league_id) {
-          championship = _leagues[j]['name'];
-          _leagueIndex = j;
-          // print('the ligue is ${_leagues[_lpLg]['name']}');
-          // WE BREAK THE LOOP FOR BETTER PROCESSING
-          break;
-        }
-      }
+    // if (_leagues.length > 0)
+    //   for (int j = 0; j < _leagues.length; j++) {
+    //     if (_leagues[j]['id'] == moreOddsMatch.league_id) {
+    //       championship = _leagues[j]['name'];
+    //       _leagueIndex = j;
+    //       // print('the ligue is ${_leagues[_lpLg]['name']}');
+    //       // WE BREAK THE LOOP FOR BETTER PROCESSING
+    //       break;
+    //     }
+    //   }
 
     // LET US GET THE CORRECT COUNTRY HERE
     // ONLY IF WE HAVE DATA IN THE ARRAY
-    if (_countries.length > 0)
-      for (int j = 0; j < _countries.length; j++) {
-        if (_leagues[_leagueIndex]['country_id'] == _countries[j]['id']) {
-          country = ' - ' + _countries[j]['name'];
-          // print('the country name is ${_countries[j]['name']}');
-          // WE BREAK THE LOOP FOR BETTER PROCESSING
-          break;
-        }
-      }
+    // if (_countries.length > 0)
+    //   for (int j = 0; j < _countries.length; j++) {
+    //     if (_leagues[_leagueIndex]['country_id'] == _countries[j]['id']) {
+    //       country = ' - ' + _countries[j]['name'];
+    //       // print('the country name is ${_countries[j]['name']}');
+    //       // WE BREAK THE LOOP FOR BETTER PROCESSING
+    //       break;
+    //     }
+    //   }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -3248,7 +3409,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         ),
         SizedBox(height: 5.0),
         Text(
-          championship + country,
+          championship + ' - ' + country,
           // 'Premier League - England - Football',
           style: TextStyle(
             color: Colors.grey,
@@ -3258,257 +3419,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         ),
       ],
     );
-  }
-
-  removeMatchFromBetSlip(DocumentSnapshot match) {
-    var getPosition = BetSlipData.gameIds.indexOf(match.documentID);
-    BetSlipData.team1s.removeAt(getPosition); // remove team1
-    BetSlipData.team2s.removeAt(getPosition); // remove Team 2
-    // BetSlipData.oddTypes.removeAt(getPosition); // remove oddTypes
-    BetSlipData.gameChoices.removeAt(getPosition); // remove Team Choosen 1-X-2
-    BetSlipData.rates.removeAt(getPosition); // remove rate of selected team
-    BetSlipData.gameIds.removeAt(getPosition); // remove id
-  }
-
-  unselectOdds(String id) {
-    // create an empty list that will replace the old values in the array
-    var defaultList = [];
-    for (var i = 0; i < Selection.maxLength; i++) {
-      defaultList.add(false);
-    }
-    // get the point where the id starts counting
-    int getPoint = Selection.gameOddsArray.indexOf(id);
-    // replace all values with new ones [default ones]
-    Selection.gameOddsArray.replaceRange(
-        (getPoint + 1), (getPoint + (Selection.maxLength + 1)), defaultList);
-  }
-
-  selectOdds(String id, int position) {
-    // get the point where the id starts counting
-    int getPoint = Selection.gameOddsArray.indexOf(id);
-    // First we set all the values to default values[false]
-    // then we can update only the index value
-    unselectOdds(id);
-    // replace the value in the main array
-    Selection.gameOddsArray
-        .replaceRange((getPoint + position), (getPoint + position), [true]);
-  }
-
-  addMatchToBetSlip(DocumentSnapshot match, int index) {
-    // check if the maximum amount of betting is reached
-    // if (BetSlipData.gameIds.length < 2) {
-    // these variables contain needed values for betslip
-    var id = match.documentID, team1 = match['team1'], team2 = match['team2'];
-    String teamChoosen = '';
-    double rate = 0;
-    // hide the show error panel in BETSLIP every time a match is selected or changed
-    showBetslipMessagePanel = false;
-    // print(match['oneTimesTwo']['1']);
-    // this is 1x2 conditions
-    if (index == 1) {
-      teamChoosen = Selection.reference[0];
-      rate = match['oneTimesTwo']['1'];
-    } else if (index == 2) {
-      teamChoosen = Selection.reference[1];
-      rate = match['oneTimesTwo']['2'];
-    } else if (index == 3) {
-      teamChoosen = Selection.reference[2];
-      rate = match['oneTimesTwo']['3'];
-    } else if (index == 4) {
-      teamChoosen = Selection.reference[3];
-      rate = match['oneTimesTwo']['4'];
-    } else if (index == 5) {
-      teamChoosen = Selection.reference[4];
-      rate = match['oneTimesTwo']['5'];
-    } else if (index == 6) {
-      teamChoosen = Selection.reference[5];
-      rate = match['oneTimesTwo']['6'];
-    } else if (index == 7) {
-      teamChoosen = Selection.reference[6];
-      rate = match['oneTimesTwo']['7'];
-    } else if (index == 8) {
-      teamChoosen = Selection.reference[7];
-      rate = match['oneTimesTwo']['8'];
-    } else if (index == 9) {
-      teamChoosen = Selection.reference[8];
-      rate = match['oneTimesTwo']['9'];
-    }
-    // this is over and under conditions
-    else if (index == 10) {
-      teamChoosen = Selection.reference[9];
-      rate = match['overUnder']['1'];
-    } else if (index == 11) {
-      teamChoosen = Selection.reference[10];
-      rate = match['overUnder']['2'];
-    } else if (index == 12) {
-      teamChoosen = Selection.reference[11];
-      rate = match['overUnder']['3'];
-    } else if (index == 13) {
-      teamChoosen = Selection.reference[12];
-      rate = match['overUnder']['4'];
-    } else if (index == 14) {
-      teamChoosen = Selection.reference[13];
-      rate = match['overUnder']['5'];
-    } else if (index == 15) {
-      teamChoosen = Selection.reference[14];
-      rate = match['overUnder']['6'];
-    } else if (index == 16) {
-      teamChoosen = Selection.reference[15];
-      rate = match['overUnder']['7'];
-    } else if (index == 17) {
-      teamChoosen = Selection.reference[16];
-      rate = match['overUnder']['8'];
-    } else if (index == 18) {
-      teamChoosen = Selection.reference[17];
-      rate = match['overUnder']['9'];
-    } else if (index == 19) {
-      teamChoosen = Selection.reference[18];
-      rate = match['overUnder']['10'];
-    } else if (index == 20) {
-      teamChoosen = Selection.reference[19];
-      rate = match['overUnder']['11'];
-    } else if (index == 21) {
-      teamChoosen = Selection.reference[20];
-      rate = match['overUnder']['12'];
-    }
-    // this is Both teams to score panel
-    else if (index == 22) {
-      teamChoosen = Selection.reference[21];
-      rate = match['bothTeamsToScore']['1'];
-    } else if (index == 23) {
-      teamChoosen = Selection.reference[22];
-      rate = match['bothTeamsToScore']['2'];
-    }
-    // this is odd and even conditions
-    else if (index == 24) {
-      teamChoosen = Selection.reference[23];
-      rate = match['oddEven']['1'];
-    } else if (index == 25) {
-      teamChoosen = Selection.reference[24];
-      rate = match['oddEven']['2'];
-    } else if (index == 26) {
-      teamChoosen = Selection.reference[25];
-      rate = match['oddEven']['3'];
-    } else if (index == 27) {
-      teamChoosen = Selection.reference[26];
-      rate = match['oddEven']['4'];
-    } else if (index == 28) {
-      teamChoosen = Selection.reference[27];
-      rate = match['oddEven']['5'];
-    } else if (index == 29) {
-      teamChoosen = Selection.reference[28];
-      rate = match['oddEven']['6'];
-    }
-    // half odds display here
-    else if (index == 30) {
-      teamChoosen = Selection.reference[29];
-      rate = match['half']['1'];
-    } else if (index == 31) {
-      teamChoosen = Selection.reference[30];
-      rate = match['half']['2'];
-    } else if (index == 32) {
-      teamChoosen = Selection.reference[31];
-      rate = match['half']['3'];
-    } else if (index == 33) {
-      teamChoosen = Selection.reference[32];
-      rate = match['half']['4'];
-    } else if (index == 34) {
-      teamChoosen = Selection.reference[33];
-      rate = match['half']['5'];
-    } else if (index == 35) {
-      teamChoosen = Selection.reference[34];
-      rate = match['half']['6'];
-    } else if (index == 36) {
-      teamChoosen = Selection.reference[35];
-      rate = match['half']['7'];
-    } else if (index == 37) {
-      teamChoosen = Selection.reference[36];
-      rate = match['half']['8'];
-    } else if (index == 38) {
-      teamChoosen = Selection.reference[37];
-      rate = match['half']['9'];
-    } else if (index == 39) {
-      teamChoosen = Selection.reference[38];
-      rate = match['half']['10'];
-    } else if (index == 40) {
-      teamChoosen = Selection.reference[39];
-      rate = match['half']['11'];
-    }
-    // clean sheet odds display here
-    else if (index == 41) {
-      teamChoosen = Selection.reference[40];
-      rate = match['cleanSheet']['1'];
-    } else if (index == 42) {
-      teamChoosen = Selection.reference[41];
-      rate = match['cleanSheet']['2'];
-    } else if (index == 43) {
-      teamChoosen = Selection.reference[42];
-      rate = match['cleanSheet']['3'];
-    } else if (index == 44) {
-      teamChoosen = Selection.reference[43];
-      rate = match['cleanSheet']['4'];
-    }
-    // draw no bet odds display here
-    else if (index == 45) {
-      teamChoosen = Selection.reference[44];
-      rate = match['doubleChance']['1'];
-    } else if (index == 46) {
-      teamChoosen = Selection.reference[45];
-      rate = match['doubleChance']['2'];
-    } else if (index == 47) {
-      teamChoosen = Selection.reference[46];
-      rate = match['doubleChance']['3'];
-    }
-    // other odds goes here [1x2 and both teams to score]
-    else if (index == 48) {
-      teamChoosen = Selection.reference[47];
-      rate = match['other']['1'];
-    } else if (index == 49) {
-      teamChoosen = Selection.reference[48];
-      rate = match['other']['2'];
-    } else if (index == 50) {
-      teamChoosen = Selection.reference[49];
-      rate = match['other']['3'];
-    } else if (index == 51) {
-      teamChoosen = Selection.reference[50];
-      rate = match['other']['4'];
-    } else if (index == 52) {
-      teamChoosen = Selection.reference[51];
-      rate = match['other']['5'];
-    } else if (index == 53) {
-      teamChoosen = Selection.reference[52];
-      rate = match['other']['6'];
-    } else {
-      teamChoosen = Selection.reference[53];
-      rate = 0.0;
-    }
-
-    if (BetSlipData.gameIds.contains(id)) {
-      // get the position of the current ids and update everything
-      int getIdPosition = BetSlipData.gameIds.indexOf(id);
-      // if existed before, delete previous then update everything
-      BetSlipData.team1s[getIdPosition] = team1;
-      BetSlipData.team2s[getIdPosition] = team2;
-      // BetSlipData.oddTypes[getIdPosition] = type;
-      BetSlipData.gameChoices[getIdPosition] = teamChoosen;
-      BetSlipData.rates[getIdPosition] = rate;
-      BetSlipData.gameIds[getIdPosition] = id;
-    } else {
-      // if the id was not iserted so far then add it into the betslip
-      BetSlipData.team1s.add(team1); // add team1
-      BetSlipData.team2s.add(team2); // add Team 2
-      // BetSlipData.oddTypes.add(type); // add oddTypes
-      BetSlipData.gameChoices.add(teamChoosen); // add Team Choosen 1-X-2
-      BetSlipData.rates.add(rate); // add rate of selected team
-      BetSlipData.gameIds.add(id); // add id
-    }
-    // } else {
-    //   print(BetSlipData.gameIds.length);
-    //   var id = match.documentID;
-    //   if (BetSlipData.gameIds.contains(id)) {
-    //     removeMatchFromBetSlip(match);
-    //   }
-    // }
   }
 
   Widget tournament() {
@@ -3579,7 +3489,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // WE SET THE STATE TO LOADING STATE
     _currentPick = 1;
     // THIS SET THE LIMIT OF LOADING MATCHES PER LEAGUE
-    int _loadChampsLimit = 35;
+    int _loadChampsLimit = 50;
     // START FETCHING MATCHES PER LEAGUE
     // HOLD MATCHES NOT ADDED ALREADY
     var _newMatches = [];
@@ -3827,7 +3737,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                           });
                       } catch (e) {
                         // caught the error if any one show in the user typing
-                        print('Erreur: $e');
+                        // print('Erreur: $e');
                       }
                     },
                   ),
@@ -3948,7 +3858,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     );
   }
 
-  thisResult(DocumentSnapshot result) {
+  thisResult(var result) {
     return GestureDetector(
       onTap: () {
         if (mounted)
@@ -3957,6 +3867,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             var _searchedMatch = [];
             // WE CONVERT THE GAME INTO A GAME MATCH INSTANCE
             _searchedMatch.add(Match.fromDatabase(result));
+            // CHECK IF IS LOADED IN THE MAIN ODDS ARRAY
             bool _isLoaded = false;
             // print(oddsGameArray.length);
             // FILTER TO SEE IF THE GAME EXISTS ALREADY IN THE ODDS ARRAY
@@ -3977,7 +3888,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               // print('Game added to odds array');
             }
 
-            // WE ASSIGN THE UNIQUE VALUE TO THE VARIABLE
+            // WE ASSIGN THE UNIQUE VALUE TO THE VARIABLE OF MATCH ODDS
             moreOddsMatch = _searchedMatch.first;
             // LOAD ALL RELATED ODDS TO THIS MATCH
             _fetchMatch
@@ -3993,7 +3904,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             // print(matchMoreOdds.data);
             // print(result.documentID);
             // print(moreOddsMatch.id);
-
+            // CLEAR ALL DATA ARRAYS
             _queryDisplay.clear();
             _queryResults.clear();
 
@@ -4019,61 +3930,34 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           Row(
             children: [
               Icon(Icons.arrow_forward_ios, size: 18.0, color: Colors.grey),
-              // SizedBox(width: 3.0),
-              // VerticalDivider(),
               SizedBox(width: 3.0),
-              Container(
-                width: ResponsiveWidget.isExtraSmallScreen(context)
-                    ? 150
-                    : ResponsiveWidget.isSmallScreen(context)
-                        ? 250
-                        : (ResponsiveWidget.isMediumScreen(context) ||
-                                ResponsiveWidget.customScreen(context) ||
-                                ResponsiveWidget.isExtraLargeScreen(context))
-                            ? 450
-                            : 350,
+              Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       result['localTeam']['data']['name'].toString() +
-                          ' - ' +
+                          ' vs ' +
                           result['visitorTeam']['data']['name'].toString(),
-                      // '',
-                      // result['team1'] + ' - ' + result['team2'],
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: ResponsiveWidget.isExtraSmallScreen(context)
-                            ? 11.0
-                            : 14.0,
+                        fontSize: 14.0,
                         fontWeight: FontWeight.bold,
                       ),
                       maxLines: 4,
-                      overflow: TextOverflow.clip,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(height: 3.0),
                     Text(
                       result['time']['starting_at']['date_time'].toString(),
-                      // result['date']['1'] +
-                      //     ' ' +
-                      //     result['date']['2'] +
-                      //     '/' +
-                      //     result['date']['3'] +
-                      //     ' - ' +
-                      //     result['time']['1'] +
-                      //     ':' +
-                      //     result['time']['2'] +
-                      //     ' ' +
-                      //     result['time']['3'],
-                      // '',
                       style: TextStyle(
                         color: Colors.grey,
                         fontSize: 13.0,
                         fontWeight: FontWeight.bold,
                       ),
                       maxLines: 4,
-                      overflow: TextOverflow.clip,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
@@ -4087,9 +3971,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       ),
     );
   }
-
-  bool isNoInternetNetwork = false;
-  // bool isNoInternetNetworkOrOtherError = false;
 
   void checkInternet() async {
     try {
@@ -4601,63 +4482,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         ),
       ),
     );
-  }
-
-  clearGamesSelected() {
-    // clear all games logic goes here and reset every thing
-    if (mounted)
-      setState(() {
-        var resetToDefault = [];
-        // set all bet options to false
-        for (int i = 0; i < Selection.maxLength; i++) {
-          resetToDefault.add(false);
-        }
-        for (var j = 0; j < BetSlipData.gameIds.length; j++) {
-          // get the position of the id in the main array
-          int start = Selection.gameOddsArray.indexOf(BetSlipData.gameIds[j]);
-          Selection.gameOddsArray.replaceRange(
-              (start + 1), (start + (Selection.maxLength + 1)), resetToDefault);
-        }
-        // clear all betslip arrays so that new values can be added
-        BetSlipData.team1s.clear(); // clear all team1
-        BetSlipData.team2s.clear(); // clear all Team 2
-        // clear all oddTypes
-        // BetSlipData.oddTypes
-        //     .clear();
-        // clear all choices
-        BetSlipData.gameChoices.clear();
-        BetSlipData.rates.clear(); // clear all rates
-        BetSlipData.gameIds.clear(); // clear all id
-        // loadBetslipMatches();
-        // set the default price to 100 Fc
-        Price.stake = 0.0;
-      });
-  }
-
-  removeSingleMatch(String id) {
-    // hide the show error panel on The BETSLIP panel
-    showBetslipMessagePanel = false;
-    // remove match from betslip process
-    var resetToDefault = [];
-    for (int i = 0; i < Selection.maxLength; i++) {
-      resetToDefault.add(false);
-    }
-    // get the position of the id in the main array
-    int start = Selection.gameOddsArray.indexOf(id);
-    Selection.gameOddsArray.replaceRange(
-        (start + 1), (start + (Selection.maxLength + 1)), resetToDefault);
-    int index = BetSlipData.gameIds.indexOf(id);
-    // clear index betslip arrays so that new values can be added
-    BetSlipData.team1s.removeAt(index); // clear index team1
-    BetSlipData.team2s.removeAt(index); // clear index Team 2
-    // clear index oddTypes
-    // BetSlipData.oddTypes.removeAt(index);
-    // clear index choices
-    BetSlipData.gameChoices.removeAt(index);
-    BetSlipData.rates.removeAt(index); // clear index rates
-    BetSlipData.gameIds.removeAt(index); // clear index id
-
-    // loadBetslipMatches();
   }
 
   _displayBonusDataTable(int matchNumber, String substring, int bonus) {

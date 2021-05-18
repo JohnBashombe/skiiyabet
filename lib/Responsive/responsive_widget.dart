@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ResponsiveWidget {
   static bool isSmallScreen(BuildContext context) {
-    return MediaQuery.of(context).size.width < 768;
+    return MediaQuery.of(context).size.width < 767.98;
   }
 
   static bool isBigScreen(BuildContext context) {
