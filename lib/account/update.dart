@@ -1,7 +1,7 @@
 import 'package:skiiyabet/Responsive/responsive_widget.dart';
 import 'package:skiiyabet/account/login.dart';
 import 'package:skiiyabet/app/skiiyaBet.dart';
-import 'package:skiiyabet/database/selection.dart';
+import 'package:skiiyabet/components/selection.dart';
 import 'package:skiiyabet/methods/connexion.dart';
 import 'package:skiiyabet/mywindow.dart';
 import 'package:firebase_auth/firebase_auth.dart';

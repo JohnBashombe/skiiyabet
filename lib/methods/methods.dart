@@ -1,38 +1,12 @@
 import 'package:skiiyabet/app/skiiyaBet.dart';
-import 'package:skiiyabet/database/betslip.dart';
-import 'package:skiiyabet/database/bonus.dart';
-// import 'package:skiiyabet/database/game.dart';
-import 'package:skiiyabet/database/price.dart';
-import 'package:skiiyabet/database/selection.dart';
+import 'package:skiiyabet/components/bonus.dart';
+import 'package:skiiyabet/components/price.dart';
+import 'package:skiiyabet/components/selection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:flutter/material.dart';
 
 class Method {
+  // GET THE POURCENTAGE VALUE OF THE
   static int pourcentageRate = 0;
-  static String transactionID;
-
-  // static showUserBettingStake() {
-  //   return Container(
-  //     // padding: EdgeInsets.all(10.0),
-  //     height: 40.0,
-  //     alignment: Alignment.center,
-  //     decoration: BoxDecoration(
-  //         color: Colors.white70,
-  //         border: Border(
-  //           top: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-  //           bottom: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-  //           left: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-  //           right: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-  //         )),
-  //     child: Text(
-  //       // Price.stake.toString(),
-  //       Price.getCommaValue(Price.stake),
-  //       style: TextStyle(
-  //           color: Colors.black, fontSize: 18.0, fontWeight: FontWeight.bold),
-  //     ),
-  //   );
-  // }
 
   static String displayUserBonus() {
     // COUNT THE MATCHES ON THE TICKET
@@ -44,7 +18,7 @@ class Method {
           oddsGameArray[_i].oddName != null &&
           oddsGameArray[_i].oddIndex != null &&
           oddsGameArray[_i].oddLabel != null &&
-          oddsGameArray[_i].oddValue != null) { 
+          oddsGameArray[_i].oddValue != null) {
         // INSCREASE THE COUNTER + 1 OR REDUCE IT ACCORDINGLY
         counter++;
       }
@@ -177,10 +151,12 @@ class Method {
   }
 
   static double bonusAmount() {
+    // WE GET THE AMOUNT TO BE WON AS BONUS
     return possibleWinning() * (pourcentageRate / 100);
   }
 
   static double totalPayout() {
+    // WE GET THE TOTAL PAYOUT FOR THE CURRENT TICKET
     double result = possibleWinning() + bonusAmount();
     if (result >= Price.maxWinning) {
       result = Price.maxWinning;
@@ -188,160 +164,184 @@ class Method {
     return result;
   }
 
-  static Future addBetslipToRecords() {
-    // variables declaration
-    var date = new DateTime.now();
-    String min = date.minute < 10
-        ? '0' + date.minute.toString()
-        : date.minute.toString();
-    String hour =
-        date.hour < 10 ? '0' + date.hour.toString() : date.hour.toString();
+  static String _getTime() {
+    // GET CURRENT TIME IN UTC FORMAT
+    var _datetime = new DateTime.now().toUtc();
+    // GET MINUTE IN A CUSTOM FORMAT
+    String _minute = _formatOf10(_datetime.minute);
+    // GET HOUR IN A CUSTOM FORMAT
+    String _hour = _formatOf10(_datetime.hour);
+    // GET SECOND IN A CUSTOM FORMAT
+    String _second = _formatOf10(_datetime.second);
+    // RETURN A STRING IN TIME FORMAT
+    return _hour + ':' + _minute + ':' + _second;
+  }
 
-    int indicRef = date.hour;
-    String timeIndicator = '';
-    if (indicRef < 12)
-      timeIndicator = 'AM';
-    else
-      timeIndicator = 'PM';
+  static _getDate() {
+    // GET CURRENT TIME IN UTC FORMAT
+    var _datetime = new DateTime.now().toUtc();
+    // WE ADD OUR CUSTOM DATE FORMAT TO VARIABLES
+    // WE GET THE DAY
+    String _day = _formatOf10(_datetime.day);
+    // WE GET THE MONTH
+    String _month = _formatOf10(_datetime.month);
+    // WE GET THE YEAR
+    String _year = _datetime.year.toString();
+    // RETURN A STRING IN DATE FORMAT
+    return _day + '-' + _month + '-' + _year;
+  }
 
-    String day =
-        date.day < 10 ? '0' + date.day.toString() : date.day.toString();
-    String month =
-        date.month < 10 ? '0' + date.month.toString() : date.month.toString();
-    String year =
-        date.year < 10 ? '0' + date.year.toString() : date.year.toString();
-    int today = date.weekday;
-    String weekday = '';
+  static Future addNewTicket(
+      String _transID, double _stake, var _oddsDataArray) {
+    // WE GET THE USER ID
+    String _uid = Selection.user.uid;
 
-    if (today == 1) weekday = 'Lun';
-    if (today == 2) weekday = 'Mar';
-    if (today == 3) weekday = 'Mer';
-    if (today == 4) weekday = 'Jeu';
-    if (today == 5) weekday = 'Ven';
-    if (today == 6) weekday = 'Sam';
-    if (today == 7) weekday = 'Dim';
-    // this variable array hold the amount of games are in ids and contains results
-    var betResults = [];
-    var betScoreTeam1 = [];
-    var betScoreTeam2 = [];
-    // set defaults values of results to null then results will be added later
-    for (int i = 0; i < BetSlipData.gameIds.length; i++) {
-      betResults.add(null);
-      betScoreTeam1.add(null);
-      betScoreTeam2.add(null);
+    // GET THE CURRENT TIME HERE
+    var _datetime = new DateTime.now().toUtc();
+    // print(_date_time);
+    int _timestamp = _datetime.toUtc().millisecondsSinceEpoch;
+
+    // WE GET THE CUSTOM DATE HERE
+    String _date = _getDate();
+    // WE GET THE CUSTOM TIME HERE
+    var _time = _getTime();
+
+    // LET US FIRST OF ALL COUNT ALL SELECTED GAMES
+    int _numberOfGames = 0;
+    // int _numberOfGames = _getTotalTicketLegs(_oddsDataArray);
+    // LET US CREATE A RESIDUAL ARRAY THAT WILL HOLD ONLY SELECTED GAMES
+    var _selectedGames = [];
+
+    for (int _i = 0; _i < _oddsDataArray.length; _i++) {
+      // CHECK GAME AFTER GAME
+      if (_oddsDataArray[_i].oddID != null &&
+          _oddsDataArray[_i].oddName != null &&
+          _oddsDataArray[_i].oddIndex != null &&
+          _oddsDataArray[_i].oddLabel != null &&
+          _oddsDataArray[_i].oddValue != null) {
+        // INCREASE THE GAME COUNTER OF MATCHES
+        _numberOfGames++;
+        // ADD THE CURRENT GAME INTO THE RESIDUAL ARRAY
+        // WE WILL ADD ONLY SELECTED GAMES IN THIS ARRAY
+        _selectedGames.add(_oddsDataArray[_i]);
+      }
     }
-    // print(BetSlipData.gameIds);
-    // print(BetSlipData.team1s);
-    // print(BetSlipData.team2s);
-    // print(BetSlipData.rates);
-    // print(BetSlipData.oddTypes);
-    // print(BetSlipData.gameChoices);
-    // print('the user id is: $id');
-    // return null;
-    return Firestore.instance.collection('BetSlip').add(
+
+    print('THE LENGTH IS: $_numberOfGames');
+    print('SELECTED GAMES ARE: ${_selectedGames.length}');
+
+    // TO BE CONTINUED
+
+    // ARRAYS CONTAINING DATA OF GAMES ON THE TICKET
+    var _gameIDs = []; // GAME IDS
+    var _oddIDs = []; // ODD IDS
+    var _oddNames = []; // ODD NAMES
+    var _oddIndexes = []; // ODDS INDEXES
+    var _oddLabels = []; // ODDS LABELS
+    var _oddValues = []; // CONTAINS DATA VALUES
+    var _oddTotals = []; // CONTAINS GAME OPTIONS TOTALS
+    var _oddHandicaps = []; // CONTAINS GAME OPTIONS HANDICAPS
+    var _localTeams = []; // LOCAL TEAM NAMES
+    var _visitorTeams = []; // VISITOR TEAM NAMES
+    var _teamLeagues = []; // LEAGUES OR CHAMPIONSHIPS
+    var _teamCountries = []; // COUNTRIES OF EACH GAME
+    var _dataTimes = []; // TIMES OF ALL GAMES
+    var _teamScores = []; // SCORES OF ALL TEAMS
+    var _teamResults = []; // RESULTS OF ALL TEAMS
+
+    return Firestore.instance.collection('betslip').add(
       {
-        'uid': Selection.user.uid,
-        'gameIDs': BetSlipData.gameIds,
-        'gameChoices': BetSlipData.gameChoices,
-        // maybe we should add championship array and type so that in my bets there will be no need of loading games ever again
-        // 'gameTeam1s': BetSlipData.team1s,
-        // 'gameTeam2s': BetSlipData.team2s,
-        // 'gameChampionships': BetSlipData.championships,
-        // 'gameTypes': BetSlipData.gameTypes,
-        'gameRates': BetSlipData.rates,
-        'gameScoreTeam1': betScoreTeam1,
-        'gameScoreTeam2': betScoreTeam2,
-        'gameResults': betResults,
-        'stake': Price.stake,
-        'totalRate': totalRate(),
-        'bonusAmount': bonusAmount(),
-        'possibleWinning': possibleWinning(),
-        'totalPayout': totalPayout(),
-        'time': [hour.toString(), min.toString(), timeIndicator.toString()],
-        'date': [
-          weekday.toString(),
-          day.toString(),
-          month.toString(),
-          year.toString()
-        ],
-        'status': 'pending', // pending or completed
-        'result': 'pending', // won or lost
-        'transactionID': transactionID, // save the transaction associated to it
-        'sorter': day.toString() +
-            month.toString() +
-            year.toString() +
-            hour.toString() +
-            min.toString(),
-        'timeAdded': new DateTime.now(),
+        'uid': _uid,
+        'status': 'pending',
+        'trans_id': _transID,
+        'rewards': {
+          'number_of_games': _numberOfGames,
+          'stake': _stake,
+          'odds': totalRate(),
+          'bonus': bonusAmount(),
+          'winning': possibleWinning(),
+          'payout': totalPayout(),
+        },
+        'time': {
+          'date_time': '$_datetime',
+          'time': '$_time',
+          'date': '$_date',
+          'timestamp': _timestamp,
+          'timezone': 'UTC'
+        },
+        'matches': {
+          'gameIDs': _gameIDs, // GAME IDS
+          'oddIDs': _oddIDs, // ODD IDS
+          'oddNames': _oddNames, // ODD NAMES
+          'oddIndexes': _oddIndexes, // ODDS INDEXES
+          'oddLabels': _oddLabels, // ODDS LABELS
+          'oddValues': _oddValues, // CONTAINS DATA VALUES
+          'oddTotals': _oddTotals, // CONTAINS GAME OPTIONS TOTALS
+          'oddHandicaps': _oddHandicaps, // CONTAINS GAME OPTIONS HANDICAPS
+          'localTeams': _localTeams, // LOCAL TEAM NAMES
+          'visitorTeams': _visitorTeams, // VISITOR TEAM NAMES
+          'teamLeagues': _teamLeagues, // LEAGUES OR CHAMPIONSHIPS
+          'teamCountries': _teamCountries, // COUNTRIES OF EACH GAME
+          'dataTimes': _dataTimes, // TIMES OF ALL GAMES
+          'teamScores': _teamScores, // SCORES OF ALL TEAMS
+          'teamResults': _teamResults, // RESULTS OF ALL TEAMS
+        },
       },
     );
   }
 
-  static Future updateUserBalance() {
-    // update the user balance before placing the games
+  static Future updateUserBalance(String _transID) {
+    // WE GET THE USER ID FIRST
+    String _uid = Selection.user.uid;
+    // WE UPDATE THE BALANCE NEGATIVELY WITH THE STAKE VALUE
+    // THEN WE CONTINUE WITH THE PROCESS
     return Firestore.instance
         .collection('UserBalance')
-        .document(Selection.user.uid)
-        .updateData({'balance': FieldValue.increment(-Price.stake)});
-    // .updateData({'balance': FieldValue.increment(0)});
-    //     .then((value) {
-    //   print('user balance updated successfully with minus $amount');
-    // }).catchError((e) {
-    //   print('error while updating balance : $e');
-    // });
-    // return null;
+        .document(_uid)
+        .updateData(
+      {
+        'balance': FieldValue.increment(-Price.stake),
+        'transaction_id': '$_transID',
+      },
+    );
   }
 
-  static Future addTransactionRecords(String type, String uid, double amount) {
-    // variables declaration
-    var date = new DateTime.now();
-    String min = date.minute < 10
-        ? '0' + date.minute.toString()
-        : date.minute.toString();
-    String hour =
-        date.hour < 10 ? '0' + date.hour.toString() : date.hour.toString();
+  static String _formatOf10(int _newVal) {
+    // WE CREATE AN EMPTY VALUE
+    String _val = _newVal.toString();
+    // IF THE VALUE IS LESS THAN 10 ADD A ZERO BEFORE
+    // OTHERWISE DO NOT ADD ANYTHING BEFORE THE VALUE
+    if (_newVal < 10) _val = '0' + _newVal.toString();
+    // RETURN THE MODIFIED VALUE
+    return _val;
+  }
 
-    int indicRef = date.hour;
-    String timeIndicator = '';
-    if (indicRef < 12)
-      timeIndicator = 'AM';
-    else
-      timeIndicator = 'PM';
+  static Future addNewTransaction(String _type, double _amount) {
+    // WE GET THE USER ID
+    String _uid = Selection.user.uid;
 
-    String day =
-        date.day < 10 ? '0' + date.day.toString() : date.day.toString();
-    String month =
-        date.month < 10 ? '0' + date.month.toString() : date.month.toString();
-    String year =
-        date.year < 10 ? '0' + date.year.toString() : date.year.toString();
-    int today = date.weekday;
+    // GET THE CURRENT DATE TIME IN UTC FORMAT
+    var _datetime = new DateTime.now().toUtc();
+    // STORE THE TIMESTAMP
+    int _timestamp = _datetime.toUtc().millisecondsSinceEpoch;
 
-    String weekday = '';
-    if (today == 1) weekday = 'Lun';
-    if (today == 2) weekday = 'Mar';
-    if (today == 3) weekday = 'Mer';
-    if (today == 4) weekday = 'Jeu';
-    if (today == 5) weekday = 'Ven';
-    if (today == 6) weekday = 'Sam';
-    if (today == 7) weekday = 'Dim';
-    // inserting that transaction into the transaction history
+    // WE ADD OUR CUSTOM DATE FORMAT TO VARIABLES
+    String _date = _getDate();
+    // WE GET THE CUSTOM TIME HERE
+    var _time = _getTime();
+
+    // ADDING THE RECORDS TO THE COLLECTION OF TRANSACTIONS
     return Firestore.instance.collection('Transactions').add({
-      'uid': uid,
-      'amount': amount,
-      'type': type,
-      'time': [hour, min, timeIndicator],
-      'date': [weekday, day, month, year],
-      'sorter': day.toString() +
-          month.toString() +
-          year.toString() +
-          hour.toString() +
-          min.toString(),
-    }).then((value) {
-      // save the transaction ID for it to be used in the betslip
-      transactionID = value.documentID;
+      'uid': _uid,
+      'amount': _amount,
+      'type': _type,
+      'time': {
+        'time': '$_time',
+        'date': '$_date',
+        'date_time': '$_datetime',
+        'timestamp': _timestamp,
+        'timezone': 'UTC'
+      },
     });
-    // print('user transaction added successfully');
-    // print('the user id is: $id');
-    // return null;
   }
 }

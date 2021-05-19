@@ -1,4 +1,4 @@
-import 'package:skiiyabet/database/price.dart';
+import 'package:skiiyabet/components/price.dart';
 
 class BetSlipData {
   double stake = Price.stake; // to be sent on server

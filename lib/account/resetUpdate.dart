@@ -3,7 +3,7 @@ import 'package:skiiyabet/Responsive/responsive_widget.dart';
 import 'package:skiiyabet/account/login.dart';
 import 'package:skiiyabet/app/skiiyaBet.dart';
 import 'package:skiiyabet/counter/countdown.dart';
-import 'package:skiiyabet/database/selection.dart';
+import 'package:skiiyabet/components/selection.dart';
 import 'package:skiiyabet/encryption/encryption.dart';
 import 'package:skiiyabet/mywindow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

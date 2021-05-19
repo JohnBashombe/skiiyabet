@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:skiiyabet/Responsive/responsive_widget.dart';
 import 'package:skiiyabet/app/skiiyaBet.dart';
-import 'package:skiiyabet/database/selection.dart';
+import 'package:skiiyabet/components/selection.dart';
 import 'package:skiiyabet/encryption/encryption.dart';
 import 'package:skiiyabet/mywindow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -88,8 +88,7 @@ class _LoginState extends State<Login> {
     return Expanded(
       child: Container(
         width: double.infinity,
-        margin: EdgeInsets.only(
-            left: 10.0),
+        margin: EdgeInsets.only(left: 10.0),
         padding: new EdgeInsets.all(15.0),
         decoration: BoxDecoration(
           border: Border(
@@ -1343,7 +1342,7 @@ class _LoginState extends State<Login> {
         Firestore.instance
             .collection('UserBalance')
             .document(result.user.uid)
-            .setData({'balance': 0.0});
+            .setData({'balance': 0.0, 'lastTransactionID': null});
         // ADD USER TELEPHONE DETAILS HERE
         Firestore.instance
             .collection('UserTelephone')

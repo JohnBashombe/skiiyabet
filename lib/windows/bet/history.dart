@@ -1,6 +1,6 @@
 import 'package:skiiyabet/Responsive/responsive_widget.dart';
-import 'package:skiiyabet/database/price.dart';
-import 'package:skiiyabet/database/selection.dart';
+import 'package:skiiyabet/components/price.dart';
+import 'package:skiiyabet/components/selection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -753,7 +753,7 @@ class _HistoryState extends State<History> {
                   _detailIndex = index;
                   // remove previous games to load new ones based on the betslip
                   betGameDetails.clear();
-                  // load all games details from the database
+                  // load all games details from the components
                   _loadGameAfterGame(index);
                   // Window.showWindow = 15;
                   // Window.backToHistory = 0;

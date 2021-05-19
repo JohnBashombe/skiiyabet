@@ -1,7 +1,7 @@
 import 'package:skiiyabet/Responsive/responsive_widget.dart';
 import 'package:skiiyabet/app/skiiyaBet.dart';
-import 'package:skiiyabet/database/price.dart';
-import 'package:skiiyabet/database/selection.dart';
+import 'package:skiiyabet/components/price.dart';
+import 'package:skiiyabet/components/selection.dart';
 import 'package:skiiyabet/methods/connexion.dart';
 import 'package:skiiyabet/methods/methods.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -276,8 +276,7 @@ class _WithdrawState extends State<Withdraw> {
               .updateData(
                   {'balance': FieldValue.increment(-withdrawAmount)}).then((_) {
             // ADD A NEW REQUEST
-            Method.addTransactionRecords(
-                'Withdraw', Selection.user.uid, withdrawAmount);
+            Method.addNewTransaction('Retrait', withdrawAmount);
             addWithdrawRequest();
           });
         } else {

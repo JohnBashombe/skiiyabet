@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter_awesome_buttons/flutter_awesome_buttons.dart';
 import 'package:skiiyabet/account/login.dart';
 import 'package:skiiyabet/app/entities/oddSelection.dart';
-import 'package:skiiyabet/database/bonus.dart';
+import 'package:skiiyabet/components/bonus.dart';
 import 'package:skiiyabet/encryption/encryption.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -14,9 +14,9 @@ import 'package:flutter_session/flutter_session.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:skiiyabet/Responsive/responsive_widget.dart';
-import 'package:skiiyabet/database/betslip.dart';
-import 'package:skiiyabet/database/price.dart';
-import 'package:skiiyabet/database/selection.dart';
+import 'package:skiiyabet/components/betslip.dart';
+import 'package:skiiyabet/components/price.dart';
+import 'package:skiiyabet/components/selection.dart';
 import 'package:skiiyabet/mywindow.dart';
 import 'package:skiiyabet/methods/methods.dart';
 import 'package:skiiyabet/account/forgot.dart';
@@ -80,12 +80,15 @@ bool switchToMoreMatchOddsWindow = false;
 
 // THIS WILL CONTAIN THE CURRENT MATCH TO LOAD MORE ODDS
 var moreOddsMatch;
-// IT STORE THE ODDS OF THE GAME WE WILL NEDD
+// IT STORE THE ODDS OF THE CLICKED GAME THAT WE NEDD FOR MORE PROBABILITIES
 var moreLoadedMatchOdds;
 
 // THIS CHECK WEITHER WE HAVE INTERNET NETWORK OR NOT
 bool isNoInternetNetwork = false;
 // bool isNoInternetNetworkOrOtherError = false;
+
+// GET THE LEAGUE INDEX THAT WILL BE USED TO FETCH THE RIGHT COUNTRY
+int leagueIndex;
 
 // SCROOL CONTROLLER
 ScrollController _scrollController = new ScrollController();
@@ -1256,7 +1259,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   }
 
   // RETURN THE NUMBER OF SELCTED MATCHES ON THE BETSLIP
-  int countTicketLegs() {
+  static int countTicketLegs() {
     int _thisCounter = 0;
     // WE LOOP THROUGH THE GAMES ODDS ARRAY TO GET SELECTED GAMES
     for (int _i = 0; _i < oddsGameArray.length; _i++) {
@@ -1338,102 +1341,100 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   Widget games() {
     // SHOW THE GAME HOME PANEL INITIALLY
     if (!switchToMoreMatchOddsWindow) {
-      return Expanded(
-          child: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Colors.grey.shade300),
-            bottom: BorderSide(color: Colors.grey.shade300),
-            left: BorderSide(color: Colors.grey.shade300),
-            right: BorderSide(color: Colors.grey.shade300),
-          ),
-        ),
-        margin: EdgeInsets.only(left: 10.0, top: 0.0),
-        child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.all(8.0),
-          child: _matches.length > 0
-              ? ListView.builder(
-                  controller: _scrollController,
-                  itemCount: _matches.length,
-                  itemBuilder: (context, _index) {
-                    return singleMatch(_matches[_index], _index);
-                  },
-                )
-              : Center(
-                  child:
-                      // isNoInternetNetworkOrOtherError
-                      (isNoInternetNetwork)
-                          ? // if there is a network error
-                          GestureDetector(
-                              onTap: () {
-                                if (mounted)
-                                  setState(() {
-                                    // on click of this item, reload games to check for update
-                                    // loadingGames(fieldLoadMore);
-                                    // load championship content
-                                    // loadSideData();
-                                    // hide the error message
-                                    isNoInternetNetwork = false;
-                                    // isNoInternetNetworkOrOtherError = false;
-                                    // load user details too
-                                    // print('User phone: ${Selection.userTelephone}');
-                                    if (Selection.userTelephone.compareTo('') !=
-                                        0) {
-                                      // if the phone is not empty, then reloggin the user
-                                      // reLoginUser();
-                                    }
-                                  });
-                              },
-                              child: MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.refresh,
-                                      size: 35.0,
-                                      color: Colors.black,
-                                    ),
-                                    Text('Problème d\'Internet'.toUpperCase(),
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.w500,
-                                          // fontStyle: FontStyle.italic,
-                                        )),
-                                    Text(
-                                        'Cliquez Ici pour Mettre à Jour'
-                                            .toUpperCase(),
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.w500,
-                                          // fontStyle: FontStyle.italic,
-                                        )),
-                                  ],
-                                ),
-                              ),
-                            )
-                          //     )) // else do this
-                          : SpinKitCubeGrid(
-                              color: Colors.lightGreen[400],
-                              size: 25.0,
-                            ),
-                ),
-        ),
-      ));
+      return homePage();
     } else {
       // THEN SHOW THE GAME DETAILS ON GAME CLICK
       return singleGame();
     }
   }
 
-  // int getLeagueIndex(int _leagueIndex) {
-  //   return _leagueIndex;
-  // }
-
-  int leagueIndex;
+  Expanded homePage() {
+    return Expanded(
+        child: Container(
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: Colors.grey.shade300),
+          bottom: BorderSide(color: Colors.grey.shade300),
+          left: BorderSide(color: Colors.grey.shade300),
+          right: BorderSide(color: Colors.grey.shade300),
+        ),
+      ),
+      margin: EdgeInsets.only(left: 10.0, top: 0.0),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(8.0),
+        child: _matches.length > 0
+            ? ListView.builder(
+                controller: _scrollController,
+                itemCount: _matches.length,
+                itemBuilder: (context, _index) {
+                  return singleMatch(_matches[_index], _index);
+                },
+              )
+            : Center(
+                child:
+                    // isNoInternetNetworkOrOtherError
+                    (isNoInternetNetwork)
+                        ? // if there is a network error
+                        GestureDetector(
+                            onTap: () {
+                              if (mounted)
+                                setState(() {
+                                  // on click of this item, reload games to check for update
+                                  // loadingGames(fieldLoadMore);
+                                  // load championship content
+                                  // loadSideData();
+                                  // hide the error message
+                                  isNoInternetNetwork = false;
+                                  // isNoInternetNetworkOrOtherError = false;
+                                  // load user details too
+                                  // print('User phone: ${Selection.userTelephone}');
+                                  // if (Selection.userTelephone.compareTo('') !=
+                                  //     0) {
+                                  //   // if the phone is not empty, then reloggin the user
+                                  //   // reLoginUser();
+                                  // }
+                                });
+                            },
+                            child: MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.refresh,
+                                    size: 35.0,
+                                    color: Colors.black,
+                                  ),
+                                  Text('Problème d\'Internet'.toUpperCase(),
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.w500,
+                                        // fontStyle: FontStyle.italic,
+                                      )),
+                                  Text(
+                                      'Cliquez Ici pour Mettre à Jour'
+                                          .toUpperCase(),
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.w500,
+                                        // fontStyle: FontStyle.italic,
+                                      )),
+                                ],
+                              ),
+                            ),
+                          )
+                        //     )) // else do this
+                        : SpinKitCubeGrid(
+                            color: Colors.lightGreen[400],
+                            size: 25.0,
+                          ),
+              ),
+      ),
+    ));
+  }
 
   String _getCountry(int _leagueIndex) {
     String country = '...';
@@ -1494,19 +1495,11 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     var _countryDisplay = ' - ' + _getCountry(leagueIndex);
     // LET US LOAD CHAMPIONSHIPS
 
-    // print(_thisMatch.threeWayOdds['id']);
-    // print(_thisMatch.threeWayOdds['name']);
-    // print(_thisMatch.threeWayOdds['bookmaker']['data'][0]['id']);
-    // print(_thisMatch.threeWayOdds['bookmaker']['data'][0]['name']);
-    // print(_thisMatch.threeWayOdds['bookmaker']['data'][0]['odds']['data'][0]['label']);
-    // print(_thisMatch.threeWayOdds['bookmaker']['data'][0]['odds']['data'][0]['value']);
-    // print(_thisMatch.threeWayOdds['bookmaker']['data'][0]['odds']['data'][0]['winning']);
     // THIS STORE THE DATA FOR THREE WAY ODDS
     var _threeWayData =
         _thisMatch.threeWayOdds['bookmaker']['data'][0]['odds']['data'];
-    // print(_threeWayData.length);
-    // print(_threeWayData[0]);
-    // print(_thisMatch.id);
+
+    var _dataTime = _thisMatch.time;
 
     return Column(
       children: [
@@ -1697,7 +1690,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   championship,
                   country,
                   _localTeam,
-                  _visitorTeam),
+                  _visitorTeam,
+                  _dataTime),
           ],
         ),
         SizedBox(height: 5.0),
@@ -1732,7 +1726,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       String _localTeam,
       String _visitorTeam,
       var _total,
-      var _handicap) {
+      var _handicap,
+      var _dataTime) {
     // WE SET THE VALUES OF THE GAME INTO THE ARRAY
     // WE UPDATE THE VALUES AND THE COLORS
     oddsGameArray[_gameOddIndex].oddID = _oddId;
@@ -1746,7 +1741,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     oddsGameArray[_gameOddIndex].visitorTeam = _visitorTeam;
     oddsGameArray[_gameOddIndex].championship = _championship;
     oddsGameArray[_gameOddIndex].country = _country;
+    oddsGameArray[_gameOddIndex].dataTime = _dataTime;
     // WE PRECISE THE RIGHT BUTTON FOR SELECTION
+    print(_dataTime);
     // UPDATE THE COLOR OF THE BUTTON AND OF THE LABEL
     customColors();
   }
@@ -1811,7 +1808,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       String _championship,
       String _country,
       String _localTeam,
-      String _visitorTeam) {
+      String _visitorTeam,
+      var _dataTime) {
     // GET THE RIGHT DATA WITH THE RIGHT INDEX
     var _threeWayData = _match[_oddIndex];
     // GET THE LENGTH OF THE THREE WAY ODDS DATA
@@ -1861,7 +1859,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       _localTeam,
                       _visitorTeam,
                       _total,
-                      _handicap);
+                      _handicap,
+                      _dataTime);
                 } else {
                   // WE SET THE VALUES TO NULL TO UNSELECT EVERY THING HERE
                   unselectOddsButton(_gameOddIndex);
@@ -1902,7 +1901,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   }
 
   oddDataAndOddId(var oddData, int _oddId, String _championship,
-      String _country, String _localTeam, String _visitorTeam) {
+      String _country, String _localTeam, String _visitorTeam, var _dataTime) {
     // oddData = moreLoadedMatchOdds['odds'][0]
     // print(moreLoadedMatchOdds['odds'][3]['id']);
     // print(_localTeam);
@@ -1943,8 +1942,16 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 children: [
                   // LOOP THROUGH ODDS INDEX
                   for (int j = 0; j < oddArray.length; j++)
-                    allOddsWidget(oddArray, _oddId, oddData['name'], j,
-                        _championship, _country, _localTeam, _visitorTeam),
+                    allOddsWidget(
+                        oddArray,
+                        _oddId,
+                        oddData['name'],
+                        j,
+                        _championship,
+                        _country,
+                        _localTeam,
+                        _visitorTeam,
+                        _dataTime),
                 ],
               ),
             // IF ODDS VALUES ARE GREATER THAN 3
@@ -1953,10 +1960,26 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 Row(
                   children: [
                     // LOOP THROUGH ODDS INDEXES
-                    allOddsWidget(oddArray, _oddId, oddData['name'], j,
-                        _championship, _country, _localTeam, _visitorTeam),
-                    allOddsWidget(oddArray, _oddId, oddData['name'], (j + 1),
-                        _championship, _country, _localTeam, _visitorTeam),
+                    allOddsWidget(
+                        oddArray,
+                        _oddId,
+                        oddData['name'],
+                        j,
+                        _championship,
+                        _country,
+                        _localTeam,
+                        _visitorTeam,
+                        _dataTime),
+                    allOddsWidget(
+                        oddArray,
+                        _oddId,
+                        oddData['name'],
+                        (j + 1),
+                        _championship,
+                        _country,
+                        _localTeam,
+                        _visitorTeam,
+                        _dataTime),
                   ],
                 ),
             // SizedBox(height: 10.0),
@@ -1977,9 +2000,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       String _championship,
       String _country,
       String _localTeam,
-      String _visitorTeam) {
-    // String _championship = '...';
-    // String _country = '...';
+      String _visitorTeam,
+      var _dataTime) {
     // data = ['bookmaker']['data'][0]['odds']['data']
     // INDEX OF GAME IN THE ARRAY OF ODDS
     // GETTING THE ID OF THE GAME
@@ -2045,7 +2067,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       _localTeam,
                       _visitorTeam,
                       _total,
-                      _handicap);
+                      _handicap,
+                      _dataTime);
                 } else {
                   // WE SET THE VALUES TO NULL TO UNSELECT EVERY THING HERE
                   unselectOddsButton(_gameOddIndex);
@@ -2488,8 +2511,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         ),
                         SizedBox(height: 5.0),
                         Divider(color: Colors.grey, thickness: 0.3),
-                        // SizedBox(height: 10.0),
-
                         SizedBox(height: 10.0),
                         Container(
                           width: double.infinity,
@@ -2498,304 +2519,67 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             onPressed: () {
                               if (mounted)
                                 setState(() {
-                                  // print(Selection.userBalance);
-                                  // print(Price.minimumBetPrice);
-                                  // print(Price.stake);
-                                  // show the loading state button
-                                  // _loadingBettingButton = true;
+                                  // DOING THE PROCESSES OF ADDING A TICKET IN THE DATABASE
                                   if (countTicketLegs() <= 0) {
-                                    // showMessage(context,Colors.red, 'Add Match First');
-                                    // show the error panel and the message alongside
-                                    // showBetslipMessagePanel = true;
-                                    // showBetslipMessage =
-                                    //     'S\'IL VOUS PLAÎT! \nSelectionnez un Match d\'abord';
+                                    // WE CANNOT ADD AN EMPTY TICKET IN THE DATABASE
+                                    // A TICKET MUST CONTAINS AT LEAST 1 GAME
+                                    // SHOW THIS MESSAGE IF THE CONDITION IS NOT RESPECTED
                                     show_dialog_panel(
                                         'Billet de pari vide!'.toUpperCase(),
                                         'Selectionnez au moins un match d\'abord',
                                         'assets/images/fail.png');
-                                    // these are panel border color and the bg color
-                                    // showBetslipMessageColor =
-                                    //     Colors.black;
-                                    // showBetslipMessageColorBg =
-                                    //     Colors.red[200];
-                                    // hide the loading state button
-                                    // _loadingBettingButton = false;
-                                    // print('Add Match first');
-                                  } 
+                                  }
                                   // check if the user provided a balance amount
                                   else if (Price.stake <
                                       Price.minimumBetPrice) {
-                                    // show the error panel and the message alongside
-                                    // showBetslipMessagePanel = true;
-                                    // showBetslipMessage =
-                                    //     'S\'IL VOUS PLAÎT! \nLe Montant minimum est ${Price.minimumBetPrice} Fc.';
+                                    // A BET CAN ONLY BE ACCEPTED IF THE STAKE IS GREATER OR EQUAL TO
+                                    // THE MINIMUM BET PRICE OF THE SYSTEM
+                                    // SHOW THIS MESSAGE DOWN HERE
                                     show_dialog_panel(
                                         'Solde requis!'.toUpperCase(),
                                         'Le montant minimum est de ${Price.currency_symbol} ${Price.minimumBetPrice}',
-                                        'assets/images/fail.png'); 
-                                    // showMessage(context, Colors.red,
-                                    //     'Please! Login First');
-                                    // these are panel border color and the bg color
-                                    // showBetslipMessageColor =
-                                    //     Colors.black;
-                                    // showBetslipMessageColorBg =
-                                    //     Colors.red[200];
-                                    // // hide the loading state button
-                                    // _loadingBettingButton = false;
+                                        'assets/images/fail.png');
                                   }
                                   // check if the maximum games is respected
-                                  else if (countTicketLegs() >
-                                      Price.maxGames) {
-                                        // WE CANNOT PLACE MORE THAN THE MAXIMUM GAMES ON A BETSLIP
-                                         show_dialog_panel(
+                                  else if (countTicketLegs() > Price.maxGames) {
+                                    // WE CANNOT PLACE MORE THAN THE MAXIMUM GAMES ON A BETSLIP
+                                    // A USER IS NOT ALLOWED TO PLACE MORE THAN THE MAX GAMES REQUIRED
+                                    // SHOW THIS MESSAGE DOWN HERE
+                                    show_dialog_panel(
                                         'limite Dépassée!'.toUpperCase(),
                                         'La Limite de matches pour un billet de pari est de ${Price.maxGames} matches',
                                         'assets/images/fail.png');
-                                    // show the error panel and the message alongside
-                                    // showBetslipMessagePanel = true;
-                                    // showBetslipMessage =
-                                    //     'S\'IL VOUS PLAÎT! \nLa Limite pour un Pari est de [ ${Price.maxGames} ] Matches';
-                                    // showMessage(context, Colors.red,
-                                    //     'Please! Login First');
-                                    // these are panel border color and the bg color
-                                    // showBetslipMessageColor = Colors.black;
-                                    // showBetslipMessageColorBg = Colors.red[200];
-                                    // hide the loading state button
-                                    // _loadingBettingButton = false;
-                                  }
-                                  else if (Selection.user == null) {
-                                    // show the error panel and the message alongside
-                                    // showBetslipMessagePanel = true;
-                                    // showBetslipMessage =
-                                    //     'S\'IL VOUS PLAÎT! \nConnectez-Vous d\'abord.';
-                                    // // showMessage(context, Colors.red,
+                                  } else if (Selection.user == null) {
+                                    // SHOW THE LOGIN MESSAGE DIALOG BOX
+                                    // LOGIN IS REQUIRED BEFORE PLACING A BET
                                     show_dialog_panel(
                                         'Connexion requise!'.toUpperCase(),
                                         'Connecter d\'abord votre compte avant de placer un pari',
                                         'assets/images/fail.png');
-                                    // //     'Please! Login First');
-                                    // // these are panel border color and the bg color
-                                    // showBetslipMessageColor =
-                                    //     Colors.black; 
-                                    // showBetslipMessageColorBg =
-                                    //     Colors.red[200];
-                                    // // hide the loading state button
-                                    // _loadingBettingButton = false;
-                                    // print('Please Login First');
                                   }
-
-                                  // check if the user has balance in his account
-                                  // we check if the user balance is greater than 200
-                                  // and if the user balance is greater or equal to stake
+                                  // WE CHECK IF THE BALANCE IS GREATER OR EQUAL THAN THE MINIMUM PRICE
+                                  // WE ALSO CHECK IF IT IS GREATER OR EQUAL TO THE TICKET STAKE
                                   else if ((Selection.userBalance >=
                                           Price.minimumBetPrice) &&
                                       (Selection.userBalance >= Price.stake)) {
-                                    // place a bet logic database process should go in here
-                                    // this variable told us if we can keep doing processes if everything is ok
-                                    int continueProcess = 0;
-                                    // String getStartedMatch = '';
-                                    // TO DO
-                                    // check if selected match are still available
-                                    for (int v = 0;
-                                        v < BetSlipData.gameIds.length;
-                                        v++) {
-                                      Firestore.instance
-                                          .collection('Games')
-                                          .document(BetSlipData.gameIds[v])
-                                          .get()
-                                          .then((value) {
-                                        if ((value['status']
-                                                    .toString()
-                                                    .compareTo('pending') ==
-                                                0) &&
-                                            (value.exists == true)) {
-                                          // when the last game will be checked and the keep process if true then continue execution process
-                                          // if (v ==
-                                          //     BetSlipData.gameIds.length -
-                                          //         1) {
-                                          //   // print('last element is: at $v');
-                                          //   // games availability is checked then continue with adding it to betslip
-
-                                          // }
-                                          // print(
-                                          //     '${BetSlipData.gameIds[v]} is still available bro!');
-                                        } else {
-                                          // update the window if new elements are to be rendered
-                                          if (mounted)
-                                            setState(() {
-                                              // set the keep process variable to false
-                                              continueProcess = 1;
-                                              // this will display if a game has already started
-                                              // show the error panel and the message alongside
-                                              showBetslipMessagePanel = true;
-                                              showBetslipMessage =
-                                                  ' ${BetSlipData.team1s[v]} VS ${BetSlipData.team2s[v]} a déjà commencé';
-                                              // showMessage(context, Colors.red,
-                                              //     'Please! Login First');
-                                              // these are panel border color and the bg color
-                                              showBetslipMessageColor =
-                                                  Colors.black;
-                                              showBetslipMessageColorBg =
-                                                  Colors.red[200];
-                                              // showBetslipMessagePanel = true;
-                                              // print(
-                                              //     '${BetSlipData.gameIds[v]} is no longer available bro!');
-
-                                              // hide the loading state button
-                                              // _loadingBettingButton = false;
-                                            });
-                                        }
-                                      });
-                                      // check if the current match is still available to keep looping
-                                      if (continueProcess == 1) {
-                                        // if one match from the betslip has already started then stop looping
-                                        break;
-                                      }
-                                    }
-
-                                    if (continueProcess == 0) {
+                                    // WE CHECK IF MATCHES SELECTED ARE STILL NOT STARTED
+                                    // O MEANS NO GAMES ON THE LIST HAS STARTED ALREADY
+                                    if (_check_match_availability() == 0) {
+                                      // IF NONE OF THE GAMES ON THE BETSLIP HAS STARTED
+                                      // THEN CONTINUE WITH THE PROCESS OF ADDING THE TICKET
                                       if (mounted)
                                         setState(() {
-                                          // update user balance in users collection
-                                          Method.updateUserBalance()
-                                              .then((value) {
-                                            // add the transaction in the transaction collection
-                                            // Firebase;
-                                            Method.addTransactionRecords(
-                                                    'Betting',
-                                                    Selection.user.uid,
-                                                    Price.stake)
-                                                .then((value) {
-                                              // print(value);
-                                              // if all conditions are verified keep doing the betting process
-                                              // Add the match in the betslip collection
-                                              Method.addBetslipToRecords()
-                                                  .then((value) {
-                                                // if the game was placed successfully then reload user info data
-                                                Firestore.instance
-                                                    .collection('UserBalance')
-                                                    .document(
-                                                        Selection.user.uid)
-                                                    .get()
-                                                    .then((_result) {
-                                                  if (mounted)
-                                                    setState(() {
-                                                      // AFTER PLACING A BET, DARE UPDATE THE USER BALANCE ON SCREEN
-                                                      Selection.userBalance =
-                                                          _result['balance'];
-                                                      // print(
-                                                      //     'balance changed to ${Selection.userBalance}');
-                                                    });
-                                                });
-                                                // display the success message if everything went right
-                                                showBetslipMessagePanel = true;
-                                                showBetslipMessage =
-                                                    'FÉLICITATIONS! PARI AJOUTÉ';
-                                                // these are displaying colors for the success message
-                                                showBetslipMessageColor =
-                                                    Colors.white;
-                                                showBetslipMessageColorBg =
-                                                    Colors.lightGreen[400];
-                                                // showMessage(context, Colors.lightGreen[400],
-                                                //     'Placing your Bets');
-                                                // clearGamesSelected();
-                                                // after everything completed, hide the placing bet loading status buttton
-                                                if (mounted)
-                                                  setState(() {
-                                                    // hide the loading state button
-                                                    // _loadingBettingButton =
-                                                    false;
-                                                  });
-                                                // print('Placing your bets');
-                                              }).catchError((e) {
-                                                if (mounted)
-                                                  setState(() {
-                                                    // hide the loading state button
-                                                    // _loadingBettingButton =
-                                                    //     false;
-                                                    // showBetslipMessagePanel =
-                                                    //     true;
-
-                                                    if (e.toString().compareTo(
-                                                            'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
-                                                        0) {
-                                                      showBetslipMessage =
-                                                          'Pas d\'Internet';
-                                                      // print('Pas d\'Internet');
-                                                    } else {
-                                                      // print('Error 1: $e');
-                                                      showBetslipMessage =
-                                                          'Unknown Error';
-                                                    }
-                                                  });
-                                                // print(
-                                                //     'error while adding to betslip is: $e');
-                                              });
-                                            }).catchError((e) {
-                                              if (mounted)
-                                                setState(() {
-                                                  // hide the loading state button
-                                                  // _loadingBettingButton = false;
-                                                  // showBetslipMessagePanel =
-                                                  //     true;
-
-                                                  if (e.toString().compareTo(
-                                                          'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
-                                                      0) {
-                                                    // showBetslipMessage =
-                                                    //     'Pas d\'Internet';
-                                                    // print('Pas d\'Internet');
-                                                  } else {
-                                                    // print('Error 2: $e');
-                                                    // showBetslipMessage =
-                                                    //     'Unknown Error';
-                                                  }
-                                                });
-                                              print(
-                                                  'The error is while adding transaction $e');
-                                            });
-                                          }).catchError((e) {
-                                            if (mounted)
-                                              setState(() {
-                                                // hide the loading state button
-                                                // _loadingBettingButton = false;
-                                                showBetslipMessagePanel = true;
-
-                                                if (e.toString().compareTo(
-                                                        'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
-                                                    0) {
-                                                  showBetslipMessage =
-                                                      'Pas d\'Internet';
-                                                  // print('Pas d\'Internet');
-                                                } else {
-                                                  // print('Error 3: $e');
-                                                  showBetslipMessage =
-                                                      'Unknown Error';
-                                                }
-                                              });
-                                            // print(
-                                            //     'error while updating user balance in main is: $e');
-                                          });
+                                          _do_the_buying_ticket_process();
                                         });
                                     }
                                   } else {
+                                    // IF THE USER DOES NOT HAVE ENOUGH MONEY INTO HIS SKIIYA BET ACCOUNT
+                                    // A BET CAN ONLY BE ACCEPTED FOR USERS WITH MONEY
+                                    // MONEY AT LEAST GREATER OR EQUAL TO THE MINIMUM BET PRICE
                                     show_dialog_panel(
                                         'solde insuffisant!'.toUpperCase(),
                                         'Désolez! Votre solde est insuffisant.',
                                         'assets/images/fail.png');
-                                    // show the error panel and the message alongside
-                                    // showBetslipMessagePanel = true;
-                                    // showBetslipMessage =
-                                    //     'Désolez! \nVotre solde est insuffisant.';
-                                    // // showMessage(context, Colors.red,
-                                    // //     'Please! Login First');
-                                    // // these are panel border color and the bg color
-                                    // showBetslipMessageColor =
-                                    //     Colors.black;
-                                    // showBetslipMessageColorBg =
-                                    //     Colors.red[200];
-                                    // // hide the loading state button
-                                    // _loadingBettingButton = false;
                                   }
                                 });
                             },
@@ -3089,6 +2873,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     if (_matchTicket.handicap != null)
       _handicap = ' ' + _matchTicket.handicap.toString().toLowerCase();
 
+    // THIS WILL CHECK WEITHER A MATCH HAS STARTED OR NOT
+    bool _hasExpired = _matchTicket.hasExpired;
+
     return Column(
       children: [
         Container(
@@ -3096,10 +2883,16 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           margin: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 3.0),
           decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(color: Colors.grey.shade300),
-              bottom: BorderSide(color: Colors.grey.shade300),
+              top: BorderSide(
+                color: _hasExpired ? Colors.red.shade300 : Colors.grey.shade300,
+              ),
+              bottom: BorderSide(
+                color: _hasExpired ? Colors.red.shade300 : Colors.grey.shade300,
+              ),
               // left: BorderSide(color: Colors.grey.shade300),
-              right: BorderSide(color: Colors.grey.shade300),
+              right: BorderSide(
+                color: _hasExpired ? Colors.red.shade300 : Colors.grey.shade300,
+              ),
             ),
             color: Colors.white,
           ),
@@ -3246,7 +3039,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     var _visitorTeam = moreOddsMatch.visitorTeam['data']['name'];
     var _championship = _getLeague(moreOddsMatch);
     var _country = _getCountry(leagueIndex);
-
+    var _dataTime = moreOddsMatch.time;
     // print(_localTeam);
     // print(_visitorTeam);
     // print(_championship);
@@ -3312,7 +3105,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             _championship,
                             _country,
                             _localTeam,
-                            _visitorTeam),
+                            _visitorTeam,
+                            _dataTime),
                     // ELSE DISPLAY A LOADING SCREEN
                     if (moreLoadedMatchOdds == null)
                       Padding(
@@ -4522,6 +4316,127 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         ],
       ),
     );
+  }
+
+  // WE CHECK THE VALIDITY OF EVERY SINGLE MATCH ON THE TICKET
+  int _check_match_availability() {
+    // IF ZERO, MEANS NO GAME ON THE TICKET HAS STARTED
+    // ELSE DIFFERENT FROM ZERO MEANS AT LEAST ONE GAME ON THE TICKET HAS STARTED
+    int _notStarted = 0;
+    // WE GET THE INDEX OF THE GAME THAT HAS STARTED ALREADY
+    int _gameIndex = -1;
+
+    for (int _i = 0; _i < oddsGameArray.length; _i++) {
+      // WE CAN ONLY FETCH VALUES OF SELECTED MATCHES WITH NON NULL VALUES HERE
+      if (oddsGameArray[_i].oddID != null &&
+          oddsGameArray[_i].oddName != null &&
+          oddsGameArray[_i].oddIndex != null &&
+          oddsGameArray[_i].oddLabel != null &&
+          oddsGameArray[_i].oddValue != null) {
+        // IF A MATCH IS SELECTED THEN CHECK FOR ITS VALIDITY
+        Firestore.instance
+            .collection('football')
+            .document(oddsGameArray[_i].gameID) // WE GET THE CURRENT GAME
+            .get()
+            .then((_gameFetch) {
+          // CHECK IF THE STATUS IS STILL NOT STARTED (NS)
+          // AND IF THE GAME STILL EXISTS - IF NOT DELETED YET
+          // IF THE STATUS IS NOT NS OR THE GAME DOES NOT EXISTS,
+          // DENIED THE ADDITION OF THE GAME TO THE TICKET
+          if ((_gameFetch['status'].toString().compareTo('NS') != 0) ||
+              (!_gameFetch.exists)) {
+            // ONLY UPDATE THIS VARIABLE IF THE GAME HAS STARTED OR DOES NOT EXIST ANYMORE
+            // WE CHECK IF SELECTED GAMES HAVE NOT YET STARTED
+            // KEEP INCREASING THE VALUES SO WE WILL KNOW HAOW MANY HAVE STARTED ALREADY
+            // AND HOW MANY ARE STILL PENDING
+            _notStarted++;
+            // WE SET THE GAME INDEX TO THIS CURRENT INDEX
+            _gameIndex = _i;
+            print(
+                'This game ${oddsGameArray[_i].gameID} has started already or not found');
+            // break;
+            // IF A GAME HAS ALREADY STARTED,
+            // WE UPDATE THE STATE OF EXPIRATION IN THE ARRAY
+            if (mounted)
+              setState(() {
+                // WE SET IT TO TRUE TO DISPLAY THE ERROR MESSAGE
+                // THE ERROR WILL BE DISPLAYED ON THE BETSLIP LIST
+                oddsGameArray[_i].hasExpired = true;
+                // WE RELOAD THE BETSLIP BOX TO UPDATE THE RESULTS RIGHT HERE
+                loadBetslipMatches();
+              });
+          }
+        });
+      } else {
+        print(
+            'This game ${oddsGameArray[_i].gameID} has not been selected for this ticket');
+      }
+
+      if (_notStarted != 0) {
+        // IF WE HAVE A MATCH THAT HAS BEEN STARTED ALREADY
+        // BREAK THE LOOP AND DISPLAY THE MESSAGE
+        show_dialog_panel(
+            'Désolé!'.toUpperCase(),
+            'Certains matches sur le billet ont déjà commencé.\nRetirez-les de la liste pour placer le pari',
+            'assets/images/fail.png');
+        print(
+            'This is the game ${oddsGameArray[_gameIndex].gameID} to remove from the list');
+        break;
+      }
+    }
+    return _notStarted;
+  }
+
+  // THIS METHOD LOADS THE USER BALANCE AND MORE DETAILS
+  void _load_user_data_info() {
+    // FETCH CURRENT DATA FROM THE DATABASE IN THE COLLECTION
+    Firestore.instance
+        .collection('UserBalance')
+        .document(Selection.user.uid)
+        .get()
+        .then((_result) {
+      if (mounted)
+        setState(() {
+          // STORE AND UPDATE THE BALANCE OF THE USER
+          // AFTER PLACING A BET, DARE UPDATE THE USER BALANCE ON SCREEN
+          Selection.userBalance = _result['balance'];
+        });
+    });
+  }
+
+  // THIS IS WHERE THE PROCESSES ARE ADDED
+  void _do_the_buying_ticket_process() {
+    // WE START BY ADDING THE TRANSACTION
+    // TO THE TRANSACTION COLLECTION HERE
+    Method.addNewTransaction('Billet de pari', Price.stake).then((_trans) {
+      // LET US GET THE TRANSACTION ID HERE
+      String _transID = _trans.documentID;
+      double _stake = Price.stake;
+      // IF SUCCESSFULL, WE UPDATE THE USER BALANCE WITH
+      // THE TRANSACTION ID FOR TRACKING PROCESS
+      Method.updateUserBalance(_transID).then((value) {
+        // WE HAVE UPDATED SUCCESSFULLY THE USER BALANCE
+        Method.addNewTicket(_transID, _stake, oddsGameArray).then((value) {
+          // IF THE TICKET IS ADDED
+          // SUCCESSFULLY UPDATE THE VALUE THE USER BALANCE ONSCREEN
+          _load_user_data_info();
+          // SHOW A SUCCESSFULL MESSAGE TO THE USER HERE
+          show_dialog_panel(
+              'Félicitations!'.toUpperCase(),
+              'Votre billet de pari a été placé avec succès',
+              'assets/images/ok.png');
+          // SHOW THE DIALOG BOX FOR ERROR
+        }).catchError((e) => _error_on_bet_adding('bet adding error'));
+      }).catchError((e) => _error_on_bet_adding('user update balance error'));
+    }).catchError(
+        (e) => _error_on_bet_adding('adding transaction record error'));
+  }
+
+  // THIS ONLY SHOWS IF A TICKET BUYING IS NOT COMPLETED
+  _error_on_bet_adding(String message) {
+    print('THE ERROR : $message');
+    return show_dialog_panel('Désolé!'.toUpperCase(), 'une erreur est survenue',
+        'assets/images/fail.png');
   }
 
   // keep on loading user blance details every 30s

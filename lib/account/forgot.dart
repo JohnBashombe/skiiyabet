@@ -1,6 +1,6 @@
 import 'package:skiiyabet/Responsive/responsive_widget.dart';
 import 'package:skiiyabet/app/skiiyaBet.dart';
-import 'package:skiiyabet/database/selection.dart';
+import 'package:skiiyabet/components/selection.dart';
 import 'package:skiiyabet/mywindow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
