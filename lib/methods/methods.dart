@@ -266,24 +266,24 @@ class Method {
       _teamResults.add(null); // RESULTS OF ALL TEAMS
     }
 
-    print(_gameIDs);
-    print(_oddIDs);
-    print(_oddNames);
-    print(_oddIndexes);
-    print(_oddLabels);
-    print(_oddValues);
-    print(_oddTotals);
-    print(_oddHandicaps);
-    print(_localTeams);
-    print(_visitorTeams);
-    print(_teamLeagues);
-    print(_teamCountries);
-    print(_dataTimes);
-    print(_teamScores);
-    print(_teamResults);
+    // print(_gameIDs);
+    // print(_oddIDs);
+    // print(_oddNames);
+    // print(_oddIndexes);
+    // print(_oddLabels);
+    // print(_oddValues);
+    // print(_oddTotals);
+    // print(_oddHandicaps);
+    // print(_localTeams);
+    // print(_visitorTeams);
+    // print(_teamLeagues);
+    // print(_teamCountries);
+    // print(_dataTimes);
+    // print(_teamScores);
+    // print(_teamResults);
 
-    print('THE LENGTH IS: $_numberOfGames');
-    print('SELECTED GAMES ARE: ${_selectedGames.length}');
+    // print('THE LENGTH IS: $_numberOfGames');
+    // print('SELECTED GAMES ARE: ${_selectedGames.length}');
 
     // TO BE CONTINUED
 
@@ -293,6 +293,7 @@ class Method {
         'status': 'pending',
         'trans_id': _transID,
         'rewards': {
+          'currency': Price.currency_symbol,
           'number_of_games': _numberOfGames,
           'stake': _stake,
           'odds': totalRate(),
@@ -300,7 +301,7 @@ class Method {
           'winning': possibleWinning(),
           'payout': totalPayout(),
         },
-        'time': {
+        'time': { 
           'date_time': '$_datetime',
           'time': '$_time',
           'date': '$_date',
@@ -331,9 +332,9 @@ class Method {
   static Future updateUserBalance(String _transID) {
     // WE GET THE USER ID FIRST
     String _uid = Selection.user.uid;
-    print('Transaction ID in balance Update');
-    print(_transID);
-    print('==================================');
+    // print('Transaction ID in balance Update');
+    // print(_transID);
+    // print('==================================');
     // WE UPDATE THE BALANCE NEGATIVELY WITH THE STAKE VALUE
     // THEN WE CONTINUE WITH THE PROCESS
     return Firestore.instance
@@ -357,13 +358,13 @@ class Method {
     return _val;
   }
 
-  static Future addNewTransaction(String _type, double _amount) {
+  static Future addNewTransaction(String _type, double _amount, String _actionSign) {
     // WE GET THE USER ID
     String _uid = Selection.user.uid;
-    print('Transaction details');
-    print(_type);
-    print(_amount);
-    print('-----------------------------------');
+    // print('Transaction details');
+    // print(_type);
+    // print(_amount);
+    // print('-----------------------------------');
     // GET THE CURRENT DATE TIME IN UTC FORMAT
     var _datetime = new DateTime.now().toUtc();
     // STORE THE TIMESTAMP
@@ -379,9 +380,11 @@ class Method {
       'uid': _uid,
       'amount': _amount,
       'type': _type,
+      'action_sign': _actionSign,
+      'currency': Price.currency_symbol,
       'time': {
         'time': '$_time',
-        'date': '$_date',
+        'date': '$_date',  
         'date_time': '$_datetime',
         'timestamp': _timestamp,
         'timezone': 'UTC'

@@ -18,7 +18,7 @@ class _DepositState extends State<Deposit> {
     return Expanded(
       child: Container(
         width: double.infinity,
-        margin: EdgeInsets.only(left: 10.0),
+        margin: EdgeInsets.only(left: 10.0, top: 10.0),
         padding: new EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           border: Border(

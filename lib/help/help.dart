@@ -7,7 +7,7 @@ class Help extends StatelessWidget {
     return Expanded(
       child: Container(
         width: double.infinity,
-        margin: new EdgeInsets.only(left: 10.0),
+        margin: new EdgeInsets.only(left: 10.0, top: 10.0),
         padding: EdgeInsets.only(left: 10.0, top: 10.0),
         decoration: BoxDecoration(
           border: Border(

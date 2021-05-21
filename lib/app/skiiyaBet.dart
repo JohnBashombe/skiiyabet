@@ -1311,12 +1311,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // loopUserDetails();
     // placed here because this widget execute only once
     // this method helps us to detect if a certain user was already logged in
-    // if (mounted)
-    //   setState(() {
-    // reload from existing session and set new values
-    // logged the user in if existed before
-    // reLoginUser(); // uncomment after coding
-    // });
+    if (mounted)
+      setState(() {
+        // reload from existing session and set new values
+        // logged the user in if existed before
+        reLoginUser(); // uncomment after coding
+      });
     // this loadingGames method load only once at first lunch
     // loadingGames(fieldLoadMore);
     // loadSideData();
@@ -2306,9 +2306,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         SizedBox(height: 5.0),
                         Text(
                           'Montant Minimum: ' +
-                              Price.minimumBetPrice.toString() +
+                              Price.currency_symbol +
                               ' ' +
-                              Price.currency_symbol,
+                              Price.minimumBetPrice.toString(),
                           style: TextStyle(
                             color: Colors.grey,
                             fontSize: 12.0,
@@ -2508,11 +2508,14 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                           width: double.infinity,
                           child: _buyingATicketLoader
                               ? RawMaterialButton(
+                                  mouseCursor: SystemMouseCursors.wait,
                                   padding:
                                       new EdgeInsets.symmetric(vertical: 15.0),
                                   onPressed: null,
-                                  fillColor: Colors.lightGreen[200],
-                                  disabledElevation: 1.0,
+                                  disabledElevation: 5.0,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0)),
+                                  fillColor: Colors.lightGreen[300],
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -2595,7 +2598,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                           // WE CHECK IF MATCHES SELECTED ARE STILL NOT STARTED
                                           // O MEANS NO GAMES ON THE LIST HAS STARTED ALREADY
                                           // CHECKING MATCH AVAILABILITY
-                                          print('Checking match availability');
+                                          // print('Checking match availability');
                                           _check_match_availability()
                                               .then((_isOk) {
                                             if (_isOk) {
@@ -2618,8 +2621,11 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                                   'Désolé!'.toUpperCase(),
                                                   'Certains matches ont déjà commencé.\nRetirez-les pour placer le pari',
                                                   'assets/images/fail.png');
-                                              print('Could not place the bet');
+                                              // print('Could not place the bet');
                                             }
+                                          }).catchError((e) {
+                                            // print('The validity error is: $e');
+                                            print('Error: $e');
                                           });
                                         } else {
                                           // IF THE USER DOES NOT HAVE ENOUGH MONEY INTO HIS SKIIYA BET ACCOUNT
@@ -2971,8 +2977,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     Container(
                       height: double.infinity,
                       color: _hoveredIndex == _id
-                          ? Colors.grey.shade300
-                          : Colors.grey.shade200,
+                          ? _hasExpired
+                              ? Colors.red.shade300
+                              : Colors.grey.shade300
+                          : _hasExpired
+                              ? Colors.red.shade200
+                              : Colors.grey.shade200,
                       alignment: Alignment.center,
                       child: MouseRegion(
                           cursor: SystemMouseCursors.click,
@@ -3016,8 +3026,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                 FontAwesomeIcons.times,
                                 size: 18.0,
                                 color: _hoveredIndex == _id
-                                    ? Colors.redAccent
-                                    : Colors.black54,
+                                    ? _hasExpired
+                                        ? Colors.white
+                                        : Colors.redAccent
+                                    : _hasExpired
+                                        ? Colors.white60
+                                        : Colors.black54,
                               ),
                             ),
                           )),
@@ -3039,7 +3053,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                   _matchTicket.visitorTeam,
                               style: TextStyle(
                                 fontSize: 12.0,
-                                color: Colors.grey,
+                                color: _hasExpired
+                                    ? Colors.red.shade300
+                                    : Colors.grey,
                                 // fontWeight: FontWeight.bold,
                                 // letterSpacing: 1.0,
                               ),
@@ -3065,7 +3081,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                               style: TextStyle(
                                 fontSize: 12.0,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.grey,
+                                color: _hasExpired
+                                    ? Colors.red.shade300
+                                    : Colors.grey,
                               ),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
@@ -3086,7 +3104,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   style: TextStyle(
                     fontSize: 12.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: _hasExpired ? Colors.red.shade300 : Colors.black,
                   ),
                 ),
               ),
@@ -3104,7 +3122,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       fontWeight: FontWeight.normal),
                 ),
               )
-            : Text(''),
+            : Container(),
       ],
     );
   }
@@ -3958,149 +3976,149 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   }
 
   // sesssion management
-  // reLoginUser() async {
-  //   var session = FlutterSession();
-  //   // await session.set("email", null);
-  //   String userID = await session.get("sB1");
-  //   String userID1 = await session.get("sB2");
-  //   String customID = await session.get("sB3");
-  //   String customID1 = await session.get("sB4");
-  //   // LocalStorage storage = new LocalStorage('SKIIYA_BET');
-  //   // print(Selection.user.uid);
-  //   // if (email.compareTo('null') != 0) {
-  //   //   if (id1.compareTo('null') != 0) {
-  //   //     if (id2.compareTo('null') != 0) {
-  //   // print('data logins is different from null');
-  //   // print('Phone: $userID$userID1 and Passcode: $customID$customID1');
-  //   // RELOGGIN THE USER IF NO USER IS FOUND
-  //   if (Selection.user == null) {
-  //     if (userID == null ||
-  //         userID1 == null ||
-  //         customID == null ||
-  //         customID1 == null) {
-  //       // print('values are null, No relogin will be made');
-  //     } else {
-  //       // print('login process started');
-  //       doSessionUserLogin((userID + userID1), (customID + customID1));
-  //     }
-  //   }
-  //   //  else {
-  //   //   print('User logged in already');
-  //   // }
-  //   //     }
-  //   //   }
-  //   //   // else {
-  //   //   //   print('password is empty $password');
-  //   //   // }
-  //   // }
-  // }
+  reLoginUser() async {
+    var session = FlutterSession();
+    // await session.set("email", null);
+    String userID = await session.get("sB1");
+    String userID1 = await session.get("sB2");
+    String customID = await session.get("sB3");
+    String customID1 = await session.get("sB4");
+    // LocalStorage storage = new LocalStorage('SKIIYA_BET');
+    // print(Selection.user.uid);
+    // if (email.compareTo('null') != 0) {
+    //   if (id1.compareTo('null') != 0) {
+    //     if (id2.compareTo('null') != 0) {
+    // print('data logins is different from null');
+    // print('Phone: $userID$userID1 and Passcode: $customID$customID1');
+    // RELOGGIN THE USER IF NO USER IS FOUND
+    if (Selection.user == null) {
+      if (userID == null ||
+          userID1 == null ||
+          customID == null ||
+          customID1 == null) {
+        // print('values are null, No relogin will be made');
+      } else {
+        // print('login process started');
+        doSessionUserLogin((userID + userID1), (customID + customID1));
+      }
+    }
+    //  else {
+    //   print('User logged in already');
+    // }
+    //     }
+    //   }
+    //   // else {
+    //   //   print('password is empty $password');
+    //   // }
+    // }
+  }
 
-  // static setSessionLogin(String telephone, String pass) async {
-  //   // Encrypting the email before saving it to user Device
-  //   String tel = Encryption.encryptAESCryptoJS(telephone, 'SKIIYA_Telephone');
-  //   // String customEmail = email;
-  //   // Encrypting the password before saving it to user device
-  //   String customID = Encryption.encryptAESCryptoJS(pass, tel);
-  //   // print(customEmail);
-  //   // print(customID);
-  //   // EMAIL
-  //   int partTelephone = tel.length / 2 as int;
-  //   String partTelephone1 = customID.substring(0, (partTelephone));
-  //   String partTelephone2 =
-  //       customID.substring(partTelephone, (customID.length));
-  //   // PASSCODE
-  //   int partPass = customID.length / 2 as int;
-  //   String partPass1 = customID.substring(0, (partPass));
-  //   String partPass2 = customID.substring(partPass, (customID.length));
-  //   // using session to store user login details
-  //   var session = FlutterSession();
-  //   await session.set("userID", partTelephone1.toString());
-  //   await session.set("userID1", partTelephone2.toString());
-  //   await session.set("customID", partPass1.toString());
-  //   await session.set("customID1", partPass2.toString());
-  // }
+  static setSessionLogin(String telephone, String pass) async {
+    // Encrypting the email before saving it to user Device
+    String tel = Encryption.encryptAESCryptoJS(telephone, 'SKIIYA_Telephone');
+    // String customEmail = email;
+    // Encrypting the password before saving it to user device
+    String customID = Encryption.encryptAESCryptoJS(pass, tel);
+    // print(customEmail);
+    // print(customID);
+    // EMAIL
+    int partTelephone = tel.length / 2 as int;
+    String partTelephone1 = customID.substring(0, (partTelephone));
+    String partTelephone2 =
+        customID.substring(partTelephone, (customID.length));
+    // PASSCODE
+    int partPass = customID.length / 2 as int;
+    String partPass1 = customID.substring(0, (partPass));
+    String partPass2 = customID.substring(partPass, (customID.length));
+    // using session to store user login details
+    var session = FlutterSession();
+    await session.set("userID", partTelephone1.toString());
+    await session.set("userID1", partTelephone2.toString());
+    await session.set("customID", partPass1.toString());
+    await session.set("customID1", partPass2.toString());
+  }
 
-  // doSessionUserLogin(String telephone, String passCode) async {
-  //   // String code = '243';
-  //   checkInternet();
-  //   String congoCode = '243';
-  //   // print('The telephone is: $telephone');
-  //   // print('The passcode is: $passCode');
-  //   String phone =
-  //       Encryption.decryptAESCryptoJS(telephone, 'SKIIYA001_Telephone');
-  //   String email = congoCode + phone + '@gmail.com';
-  //   String pass = Encryption.decryptAESCryptoJS(passCode, phone);
-  //   // print('login has been reached and phone is $phone');
-  //   // print('login has been reached and email is $email');
-  //   // print('login has been reached and code is $code');
-  //   // String email =
-  //   //     Encryption.decryptAESCryptoJS(generatedEmail, generatedEmail);
-  //   // String email = generatedEmail;
-  //   await _auth
-  //       .signInWithEmailAndPassword(email: email, password: pass)
-  //       .then((result) {
-  //     Selection.user = result.user;
-  //     // store credentials to session
-  //     // setSessionLogin(phone.toString(), passCode.toString());
-  //     // save the current user into the local storage for upcoming connection
-  //     // get the right user balance and the right user phone number
-  //     Firestore.instance
-  //         .collection('UserInfo')
-  //         .document(result.user.uid)
-  //         .get()
-  //         .then((_result) {
-  //       // GET THE BLOCKING STATUS
-  //       // bool isBlocked = false;
-  //       if (_result['isBlocked'] == null) {
-  //         // create the column if not there already
-  //         Firestore.instance
-  //             .collection('UserInfo')
-  //             .document(result.user.uid)
-  //             .updateData({'isBlocked': false});
-  //         // The column has been created
-  //         // print('This blocked status is now created');
-  //       }
-  //       if (_result['isBlocked'] == true) {
-  //         // logout the user if he is being blocked in the system
-  //         Login.doLogout();
-  //         // print('The user has been blocked');
-  //       } else {
-  //         Firestore.instance
-  //             .collection('UserBalance')
-  //             .document(result.user.uid)
-  //             .get()
-  //             .then((_result) {
-  //           if (mounted)
-  //             setState(() {
-  //               // String id = _result.documentID.toString();
-  //               // print('the ID is $id');
-  //               Selection.userTelephone = '0' + phone;
-  //               Selection.userBalance = _result['balance'];
-  //               // successMessage(context, 'Login Success!');
-  //               // hide all messages error based
-  //               isNoInternetNetwork = false;
-  //               // isNoInternetNetworkOrOtherError = false;
-  //             });
-  //         }).catchError((e) {
-  //           // print('error: $e');
-  //         });
-  //       }
-  //     });
-  //   }).catchError((e) {
-  //     if (mounted)
-  //       setState(() {
-  //         if (e.toString().compareTo(
-  //                 'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
-  //             0) {
-  //           // display internet connection problems
-  //           isNoInternetNetwork = true;
-  //         } else {
-  //           // show other error messages
-  //           isNoInternetNetwork = false;
-  //         }
-  //       });
-  //   });
-  // }
+  doSessionUserLogin(String telephone, String passCode) async {
+    // String code = '243';
+    checkInternet();
+    String congoCode = '243';
+    // print('The telephone is: $telephone');
+    // print('The passcode is: $passCode');
+    String phone =
+        Encryption.decryptAESCryptoJS(telephone, 'SKIIYA001_Telephone');
+    String email = congoCode + phone + '@gmail.com';
+    String pass = Encryption.decryptAESCryptoJS(passCode, phone);
+    // print('login has been reached and phone is $phone');
+    // print('login has been reached and email is $email');
+    // print('login has been reached and code is $code');
+    // String email =
+    //     Encryption.decryptAESCryptoJS(generatedEmail, generatedEmail);
+    // String email = generatedEmail;
+    await _auth
+        .signInWithEmailAndPassword(email: email, password: pass)
+        .then((result) {
+      Selection.user = result.user;
+      // store credentials to session
+      setSessionLogin(phone.toString(), passCode.toString());
+      // save the current user into the local storage for upcoming connection
+      // get the right user balance and the right user phone number
+      Firestore.instance
+          .collection('UserInfo')
+          .document(result.user.uid)
+          .get()
+          .then((_result) {
+        // GET THE BLOCKING STATUS
+        // bool isBlocked = false;
+        if (_result['isBlocked'] == null) {
+          // create the column if not there already
+          Firestore.instance
+              .collection('UserInfo')
+              .document(result.user.uid)
+              .updateData({'isBlocked': false});
+          // The column has been created
+          // print('This blocked status is now created');
+        }
+        if (_result['isBlocked'] == true) {
+          // logout the user if he is being blocked in the system
+          Login.doLogout();
+          // print('The user has been blocked');
+        } else {
+          Firestore.instance
+              .collection('UserBalance')
+              .document(result.user.uid)
+              .get()
+              .then((_result) {
+            if (mounted)
+              setState(() {
+                // String id = _result.documentID.toString();
+                // print('the ID is $id');
+                Selection.userTelephone = '0' + phone;
+                Selection.userBalance = _result['balance'];
+                // successMessage(context, 'Login Success!');
+                // hide all messages error based
+                isNoInternetNetwork = false;
+                // isNoInternetNetworkOrOtherError = false;
+              });
+          }).catchError((e) {
+            // print('error: $e');
+          });
+        }
+      });
+    }).catchError((e) {
+      if (mounted)
+        setState(() {
+          if (e.toString().compareTo(
+                  'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
+              0) {
+            // display internet connection problems
+            isNoInternetNetwork = true;
+          } else {
+            // show other error messages
+            isNoInternetNetwork = false;
+          }
+        });
+    });
+  }
 
   Widget accountMenu() {
     return Expanded(
@@ -4452,18 +4470,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
 
     // print('THE ACCESS VALUE: $_notStarted');
     if (_notStarted != 0) {
-      // IF WE HAVE A MATCH THAT HAS BEEN STARTED ALREADY
-      // BREAK THE LOOP AND DISPLAY THE MESSAGE
-      // show_dialog_panel(
-      //     context,
-      //     'Désolé!'.toUpperCase(),
-      //     'Certains matches sur le billet ont déjà commencé.\nRetirez-les de la liste pour placer le pari',
-      //     'assets/images/fail.png');
-      // print(
-      //     'This is the game ${oddsGameArray[_gameIndex].gameID} to remove from the list');
-      // break;
+      // RETURN FALSE
       return false;
     } else {
+      // RETURN TRUE
       return true;
     }
   }
@@ -4488,15 +4498,15 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   // THIS IS WHERE THE PROCESSES ARE ADDED
   void _do_the_buying_ticket_process() {
     // WE START BY ADDING THE TRANSACTION
+    double _stake = Price.stake;
     // TO THE TRANSACTION COLLECTION HERE
-    Method.addNewTransaction('Billet de pari', Price.stake).then((_trans) {
+    Method.addNewTransaction('Billet de pari', _stake, '-').then((_trans) {
       // LET US GET THE TRANSACTION ID HERE
       String _transID = _trans.documentID.toString();
-      double _stake = Price.stake;
-      print('--------STAKE--------TRANS ID---------------');
-      print(_stake);
-      print(_transID);
-      print('-------------------------------');
+      // print('--------STAKE--------TRANS ID---------------');
+      // print(_stake);
+      // print(_transID);
+      // print('-------------------------------');
       // IF SUCCESSFULL, WE UPDATE THE USER BALANCE WITH
       // THE TRANSACTION ID FOR TRACKING PROCESS
       Method.updateUserBalance(_transID).then((value) {
@@ -4506,26 +4516,32 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           // SUCCESSFULLY UPDATE THE VALUE THE USER BALANCE ONSCREEN
           _load_user_data_info();
           // SHOW A SUCCESSFULL MESSAGE TO THE USER HERE
-          // UNSELECT ALL GAMES AT ONCE
-          unselect_all_at_once();
-          // HIDE THE LOADING BUTTON
-          hideLoadingButton();
+          if (mounted)
+            setState(() {
+              // UNSELECT ALL GAMES AT ONCE
+              unselect_all_at_once();
+              // HIDE THE LOADING BUTTON
+              hideLoadingButton();
+              Price.stake = 200;
+            });
           // SHOW A DIALOG BOX
           show_dialog_panel(
               context,
               'Félicitations!'.toUpperCase(),
               'Votre billet de pari a été placé avec succès',
               'assets/images/ok.png');
+          // print('Ticket successfully baught');
+          // print(value);
           // SHOW THE DIALOG BOX FOR ERROR
         }).catchError((e) {
           hideLoadingButton();
-          _error_on_bet_adding('bet adding error: $e');
+          // print('bet adding error: $e');
           show_dialog_panel(context, 'Désolé!'.toUpperCase(),
               'Une erreur est survenue', 'assets/images/fail.png');
         });
       }).catchError((e) {
         hideLoadingButton();
-        _error_on_bet_adding('user update balance error: $e');
+        // print('user update balance error: $e');
         show_dialog_panel(context, 'Désolé!'.toUpperCase(),
             'Une erreur est survenue', 'assets/images/fail.png');
       });
@@ -4533,7 +4549,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       // HIDE LOADING BUTTON
       hideLoadingButton();
       // PRINT THE ERROR MESSAGE
-      _error_on_bet_adding('adding transaction record error: $e');
+      // print('adding transaction record error: $e');
       // SHOW THE DIALOG BOX
       show_dialog_panel(context, 'Désolé!'.toUpperCase(),
           'Une erreur est survenue', 'assets/images/fail.png');
@@ -4546,13 +4562,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       setState(() {
         _buyingATicketLoader = false;
       });
-  }
-
-  // THIS ONLY SHOWS IF A TICKET BUYING IS NOT COMPLETED
-  _error_on_bet_adding(String message) {
-    print('THE ERROR : $message');
-    // return show_dialog_panel(_context, 'Désolé!'.toUpperCase(),
-    //     'Une erreur est survenue', 'assets/images/fail.png');
   }
 
   void unselect_all_at_once() {

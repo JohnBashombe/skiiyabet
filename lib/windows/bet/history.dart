@@ -34,7 +34,7 @@ class _HistoryState extends State<History> {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        margin: EdgeInsets.only(left: 10.0),
+        margin: EdgeInsets.only(left: 10.0, top: 10.0),
         padding: new EdgeInsets.all(10.0),
         width: double.infinity,
         decoration: BoxDecoration(

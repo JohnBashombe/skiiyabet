@@ -31,7 +31,7 @@ class _WithdrawState extends State<Withdraw> {
     return Expanded(
       child: Container(
         width: double.infinity,
-        margin: EdgeInsets.only(left: 10.0),
+        margin: EdgeInsets.only(left: 10.0, top: 10.0),
         padding: new EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           border: Border(
@@ -276,7 +276,7 @@ class _WithdrawState extends State<Withdraw> {
               .updateData(
                   {'balance': FieldValue.increment(-withdrawAmount)}).then((_) {
             // ADD A NEW REQUEST
-            Method.addNewTransaction('Retrait', withdrawAmount);
+            Method.addNewTransaction('Retrait', withdrawAmount, '-');
             addWithdrawRequest();
           });
         } else {
