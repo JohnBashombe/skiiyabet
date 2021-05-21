@@ -35,7 +35,7 @@ class Method {
       int len = 4 - counter;
       // pourcentageRate = Bonus.bonus1;
       bonus =
-          'S\'IL VOUS PLAÎT! \nAjoutez $len selection(s) de plus et recevez plutôt ${Bonus.bonus1}% en bonus.';
+          'S\'IL VOUS PLAÎT! \nAjoutez $len selection(s) de plus et recevez ${Bonus.bonus1}% en bonus.';
     } else if (counter == 4) {
       int len = 5 - counter;
       pourcentageRate = Bonus.bonus1;
@@ -177,7 +177,7 @@ class Method {
     return _hour + ':' + _minute + ':' + _second;
   }
 
-  static _getDate() {
+  static String _getDate() {
     // GET CURRENT TIME IN UTC FORMAT
     var _datetime = new DateTime.now().toUtc();
     // WE ADD OUR CUSTOM DATE FORMAT TO VARIABLES
@@ -227,11 +227,6 @@ class Method {
       }
     }
 
-    print('THE LENGTH IS: $_numberOfGames');
-    print('SELECTED GAMES ARE: ${_selectedGames.length}');
-
-    // TO BE CONTINUED
-
     // ARRAYS CONTAINING DATA OF GAMES ON THE TICKET
     var _gameIDs = []; // GAME IDS
     var _oddIDs = []; // ODD IDS
@@ -248,6 +243,49 @@ class Method {
     var _dataTimes = []; // TIMES OF ALL GAMES
     var _teamScores = []; // SCORES OF ALL TEAMS
     var _teamResults = []; // RESULTS OF ALL TEAMS
+
+    // LET US ADD VALUES TO ALL ARRAYS
+    for (int _j = 0; _j < _selectedGames.length; _j++) {
+      // ARRAYS CONTAINING DATA OF GAMES ON THE TICKET
+      _gameIDs.add(_selectedGames[_j].gameID); // GAME IDS ON THE TICKET
+      _oddIDs.add(_selectedGames[_j].oddID); // ODD IDS
+      _oddNames.add(_selectedGames[_j].oddName); // ODD NAMES
+      _oddIndexes.add(_selectedGames[_j].oddIndex); // ODDS INDEXES
+      _oddLabels.add(_selectedGames[_j].oddLabel); // ODDS LABELS
+      _oddValues.add(_selectedGames[_j].oddValue); // CONTAINS DATA VALUES
+      _oddTotals.add(_selectedGames[_j].total); // CONTAINS GAME OPTIONS TOTALS
+      // CONTAINS GAME OPTIONS HANDICAPS
+      _oddHandicaps.add(_selectedGames[_j].handicap);
+      _localTeams.add(_selectedGames[_j].localTeam); // LOCAL TEAM NAMES
+      _visitorTeams.add(_selectedGames[_j].visitorTeam); // VISITOR TEAM NAMES
+      // LEAGUES OR CHAMPIONSHIPS
+      _teamLeagues.add(_selectedGames[_j].championship);
+      _teamCountries.add(_selectedGames[_j].country); // COUNTRIES OF EACH GAME
+      _dataTimes.add(_selectedGames[_j].dataTime); // TIMES OF ALL GAMES
+      _teamScores.add(null); // SCORES OF ALL TEAMS
+      _teamResults.add(null); // RESULTS OF ALL TEAMS
+    }
+
+    print(_gameIDs);
+    print(_oddIDs);
+    print(_oddNames);
+    print(_oddIndexes);
+    print(_oddLabels);
+    print(_oddValues);
+    print(_oddTotals);
+    print(_oddHandicaps);
+    print(_localTeams);
+    print(_visitorTeams);
+    print(_teamLeagues);
+    print(_teamCountries);
+    print(_dataTimes);
+    print(_teamScores);
+    print(_teamResults);
+
+    print('THE LENGTH IS: $_numberOfGames');
+    print('SELECTED GAMES ARE: ${_selectedGames.length}');
+
+    // TO BE CONTINUED
 
     return Firestore.instance.collection('betslip').add(
       {
@@ -293,6 +331,9 @@ class Method {
   static Future updateUserBalance(String _transID) {
     // WE GET THE USER ID FIRST
     String _uid = Selection.user.uid;
+    print('Transaction ID in balance Update');
+    print(_transID);
+    print('==================================');
     // WE UPDATE THE BALANCE NEGATIVELY WITH THE STAKE VALUE
     // THEN WE CONTINUE WITH THE PROCESS
     return Firestore.instance
@@ -319,7 +360,10 @@ class Method {
   static Future addNewTransaction(String _type, double _amount) {
     // WE GET THE USER ID
     String _uid = Selection.user.uid;
-
+    print('Transaction details');
+    print(_type);
+    print(_amount);
+    print('-----------------------------------');
     // GET THE CURRENT DATE TIME IN UTC FORMAT
     var _datetime = new DateTime.now().toUtc();
     // STORE THE TIMESTAMP

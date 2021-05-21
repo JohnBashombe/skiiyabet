@@ -12,7 +12,7 @@ class Price {
   static double minimumDeposit = 1500;
   static double maximumDeposit = 2500000;
   // that's the maximum games a user can place
-  static double maxGames = 10;
+  static int maxGames = 20;
   // THE CURRENCY SYMBOL
   static String currency_symbol = 'CDF';
 

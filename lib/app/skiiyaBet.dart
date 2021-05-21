@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'package:flutter_awesome_buttons/flutter_awesome_buttons.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:skiiyabet/account/login.dart';
 import 'package:skiiyabet/app/entities/oddSelection.dart';
 import 'package:skiiyabet/components/bonus.dart';
 import 'package:skiiyabet/encryption/encryption.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -14,7 +13,6 @@ import 'package:flutter_session/flutter_session.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:skiiyabet/Responsive/responsive_widget.dart';
-import 'package:skiiyabet/components/betslip.dart';
 import 'package:skiiyabet/components/price.dart';
 import 'package:skiiyabet/components/selection.dart';
 import 'package:skiiyabet/mywindow.dart';
@@ -23,7 +21,6 @@ import 'package:skiiyabet/account/forgot.dart';
 import 'package:skiiyabet/account/resetUpdate.dart';
 import 'package:skiiyabet/account/update.dart';
 import 'package:skiiyabet/help/help.dart';
-// import 'package:skiiyabet/jackpot/jackpot.dart';
 import 'package:skiiyabet/windows/bet/bets.dart';
 import 'package:skiiyabet/windows/bet/history.dart';
 import 'package:skiiyabet/windows/transaction/deposit.dart';
@@ -90,8 +87,11 @@ bool isNoInternetNetwork = false;
 // GET THE LEAGUE INDEX THAT WILL BE USED TO FETCH THE RIGHT COUNTRY
 int leagueIndex;
 
+// THIS WILL SHOW A LOADING BUTTON
+bool _buyingATicketLoader = false;
+
 // SCROOL CONTROLLER
-ScrollController _scrollController = new ScrollController();
+ScrollController _scrollController;
 
 class SkiiyaBet extends StatefulWidget {
   @override
@@ -251,7 +251,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       ),
       bottomNavigationBar: ResponsiveWidget.isSmallScreen(context)
           ? CurvedNavigationBar(
-              // backgroundColor: Colors.white70, thisBottomColor
+              // backgroundColor: Colors.white70,
               height: 50.0,
               color: Colors.lightGreen[400],
               buttonBackgroundColor: Colors.white70,
@@ -282,37 +282,38 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   });
               },
               items: [
-                  Icon(FontAwesomeIcons.home,
-                      size: Selection.bottomCurrentTab == 0 ? 30.0 : 20.0,
-                      color: Selection.bottomCurrentTab == 0
-                          ? Colors.black
-                          : Colors.white),
-                  Icon(FontAwesomeIcons.search,
-                      size: Selection.bottomCurrentTab == 1 ? 30.0 : 20.0,
-                      color: Selection.bottomCurrentTab == 1
-                          ? Colors.black
-                          : Colors.white),
-                  Icon(FontAwesomeIcons.moneyCheck,
-                      size: Selection.bottomCurrentTab == 2 ? 30.0 : 20.0,
-                      color: Selection.bottomCurrentTab == 2
-                          ? Colors.black
-                          : Colors.white),
-                  Icon(FontAwesomeIcons.moneyBill,
-                      size: Selection.bottomCurrentTab == 3 ? 30.0 : 20.0,
-                      color: Selection.bottomCurrentTab == 3
-                          ? Colors.black
-                          : Colors.white),
-                  Icon(FontAwesomeIcons.listAlt,
-                      size: Selection.bottomCurrentTab == 4 ? 30.0 : 20.0,
-                      color: Selection.bottomCurrentTab == 4
-                          ? Colors.black
-                          : Colors.white),
-                  Icon(FontAwesomeIcons.user,
-                      size: Selection.bottomCurrentTab == 5 ? 30.0 : 20.0,
-                      color: Selection.bottomCurrentTab == 5
-                          ? Colors.black
-                          : Colors.white),
-                ])
+                Icon(FontAwesomeIcons.home,
+                    size: Selection.bottomCurrentTab == 0 ? 30.0 : 20.0,
+                    color: Selection.bottomCurrentTab == 0
+                        ? Colors.black
+                        : Colors.white),
+                Icon(FontAwesomeIcons.search,
+                    size: Selection.bottomCurrentTab == 1 ? 30.0 : 20.0,
+                    color: Selection.bottomCurrentTab == 1
+                        ? Colors.black
+                        : Colors.white),
+                Icon(FontAwesomeIcons.moneyCheck,
+                    size: Selection.bottomCurrentTab == 2 ? 30.0 : 20.0,
+                    color: Selection.bottomCurrentTab == 2
+                        ? Colors.black
+                        : Colors.white),
+                Icon(FontAwesomeIcons.moneyBill,
+                    size: Selection.bottomCurrentTab == 3 ? 30.0 : 20.0,
+                    color: Selection.bottomCurrentTab == 3
+                        ? Colors.black
+                        : Colors.white),
+                Icon(FontAwesomeIcons.listAlt,
+                    size: Selection.bottomCurrentTab == 4 ? 30.0 : 20.0,
+                    color: Selection.bottomCurrentTab == 4
+                        ? Colors.black
+                        : Colors.white),
+                Icon(FontAwesomeIcons.user,
+                    size: Selection.bottomCurrentTab == 5 ? 30.0 : 20.0,
+                    color: Selection.bottomCurrentTab == 5
+                        ? Colors.black
+                        : Colors.white),
+              ],
+            )
           : null,
     );
   }
@@ -362,6 +363,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     FontAwesomeIcons.history,
     FontAwesomeIcons.phoneAlt,
   ];
+
   List<String> _sideMenuToolTip = [
     'Recherchez Ici',
     'Accueil',
@@ -1324,18 +1326,19 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // _itemCount = Selection.getCountData();
     // _countCountries = Selection.getCountCountryData();
     //listen to body scrolling and execute itself
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        setState(() {
-          // add and load 15 more games on every bottom list reach
-          // load more data + condition to filter games already loaded
-          Selection.loadLimit = Selection.loadLimit + 15;
-          // if (mounted)
-          loadMatchMethod();
-        });
-      }
-    });
+    _scrollController = ScrollController()
+      ..addListener(() {
+        if (_scrollController.position.pixels ==
+            _scrollController.position.maxScrollExtent) {
+          setState(() {
+            // add and load 15 more games on every bottom list reach
+            // load more data + condition to filter games already loaded
+            Selection.loadLimit = Selection.loadLimit + 15;
+            // if (mounted)
+            loadMatchMethod();
+          });
+        }
+      });
   }
 
   Widget games() {
@@ -1743,7 +1746,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     oddsGameArray[_gameOddIndex].country = _country;
     oddsGameArray[_gameOddIndex].dataTime = _dataTime;
     // WE PRECISE THE RIGHT BUTTON FOR SELECTION
-    print(_dataTime);
     // UPDATE THE COLOR OF THE BUTTON AND OF THE LABEL
     customColors();
   }
@@ -2277,17 +2279,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             cursor: SystemMouseCursors.click,
                             child: GestureDetector(
                               onTap: () {
-                                if (mounted)
-                                  setState(() {
-                                    // WE LOOP THROUGH ALL ODDS TO GET THE RIGHT GAME INDEX
-                                    for (int _j = 0;
-                                        _j < oddsGameArray.length;
-                                        _j++) {
-                                      // print('We have found the game to remove here');
-                                      // REMOVING ALL MATCHES FROM THE TICKET
-                                      unselectOddsButton(_j);
-                                    }
-                                  });
+                                unselect_all_at_once();
                                 // hide the show error panel on the BETSLIP panel
                                 // showBetslipMessagePanel = false;
                                 // clear all games logic goes here
@@ -2514,87 +2506,146 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         SizedBox(height: 10.0),
                         Container(
                           width: double.infinity,
-                          child: RawMaterialButton(
-                            padding: new EdgeInsets.all(15.0),
-                            onPressed: () {
-                              if (mounted)
-                                setState(() {
-                                  // DOING THE PROCESSES OF ADDING A TICKET IN THE DATABASE
-                                  if (countTicketLegs() <= 0) {
-                                    // WE CANNOT ADD AN EMPTY TICKET IN THE DATABASE
-                                    // A TICKET MUST CONTAINS AT LEAST 1 GAME
-                                    // SHOW THIS MESSAGE IF THE CONDITION IS NOT RESPECTED
-                                    show_dialog_panel(
-                                        'Billet de pari vide!'.toUpperCase(),
-                                        'Selectionnez au moins un match d\'abord',
-                                        'assets/images/fail.png');
-                                  }
-                                  // check if the user provided a balance amount
-                                  else if (Price.stake <
-                                      Price.minimumBetPrice) {
-                                    // A BET CAN ONLY BE ACCEPTED IF THE STAKE IS GREATER OR EQUAL TO
-                                    // THE MINIMUM BET PRICE OF THE SYSTEM
-                                    // SHOW THIS MESSAGE DOWN HERE
-                                    show_dialog_panel(
-                                        'Solde requis!'.toUpperCase(),
-                                        'Le montant minimum est de ${Price.currency_symbol} ${Price.minimumBetPrice}',
-                                        'assets/images/fail.png');
-                                  }
-                                  // check if the maximum games is respected
-                                  else if (countTicketLegs() > Price.maxGames) {
-                                    // WE CANNOT PLACE MORE THAN THE MAXIMUM GAMES ON A BETSLIP
-                                    // A USER IS NOT ALLOWED TO PLACE MORE THAN THE MAX GAMES REQUIRED
-                                    // SHOW THIS MESSAGE DOWN HERE
-                                    show_dialog_panel(
-                                        'limite Dépassée!'.toUpperCase(),
-                                        'La Limite de matches pour un billet de pari est de ${Price.maxGames} matches',
-                                        'assets/images/fail.png');
-                                  } else if (Selection.user == null) {
-                                    // SHOW THE LOGIN MESSAGE DIALOG BOX
-                                    // LOGIN IS REQUIRED BEFORE PLACING A BET
-                                    show_dialog_panel(
-                                        'Connexion requise!'.toUpperCase(),
-                                        'Connecter d\'abord votre compte avant de placer un pari',
-                                        'assets/images/fail.png');
-                                  }
-                                  // WE CHECK IF THE BALANCE IS GREATER OR EQUAL THAN THE MINIMUM PRICE
-                                  // WE ALSO CHECK IF IT IS GREATER OR EQUAL TO THE TICKET STAKE
-                                  else if ((Selection.userBalance >=
-                                          Price.minimumBetPrice) &&
-                                      (Selection.userBalance >= Price.stake)) {
-                                    // WE CHECK IF MATCHES SELECTED ARE STILL NOT STARTED
-                                    // O MEANS NO GAMES ON THE LIST HAS STARTED ALREADY
-                                    if (_check_match_availability() == 0) {
-                                      // IF NONE OF THE GAMES ON THE BETSLIP HAS STARTED
-                                      // THEN CONTINUE WITH THE PROCESS OF ADDING THE TICKET
-                                      if (mounted)
-                                        setState(() {
-                                          _do_the_buying_ticket_process();
-                                        });
-                                    }
-                                  } else {
-                                    // IF THE USER DOES NOT HAVE ENOUGH MONEY INTO HIS SKIIYA BET ACCOUNT
-                                    // A BET CAN ONLY BE ACCEPTED FOR USERS WITH MONEY
-                                    // MONEY AT LEAST GREATER OR EQUAL TO THE MINIMUM BET PRICE
-                                    show_dialog_panel(
-                                        'solde insuffisant!'.toUpperCase(),
-                                        'Désolez! Votre solde est insuffisant.',
-                                        'assets/images/fail.png');
-                                  }
-                                });
-                            },
-                            fillColor: Colors.lightGreen[400],
-                            disabledElevation: 5.0,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0)),
-                            child: Text(
-                              'Pariez maintenant'.toUpperCase(),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14.0),
-                            ),
-                          ),
+                          child: _buyingATicketLoader
+                              ? RawMaterialButton(
+                                  padding:
+                                      new EdgeInsets.symmetric(vertical: 15.0),
+                                  onPressed: null,
+                                  fillColor: Colors.lightGreen[200],
+                                  disabledElevation: 1.0,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Placement...',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15.0),
+                                      ),
+                                      SizedBox(width: 3.0),
+                                      SpinKitCircle(
+                                        color: Colors.white,
+                                        size: 13.0,
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : RawMaterialButton(
+                                  padding: new EdgeInsets.all(15.0),
+                                  onPressed: () {
+                                    if (mounted)
+                                      setState(() {
+                                        // DOING THE PROCESSES OF ADDING A TICKET IN THE DATABASE
+                                        if (countTicketLegs() <= 0) {
+                                          // WE CANNOT ADD AN EMPTY TICKET IN THE DATABASE
+                                          // A TICKET MUST CONTAINS AT LEAST 1 GAME
+                                          // SHOW THIS MESSAGE IF THE CONDITION IS NOT RESPECTED
+                                          show_dialog_panel(
+                                              context,
+                                              'Billet de pari vide!'
+                                                  .toUpperCase(),
+                                              'Selectionnez au moins un match d\'abord',
+                                              'assets/images/fail.png');
+                                        }
+                                        // check if the user provided a balance amount
+                                        else if (Price.stake <
+                                            Price.minimumBetPrice) {
+                                          // A BET CAN ONLY BE ACCEPTED IF THE STAKE IS GREATER OR EQUAL TO
+                                          // THE MINIMUM BET PRICE OF THE SYSTEM
+                                          // SHOW THIS MESSAGE DOWN HERE
+                                          show_dialog_panel(
+                                              context,
+                                              'Solde requis!'.toUpperCase(),
+                                              'Le montant minimum est de ${Price.currency_symbol} ${Price.minimumBetPrice}',
+                                              'assets/images/fail.png');
+                                        }
+                                        // check if the maximum games is respected
+                                        else if (countTicketLegs() >
+                                            Price.maxGames) {
+                                          // WE CANNOT PLACE MORE THAN THE MAXIMUM GAMES ON A BETSLIP
+                                          // A USER IS NOT ALLOWED TO PLACE MORE THAN THE MAX GAMES REQUIRED
+                                          // SHOW THIS MESSAGE DOWN HERE
+                                          show_dialog_panel(
+                                              context,
+                                              'limite Dépassée!'.toUpperCase(),
+                                              'La Limite de matches pour un billet de pari est de ${Price.maxGames} matches',
+                                              'assets/images/fail.png');
+                                        } else if (Selection.user == null) {
+                                          // SHOW THE LOGIN MESSAGE DIALOG BOX
+                                          // LOGIN IS REQUIRED BEFORE PLACING A BET
+                                          show_dialog_panel(
+                                              context,
+                                              'Connexion requise!'
+                                                  .toUpperCase(),
+                                              'Connecter d\'abord votre compte avant de placer un pari',
+                                              'assets/images/fail.png');
+                                        }
+                                        // WE CHECK IF THE BALANCE IS GREATER OR EQUAL THAN THE MINIMUM PRICE
+                                        // WE ALSO CHECK IF IT IS GREATER OR EQUAL TO THE TICKET STAKE
+                                        else if ((Selection.userBalance >=
+                                                Price.minimumBetPrice) &&
+                                            (Selection.userBalance >=
+                                                Price.stake)) {
+                                          // SHOW THE LOADING BUTTON
+                                          if (mounted)
+                                            setState(() {
+                                              _buyingATicketLoader = true;
+                                            });
+                                          // WE CHECK IF MATCHES SELECTED ARE STILL NOT STARTED
+                                          // O MEANS NO GAMES ON THE LIST HAS STARTED ALREADY
+                                          // CHECKING MATCH AVAILABILITY
+                                          print('Checking match availability');
+                                          _check_match_availability()
+                                              .then((_isOk) {
+                                            if (_isOk) {
+                                              // print(
+                                              //     'CONTINUE WITH ADDING TO BETSLIP');
+                                              // print('value from async $_isOk');
+                                              // print('Checking finished');
+                                              if (mounted)
+                                                setState(() {
+                                                  _do_the_buying_ticket_process();
+                                                });
+                                            } else {
+                                              // HIDE THE LOADING BUTTON
+                                              if (mounted)
+                                                setState(() {
+                                                  _buyingATicketLoader = false;
+                                                });
+                                              show_dialog_panel(
+                                                  context,
+                                                  'Désolé!'.toUpperCase(),
+                                                  'Certains matches ont déjà commencé.\nRetirez-les pour placer le pari',
+                                                  'assets/images/fail.png');
+                                              print('Could not place the bet');
+                                            }
+                                          });
+                                        } else {
+                                          // IF THE USER DOES NOT HAVE ENOUGH MONEY INTO HIS SKIIYA BET ACCOUNT
+                                          // A BET CAN ONLY BE ACCEPTED FOR USERS WITH MONEY
+                                          // MONEY AT LEAST GREATER OR EQUAL TO THE MINIMUM BET PRICE
+                                          show_dialog_panel(
+                                              context,
+                                              'solde insuffisant!'
+                                                  .toUpperCase(),
+                                              'Désolez! Votre solde est insuffisant.',
+                                              'assets/images/fail.png');
+                                        }
+                                      });
+                                  },
+                                  fillColor: Colors.lightGreen[400],
+                                  disabledElevation: 5.0,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0)),
+                                  child: Text(
+                                    'Pariez maintenant'.toUpperCase(),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.0),
+                                  ),
+                                ),
                         ),
                       ],
                     ),
@@ -2739,7 +2790,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         });
   }
 
-  Future show_dialog_panel(String title, String description, String imgUrl) {
+  Future show_dialog_panel(
+      BuildContext context, String title, String description, String imgUrl) {
     return showDialog(
         context: context,
         builder: (context) {
@@ -2877,21 +2929,33 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     bool _hasExpired = _matchTicket.hasExpired;
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           height: 55.0,
-          margin: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 3.0),
+          margin: EdgeInsets.only(
+            left: 10.0,
+            right: 10.0,
+            bottom: _hasExpired ? 0.0 : 3.0,
+          ),
           decoration: BoxDecoration(
             border: Border(
               top: BorderSide(
                 color: _hasExpired ? Colors.red.shade300 : Colors.grey.shade300,
+                width: _hasExpired ? 2.0 : 1.0,
               ),
               bottom: BorderSide(
                 color: _hasExpired ? Colors.red.shade300 : Colors.grey.shade300,
+                width: _hasExpired ? 2.0 : 1.0,
               ),
               // left: BorderSide(color: Colors.grey.shade300),
               right: BorderSide(
                 color: _hasExpired ? Colors.red.shade300 : Colors.grey.shade300,
+                width: _hasExpired ? 2.0 : 1.0,
+              ),
+              left: BorderSide(
+                color: _hasExpired ? Colors.red.shade300 : Colors.transparent,
+                width: _hasExpired ? 2.0 : 1.0,
               ),
             ),
             color: Colors.white,
@@ -3029,6 +3093,18 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             ],
           ),
         ),
+        _hasExpired
+            ? Container(
+                margin: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 3.0),
+                child: Text(
+                  'Ce match a déjà commencé',
+                  style: TextStyle(
+                      color: Colors.red.shade300,
+                      fontSize: 11.0,
+                      fontWeight: FontWeight.normal),
+                ),
+              )
+            : Text(''),
       ],
     );
   }
@@ -4319,12 +4395,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   }
 
   // WE CHECK THE VALIDITY OF EVERY SINGLE MATCH ON THE TICKET
-  int _check_match_availability() {
+  Future _check_match_availability() async {
     // IF ZERO, MEANS NO GAME ON THE TICKET HAS STARTED
     // ELSE DIFFERENT FROM ZERO MEANS AT LEAST ONE GAME ON THE TICKET HAS STARTED
     int _notStarted = 0;
     // WE GET THE INDEX OF THE GAME THAT HAS STARTED ALREADY
-    int _gameIndex = -1;
+    // int _gameIndex;
 
     for (int _i = 0; _i < oddsGameArray.length; _i++) {
       // WE CAN ONLY FETCH VALUES OF SELECTED MATCHES WITH NON NULL VALUES HERE
@@ -4333,10 +4409,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           oddsGameArray[_i].oddIndex != null &&
           oddsGameArray[_i].oddLabel != null &&
           oddsGameArray[_i].oddValue != null) {
+        // LET UD GET THE GAME ID
+        String _gameId = oddsGameArray[_i].gameID.toString();
         // IF A MATCH IS SELECTED THEN CHECK FOR ITS VALIDITY
-        Firestore.instance
+        await Firestore.instance
             .collection('football')
-            .document(oddsGameArray[_i].gameID) // WE GET THE CURRENT GAME
+            .document(_gameId) // WE GET THE CURRENT GAME
             .get()
             .then((_gameFetch) {
           // CHECK IF THE STATUS IS STILL NOT STARTED (NS)
@@ -4350,11 +4428,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             // KEEP INCREASING THE VALUES SO WE WILL KNOW HAOW MANY HAVE STARTED ALREADY
             // AND HOW MANY ARE STILL PENDING
             _notStarted++;
+            // _gameIndex = _i;
             // WE SET THE GAME INDEX TO THIS CURRENT INDEX
-            _gameIndex = _i;
-            print(
-                'This game ${oddsGameArray[_i].gameID} has started already or not found');
-            // break;
+            // print(
+            //     'This game ${oddsGameArray[_i].gameID} has started already or not found');
             // IF A GAME HAS ALREADY STARTED,
             // WE UPDATE THE STATE OF EXPIRATION IN THE ARRAY
             if (mounted)
@@ -4366,25 +4443,29 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 loadBetslipMatches();
               });
           }
+          //  else {
+          //   print('GAME ID: ${oddsGameArray[_i].gameID} PENDING / AVAILABLE');
+          // }
         });
-      } else {
-        print(
-            'This game ${oddsGameArray[_i].gameID} has not been selected for this ticket');
-      }
-
-      if (_notStarted != 0) {
-        // IF WE HAVE A MATCH THAT HAS BEEN STARTED ALREADY
-        // BREAK THE LOOP AND DISPLAY THE MESSAGE
-        show_dialog_panel(
-            'Désolé!'.toUpperCase(),
-            'Certains matches sur le billet ont déjà commencé.\nRetirez-les de la liste pour placer le pari',
-            'assets/images/fail.png');
-        print(
-            'This is the game ${oddsGameArray[_gameIndex].gameID} to remove from the list');
-        break;
       }
     }
-    return _notStarted;
+
+    // print('THE ACCESS VALUE: $_notStarted');
+    if (_notStarted != 0) {
+      // IF WE HAVE A MATCH THAT HAS BEEN STARTED ALREADY
+      // BREAK THE LOOP AND DISPLAY THE MESSAGE
+      // show_dialog_panel(
+      //     context,
+      //     'Désolé!'.toUpperCase(),
+      //     'Certains matches sur le billet ont déjà commencé.\nRetirez-les de la liste pour placer le pari',
+      //     'assets/images/fail.png');
+      // print(
+      //     'This is the game ${oddsGameArray[_gameIndex].gameID} to remove from the list');
+      // break;
+      return false;
+    } else {
+      return true;
+    }
   }
 
   // THIS METHOD LOADS THE USER BALANCE AND MORE DETAILS
@@ -4410,8 +4491,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // TO THE TRANSACTION COLLECTION HERE
     Method.addNewTransaction('Billet de pari', Price.stake).then((_trans) {
       // LET US GET THE TRANSACTION ID HERE
-      String _transID = _trans.documentID;
+      String _transID = _trans.documentID.toString();
       double _stake = Price.stake;
+      print('--------STAKE--------TRANS ID---------------');
+      print(_stake);
+      print(_transID);
+      print('-------------------------------');
       // IF SUCCESSFULL, WE UPDATE THE USER BALANCE WITH
       // THE TRANSACTION ID FOR TRACKING PROCESS
       Method.updateUserBalance(_transID).then((value) {
@@ -4421,22 +4506,65 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           // SUCCESSFULLY UPDATE THE VALUE THE USER BALANCE ONSCREEN
           _load_user_data_info();
           // SHOW A SUCCESSFULL MESSAGE TO THE USER HERE
+          // UNSELECT ALL GAMES AT ONCE
+          unselect_all_at_once();
+          // HIDE THE LOADING BUTTON
+          hideLoadingButton();
+          // SHOW A DIALOG BOX
           show_dialog_panel(
+              context,
               'Félicitations!'.toUpperCase(),
               'Votre billet de pari a été placé avec succès',
               'assets/images/ok.png');
           // SHOW THE DIALOG BOX FOR ERROR
-        }).catchError((e) => _error_on_bet_adding('bet adding error'));
-      }).catchError((e) => _error_on_bet_adding('user update balance error'));
-    }).catchError(
-        (e) => _error_on_bet_adding('adding transaction record error'));
+        }).catchError((e) {
+          hideLoadingButton();
+          _error_on_bet_adding('bet adding error: $e');
+          show_dialog_panel(context, 'Désolé!'.toUpperCase(),
+              'Une erreur est survenue', 'assets/images/fail.png');
+        });
+      }).catchError((e) {
+        hideLoadingButton();
+        _error_on_bet_adding('user update balance error: $e');
+        show_dialog_panel(context, 'Désolé!'.toUpperCase(),
+            'Une erreur est survenue', 'assets/images/fail.png');
+      });
+    }).catchError((e) {
+      // HIDE LOADING BUTTON
+      hideLoadingButton();
+      // PRINT THE ERROR MESSAGE
+      _error_on_bet_adding('adding transaction record error: $e');
+      // SHOW THE DIALOG BOX
+      show_dialog_panel(context, 'Désolé!'.toUpperCase(),
+          'Une erreur est survenue', 'assets/images/fail.png');
+    });
+  }
+
+  hideLoadingButton() {
+    // HIDE THE LOADING BUTTON
+    if (mounted)
+      setState(() {
+        _buyingATicketLoader = false;
+      });
   }
 
   // THIS ONLY SHOWS IF A TICKET BUYING IS NOT COMPLETED
   _error_on_bet_adding(String message) {
     print('THE ERROR : $message');
-    return show_dialog_panel('Désolé!'.toUpperCase(), 'une erreur est survenue',
-        'assets/images/fail.png');
+    // return show_dialog_panel(_context, 'Désolé!'.toUpperCase(),
+    //     'Une erreur est survenue', 'assets/images/fail.png');
+  }
+
+  void unselect_all_at_once() {
+    if (mounted)
+      setState(() {
+        // WE LOOP THROUGH ALL ODDS TO GET THE RIGHT GAME INDEX
+        for (int _j = 0; _j < oddsGameArray.length; _j++) {
+          // print('We have found the game to remove here');
+          // REMOVING ALL MATCHES FROM THE TICKET
+          unselectOddsButton(_j);
+        }
+      });
   }
 
   // keep on loading user blance details every 30s
@@ -4516,5 +4644,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   //     }
   //   });
   // }
-} // 6272
+}
+
+// 6272
 // was 6700 lines of fresh codes --- still
