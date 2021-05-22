@@ -7,19 +7,29 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:skiiyabet/methods/connexion.dart';
+import 'package:skiiyabet/windows/transaction/transaction.dart';
 
 // this controlls the scrolling and loading more bets
-ScrollController _scrollController = new ScrollController();
+// ScrollController _scrollController = new ScrollController();
 // array that hold values from loading
 var _transactionLoader = [];
 var _transactionDisplay = [];
 // this indicates the one time loading limit
-int transactionLoadLimit = 25;
+int transactionLoadLimit = 2;
 // this display the game details or game List
 // the game index to load details
 int _detailIndex;
 // store games and details from betslip
 var betGameDetails = [];
+
+// CHECK THE NETWORK ISSUE
+bool _isNoInternetNetwork = false;
+// DISPLAY TRANSACTIONS
+var _betData = [];
+// TRANSACTION LIMITS
+int _betLoadLimit = 15;
+// CHECK FOR DATA DISPONIBILITY
+bool _isNoBetData = false;
 
 class Bets extends StatefulWidget {
   @override
@@ -34,26 +44,24 @@ class _BetsState extends State<Bets> {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        margin: EdgeInsets.only(left: 10.0, top: 10.0),
-        padding: new EdgeInsets.all(10.0),
+        margin: EdgeInsets.only(
+            left: 10.0,
+            top: ResponsiveWidget.isSmallScreen(context) ? 0.0 : 10.0),
+        padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
         width: double.infinity,
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: Colors.grey, width: 0.5),
-            bottom: BorderSide(color: Colors.grey, width: 0.5),
-            left: BorderSide(color: Colors.grey, width: 0.5),
-            right: BorderSide(color: Colors.grey, width: 0.5),
+            top: BorderSide(color: Colors.grey.shade300),
+            bottom: BorderSide(color: Colors.grey.shade300),
+            left: BorderSide(color: Colors.grey.shade300),
+            right: BorderSide(color: Colors.grey.shade300),
           ),
         ),
         child: Selection.user != null
-            ?
-            // display my bets list here
-            !isDetailVisible
+            ? !isDetailVisible
                 ? myBetsView(context)
                 : showFullBetDetails()
-            :
-            // ask the user to login first
-            askLoginFirst(),
+            : askLoginFirst(), // SHOW LOGIN REQUIREMENTS
       ),
     );
   }
@@ -516,7 +524,7 @@ class _BetsState extends State<Bets> {
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold)),
         SizedBox(height: 10.0),
-        Divider(thickness: 0.4, color: Colors.grey),
+        Divider(thickness: 0.4, color: Colors.grey.shade300),
         SizedBox(height: 15.0),
         ConnexionRequired(),
       ],
@@ -526,49 +534,44 @@ class _BetsState extends State<Bets> {
   Column myBetsView(BuildContext context) {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Date - Heure',
-                style: TextStyle(color: Colors.grey, fontSize: 13.0)),
-            Text('Détails de mon pari',
-                style: TextStyle(color: Colors.grey, fontSize: 13.0)),
-            // Text('Statut',
-            //     style: TextStyle(color: Colors.grey, fontSize: 13.0)),
-          ],
-        ),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //   children: [
+        //     Text('Date - Heure',
+        //         style: TextStyle(color: Colors.grey, fontSize: 13.0)),
+        //     Text('Détails de mon pari',
+        //         style: TextStyle(color: Colors.grey, fontSize: 13.0)),
+        //     // Text('Statut',
+        //     //     style: TextStyle(color: Colors.grey, fontSize: 13.0)),
+        //   ],
+        // ),
+        Text('Mes Paris'.toUpperCase(),
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold)),
         SizedBox(height: 5.0),
         Divider(color: Colors.grey, thickness: 0.4),
         SizedBox(height: 5.0),
-        _transactionDisplay.length > 0
+        // DISPLAY ONLY IF WE HAVE DATA OR ACTIVE BETS
+        _betData.length > 0
             ? Container(
                 height: MediaQuery.of(context).size.height - 240.0,
                 child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: _transactionDisplay.length,
+                  // controller: _scrollController,
+                  itemCount: _betData.length,
                   itemBuilder: (context, index) {
                     return myBetsWidget(context, index);
                   },
                 ),
               )
-            : Center(
-                child: Column(
-                  children: [
-                    if (_isHistoryEmpty)
-                      Text('Aucune donnée disponible',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.bold,
-                          )),
-                    if (_isHistoryEmpty) SizedBox(height: 5.0),
-                    SpinKitCubeGrid(
-                      color: Colors.lightGreen[400],
-                      size: 20.0,
-                    ),
-                  ],
-                ),
-              ),
+            : _isNoInternetNetwork
+                ? Center(child: noNetworkWidget())
+                : Center(
+                    child: _isNoBetData
+                        ? noRecordFound('Aucun pari effectué')
+                        : recordLoading(),
+                  ),
       ],
     );
   }
@@ -576,27 +579,69 @@ class _BetsState extends State<Bets> {
   @override
   void initState() {
     // initially load transactions with no condition
-    loadBetslip(transactionLoadLimit);
+    if (mounted)
+      setState(() {
+        // LOAD BETS ON FIRST PAGE RENDERING
+        loadBet(transactionLoadLimit);
+      });
     super.initState();
 
     //listen to body scrolling and execute itself
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        // Future thisData;
-        // clear the loading array before adding new items
-        // clear everything before adding new items
-        // _transactionLoader.clear();
-        // load more data + condition to filter games already loaded
-        transactionLoadLimit = transactionLoadLimit + 1;
+    // _scrollController.addListener(() {
+    //   if (_scrollController.position.pixels ==
+    //       _scrollController.position.maxScrollExtent) {
+    //     // Future thisData;
+    //     // clear the loading array before adding new items
+    //     // clear everything before adding new items
+    //     // _transactionLoader.clear();
+    //     // load more data + condition to filter games already loaded
+    //     transactionLoadLimit = transactionLoadLimit + 1;
+    //     if (mounted)
+    //       setState(() {
+    //         // execute this method so that new content can be added to the listview
+    //         // secondly load transaction by listening to the scrolling view
+    //         loadBetslip(transactionLoadLimit);
+    //       });
+    //   }
+    // });
+  }
+
+  loadBet(int limit) async {
+    // GET THE USER ID BEFORE FETCHING THRE TRANSACTIONS
+    if (Selection.user != null) {
+      // GET THE USER ID
+      String user = Selection.user.uid;
+      // CREATE THE INSTANCE OF FIRESTORE
+      var firestore = Firestore.instance;
+      // load all transaction of the user
+      // LOAD ALL TRANSACTIONS OF THIS PARTICULAR USER
+      await firestore
+          .collection('betslip')
+          .where('uid', isEqualTo: user)
+          .where('status', isEqualTo: 'pending')
+          .orderBy('time.date_time', descending: true)
+          .limit(limit)
+          .getDocuments()
+          .then((_betResult) {
+        // DISPLAYING PROCESS
         if (mounted)
           setState(() {
-            // execute this method so that new content can be added to the listview
-            // secondly load transaction by listening to the scrolling view
-            loadBetslip(transactionLoadLimit);
+            // IF WE HAVE NO DATA WE DISPLAY IT TO THE SCREEN
+            if (_betResult.documents.isEmpty) {
+              // SET THE VARIABLE TO TRUE
+              _isNoBetData = true;
+            } else {
+              // SET THE VARIABLE TO FALSE
+              _isNoBetData = false;
+            }
+            // PROCEED WITH GAME ADDING HERE
+            // CLEAR ALL CONTENT BEFORE ADDING NEW
+            _betData.clear();
+            // ADD NEW ITEMS HERE SO THAT THEY WILL BE ADDED AUTOMATICALLY TO THE LIST
+            _betData.addAll(_betResult.documents);
           });
-      }
-    });
+      });
+    }
   }
 
   Future loadBetslip(int limit) async {
@@ -719,18 +764,17 @@ class _BetsState extends State<Bets> {
   }
 
   Widget myBetsWidget(BuildContext context, int index) {
-    // print('Data to display: ${_transactionDisplay[index].data}');
-    String minutes = _transactionDisplay[index]['time'][1].toString().length > 1
-        ? _transactionDisplay[index]['time'][1].toString()
-        : '0' + _transactionDisplay[index]['time'][1].toString();
-    // format the stake
-    double s = double.parse(_transactionDisplay[index]['stake'].toString());
-    String stake = s.toStringAsFixed(2);
-    // format the payout
-    double p =
-        double.parse(_transactionDisplay[index]['totalPayout'].toString());
-    String price = p.toStringAsFixed(2);
-    // print('this is executed upto here');
+    // GET THE TIME
+    var _time = _betData[index]['time']['time'];
+    // GET THE DATE
+    var _date = _betData[index]['time']['date'];
+    // GET THE TOTAL PAYOUT
+    var _payout = _betData[index]['rewards']['payout'];
+    // GET THE STAKE OF THE TICKET
+    var _stake = _betData[index]['rewards']['stake'];
+    // GET THE CURRENCY SYMBOL
+    var _currency = _betData[index]['rewards']['currency'];
+
     return Column(
       children: [
         MouseRegion(
@@ -758,27 +802,20 @@ class _BetsState extends State<Bets> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                        // _transactionDisplay[index]['date'][0].toString() +
-                        //     ' ' +
-                        _transactionDisplay[index]['date'][1].toString() +
-                            '/' +
-                            _transactionDisplay[index]['date'][2].toString() +
-                            '/' +
-                            _transactionDisplay[index]['date'][3].toString(),
-                        // '23/12/2020',
-                        style: TextStyle(fontSize: 12.0, color: Colors.grey)),
+                      _date.toString(),
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.grey,
+                      ),
+                    ),
                     SizedBox(height: 2.0),
                     Text(
-                        _transactionDisplay[index]['time'][0].toString() +
-                            ':' +
-                            minutes +
-                            ' ' +
-                            _transactionDisplay[index]['time'][2].toString(),
-                        // '12:53 AM',
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.black,
-                        )),
+                      _time.toString(),
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.black,
+                      ),
+                    ),
                   ],
                 ),
                 // SizedBox(height: 2.0),
@@ -786,14 +823,17 @@ class _BetsState extends State<Bets> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
                           'Montant: ',
                           style: TextStyle(color: Colors.grey, fontSize: 11.0),
                         ),
                         Text(
-                          stake.toString() + ' Fc',
-                          // '100.00',
+                          _currency.toString() +
+                              ' ' +
+                              Price.getWinningValues(_stake),
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 12.0,
@@ -803,16 +843,17 @@ class _BetsState extends State<Bets> {
                     ),
                     SizedBox(width: 4.0),
                     Row(
-                      // crossAxisAlignment: CrossAxisAlignment.end,
-                      // mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          'Gain: ',
+                          'Profit: ',
                           style: TextStyle(color: Colors.grey, fontSize: 11.0),
                         ),
                         Text(
-                          price.toString() + ' Fc',
-                          // '154034.00',
+                          _currency.toString() +
+                              ' ' +
+                              Price.getWinningValues(_payout),
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 12.0,
@@ -838,8 +879,38 @@ class _BetsState extends State<Bets> {
           ),
         ),
         SizedBox(height: 5.0),
-        Divider(color: Colors.grey, thickness: 0.4),
+        Divider(color: Colors.grey.shade300, thickness: 0.4),
         SizedBox(height: 5.0),
+        // SHOW THIS WHEN THE LAST ITEM IS REACHED
+        if (_betData.length - 1 == index)
+          Container(
+            width: double.infinity,
+            child: RawMaterialButton(
+              padding: new EdgeInsets.all(10.0),
+              fillColor: Colors.lightGreen[300],
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0)),
+              onPressed: () {
+                // INCREASE THE LOADING LIMIT OF TRANSACTIONS HERE
+                _betLoadLimit = _betLoadLimit + 1;
+                if (mounted)
+                  setState(() {
+                    // WHEN CLICKED, LOAD MORE BETS AND RE-RENDERED THE SCREEN
+                    // THIS WILL BE FETCHING MORE DATA THAT PREVIOUSLY FETCHED
+                    loadBet(_betLoadLimit);
+                  });
+              },
+              child: Text(
+                'Plus...',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
