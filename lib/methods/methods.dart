@@ -291,6 +291,7 @@ class Method {
       {
         'uid': _uid,
         'status': 'pending',
+        'update_status': 'pending',
         'trans_id': _transID,
         'rewards': {
           'currency': Price.currency_symbol,
