@@ -127,6 +127,8 @@ class _TransactionsState extends State<Transactions> {
       setState(() {
         // WE LOAD THE TRANSACTION ON RENDERING
         loadTransaction(_transLoadLimit);
+        // CHEKC THE INTERNET CONNECTIVITY
+        checkInternet();
       });
     // SUPER CLASS
     super.initState();

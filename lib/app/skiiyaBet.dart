@@ -4108,7 +4108,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       if (mounted)
         setState(() {
           if (e.toString().compareTo(
-                  'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
+                  'Failed to get document because the client is offline. (unavailable)') ==
               0) {
             // display internet connection problems
             isNoInternetNetwork = true;

@@ -4,22 +4,23 @@ import 'package:skiiyabet/components/selection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:skiiyabet/methods/connexion.dart';
+import 'package:skiiyabet/windows/bet/bets.dart';
+import 'package:skiiyabet/windows/transaction/transaction.dart';
+import 'package:http/http.dart' as http;
 
-// this controlls the scrolling and loading more bets
-ScrollController _scrollController = new ScrollController();
-// array that hold values from loading
-var _transactionLoader = [];
-var _transactionDisplay = [];
-// this indicates the one time loading limit
-int transactionLoadLimit = 25;
 // this display the game details or game List
 // the game index to load details
 int _detailIndex;
-// store games and details from betslip
-var betGameDetails = [];
+
+// CHECK THE NETWORK ISSUE
+bool _isNoInternetNetwork = false;
+// DISPLAY TRANSACTIONS
+var _histData = [];
+// TRANSACTION LIMITS
+int _histLoadLimit = 15;
+// CHECK FOR DATA DISPONIBILITY
+bool _isNoHistData = false;
 
 class History extends StatefulWidget {
   @override
@@ -27,63 +28,69 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> {
-  bool isDetailVisible = false;
-  bool _isHistoryEmpty = false;
-
+  // SWITCHING PANEL VARIABLE
+  bool showDetailPanel = false;
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        margin: EdgeInsets.only(left: 10.0, top: 10.0),
-        padding: new EdgeInsets.all(10.0),
+        margin: EdgeInsets.only(
+            left: 10.0,
+            top: ResponsiveWidget.isSmallScreen(context) ? 0.0 : 10.0),
+        padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
         width: double.infinity,
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: Colors.grey, width: 0.5),
-            bottom: BorderSide(color: Colors.grey, width: 0.5),
-            left: BorderSide(color: Colors.grey, width: 0.5),
-            right: BorderSide(color: Colors.grey, width: 0.5),
+            top: BorderSide(color: Colors.grey.shade300),
+            bottom: BorderSide(color: Colors.grey.shade300),
+            left: BorderSide(color: Colors.grey.shade300),
+            right: BorderSide(color: Colors.grey.shade300),
           ),
         ),
         child: Selection.user != null
-            ?
-            // display my bets list here
-            !isDetailVisible
-                ? myBetsView(context)
+            ? !showDetailPanel
+                ? myHistView(context)
                 : showFullBetDetails()
-            :
-            // ask the user to login first
-            askLoginFirst(),
+            : notLoggedInYetHeader('Mon historique'), // SHOW LOGIN REQUIREMENTS
       ),
     );
   }
 
   Widget showFullBetDetails() {
+    // WE STORE DATA IN THE NEW ARRAY OF DATA
+    var _histDetails = _histData[_detailIndex];
+    // print(_histDetails);
+    // print(_detailIndex);
     // this method display all games details within the Games Details
-    Color colorTxt;
-    String result = _transactionDisplay[_detailIndex]['result'];
-    if (result.compareTo('won') == 0) {
-      colorTxt = Colors.lightGreen[400];
-    } else if (result.compareTo('lost') == 0) {
-      colorTxt = Colors.red;
+    Color _colorItem;
+
+    String _status = _histDetails['status'].toString();
+    if (_status.compareTo('won') == 0) {
+      _colorItem = Colors.lightGreen[400];
+    } else if (_status.compareTo('lost') == 0) {
+      _colorItem = Colors.red;
     } else {
-      colorTxt = Colors.grey;
+      _colorItem = Colors.grey;
     }
-    // print('Data to display: ${_transactionDisplay[index].data}');
-    String minutes =
-        _transactionDisplay[_detailIndex]['time'][1].toString().length > 1
-            ? _transactionDisplay[_detailIndex]['time'][1].toString()
-            : '0' + _transactionDisplay[_detailIndex]['time'][1].toString();
-    // that's total rate
-    double tR =
-        double.parse(_transactionDisplay[_detailIndex]['totalRate'].toString());
-    String totalRate = tR.toStringAsFixed(2);
-    // that's user stake
-    // double st = _transactionDisplay[_detailIndex]['stake'];
-    // String stake = st.toStringAsFixed(2);
-    // total Payout
-    // double tP = _transactionDisplay[_detailIndex]['totalPayout'];
-    // String totalPayout = tP.toStringAsFixed(2);
+
+    // GET THE TIME
+    var _time = _histDetails['time']['time'];
+    // GET THE DATE
+    var _date = _histDetails['time']['date'];
+    // GET THE STAKE OF THE TICKET
+    var _stake = _histDetails['rewards']['stake'];
+    // GET THE CURRENCY SYMBOL
+    var _currency = _histDetails['rewards']['currency'];
+    // GET THE LENGTH OF THE THE ARRAY
+    int _lenMatch = _histDetails['matches']['gameIDs'].length;
+    // TOTAL RATE
+    var _totalRate = _histDetails['rewards']['odds'];
+    // GET THE BONUS AMOUNT
+    var _toatalWinning = _histDetails['rewards']['winning'];
+    // GET THE BONUS AMOUNT
+    var _bonus = _histDetails['rewards']['bonus'];
+    // GET THE TOTAL PAYOUT
+    var _payout = _histDetails['rewards']['payout'];
 
     return SingleChildScrollView(
       child: Column(
@@ -91,7 +98,6 @@ class _HistoryState extends State<History> {
           Container(
             // height: MediaQuery.of(context).size.height - 240.0,
             child: Column(
-              // padding: EdgeInsets.only(top: 0.0),
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -101,91 +107,33 @@ class _HistoryState extends State<History> {
                       onPressed: () {
                         if (mounted)
                           setState(() {
-                            isDetailVisible = false;
+                            // WE SET THE VARIABLE TO FALSE TO DISPLAY THE FULL LIST OF DATA
+                            showDetailPanel = false;
                           });
                       },
                     ),
-                    Container(
-                      // width: 15.0,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        border: Border(
-                          top: BorderSide(color: Colors.grey, width: 2.0),
-                          bottom: BorderSide(color: Colors.grey, width: 2.0),
-                          left: BorderSide(color: Colors.grey, width: 2.0),
-                          right: BorderSide(color: Colors.grey, width: 2.0),
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
-                        // color: Colors.lightBlue,
-                      ),
-                      child: Text(
-                        _transactionDisplay[_detailIndex]['gameIDs']
-                            .length
-                            .toString(),
-                        // (BetSlipData.gameIds.length.toString()),
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 15.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                    displayTicketLength(_lenMatch),
                   ],
                 ),
-                SizedBox(height: 5.0),
-                Divider(color: Colors.grey, thickness: 0.4),
+                SizedBox(height: 10.0),
                 // top row containing column decsription
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Date',
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 13.0,
-                            fontWeight: FontWeight.bold)),
-                    Text('Détails de l\'historique',
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 13.0,
-                            fontWeight: FontWeight.bold)),
-                    Text('Chances',
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 13.0,
-                            fontWeight: FontWeight.bold)),
+                    Text(
+                      'Tous les détails du pari',
+                      style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ],
                 ),
                 SizedBox(height: 5.0),
                 Divider(color: Colors.grey, thickness: 0.5),
                 SizedBox(height: 5.0),
-                // to hold all games details and results
-                betGameDetails.length > 0
-                    ? Column(
-                        children: betGameDetails
-                            .asMap()
-                            .entries
-                            .map(
-                              (MapEntry map) => gamesFromBetslip(map.key),
-                            )
-                            .toList(),
-                      )
-                    : Center(
-                        child: Text(
-                          'chargement...',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w200,
-                            fontSize: 13.0,
-                          ),
-                        ),
-                      ),
-                // Column(
-                //   children: [
-                //     gamesFromBetslip(),
-                //   ],
-                // ),
+                // LOOP THROUGH DATA TO DISPLAY THE CONTENT
+                for (int _i = 0; _i < _lenMatch; _i++) gamesFromTicket(_i),
               ],
             ),
           ),
@@ -193,11 +141,11 @@ class _HistoryState extends State<History> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Taux Total:',
+                'Taux Total',
                 style: TextStyle(color: Colors.grey, fontSize: 12.0),
               ),
               Text(
-                totalRate.toString(),
+                _totalRate.toStringAsFixed(2),
                 // '162 115.50',
                 style: TextStyle(
                     color: Colors.black,
@@ -211,19 +159,12 @@ class _HistoryState extends State<History> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Mon Montant:',
+                'Mon Montant',
                 style: TextStyle(color: Colors.grey, fontSize: 12.0),
               ),
               Text(
-                Price.getWinningValues(
-                        _transactionDisplay[_detailIndex]['stake']) +
-                    ' Fc',
-                // stake.toString() + ' Fc',
-                // '100.00 FC',
-                style: TextStyle(
-                    color: Colors.black,
-                    // fontWeight: FontWeight.bold,
-                    fontSize: 13.0),
+                _currency.toString() + ' ' + Price.getWinningValues(_stake),
+                style: TextStyle(color: Colors.black, fontSize: 13.0),
               ),
             ],
           ),
@@ -232,7 +173,40 @@ class _HistoryState extends State<History> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Mon Gain:',
+                'Gain Total',
+                style: TextStyle(color: Colors.grey, fontSize: 12.0),
+              ),
+              Text(
+                _currency.toString() +
+                    ' ' +
+                    Price.getWinningValues(_toatalWinning),
+                style: TextStyle(color: Colors.black, fontSize: 13.0),
+              ),
+            ],
+          ),
+          SizedBox(height: 5.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Gain Bonus',
+                style: TextStyle(color: Colors.grey, fontSize: 12.0),
+              ),
+              Text(
+                _currency.toString() + ' ' + Price.getWinningValues(_bonus),
+                style: TextStyle(color: Colors.black, fontSize: 13.0),
+              ),
+            ],
+          ),
+          // SizedBox(height: 5.0),
+          SizedBox(height: 5.0),
+          Divider(color: Colors.grey, thickness: 0.5),
+          SizedBox(height: 5.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Paiement Total'.toUpperCase(),
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 12.0,
@@ -240,11 +214,7 @@ class _HistoryState extends State<History> {
                 ),
               ),
               Text(
-                Price.getWinningValues(
-                        _transactionDisplay[_detailIndex]['totalPayout']) +
-                    ' Fc',
-                // totalPayout.toString() + ' Fc',
-                // '173 427.87 Fc',
+                _currency.toString() + ' ' + Price.getWinningValues(_payout),
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -268,15 +238,15 @@ class _HistoryState extends State<History> {
                 ),
               ),
               Text(
-                result.toString().compareTo('pending') == 0
-                    ? 'En attente'.toUpperCase()
-                    : (result.toString().compareTo('won') == 0
-                        ? 'Gagné'.toUpperCase()
-                        : 'Perdu'.toUpperCase()),
+                _status.toString().compareTo('pending') == 0
+                    ? 'En attente'
+                    : (_status.toString().compareTo('won') == 0
+                        ? 'Gagné'
+                        : 'Perdu'),
                 // 'Lost'.toUpperCase(),
                 style: TextStyle(
-                  color: colorTxt,
-                  fontWeight: FontWeight.bold,
+                  color: _colorItem,
+                  fontWeight: FontWeight.w300,
                   fontSize: 13.0,
                 ),
               ),
@@ -289,140 +259,98 @@ class _HistoryState extends State<History> {
           Container(
             alignment: Alignment.center,
             child: Text(
-              'Pari placé le ' +
-                  _transactionDisplay[_detailIndex]['date'][1].toString() +
-                  '/' +
-                  _transactionDisplay[_detailIndex]['date'][2].toString() +
-                  '/' +
-                  _transactionDisplay[_detailIndex]['date'][3].toString() +
-                  ' à ' +
-                  _transactionDisplay[_detailIndex]['time'][0].toString() +
-                  ':' +
-                  minutes +
-                  ' ' +
-                  _transactionDisplay[_detailIndex]['time'][2].toString(),
-              // 'Bet placed on 23/11/2020 at 12:34 PM',
+              'Pari placé le ' + _date.toString() + ' à ' + _time.toString(),
               style: TextStyle(color: Colors.grey, fontSize: 11.0),
             ),
           ),
           SizedBox(height: 10.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(FontAwesomeIcons.clock, size: 16.0, color: Colors.grey),
-              SizedBox(width: 3.0),
-              Text('En attente',
-                  style: TextStyle(color: Colors.grey, fontSize: 12.0)),
-              SizedBox(width: 8.0),
-              Icon(FontAwesomeIcons.checkCircle,
-                  size: 16.0, color: Colors.lightGreen),
-              SizedBox(width: 3.0),
-              Text('Gagné',
-                  style: TextStyle(color: Colors.grey, fontSize: 12.0)),
-              SizedBox(width: 8.0),
-              Icon(FontAwesomeIcons.timesCircle,
-                  size: 16.0, color: Colors.redAccent),
-              SizedBox(width: 3.0),
-              Text('Perdu',
-                  style: TextStyle(color: Colors.grey, fontSize: 12.0)),
-              SizedBox(width: 8.0),
-              Icon(FontAwesomeIcons.minus, size: 16.0, color: Colors.orange),
-              SizedBox(width: 3.0),
-              Text('Annulé',
-                  style: TextStyle(color: Colors.grey, fontSize: 12.0)),
-            ],
-          )
+          bottomDescriptionWidget(),
+          SizedBox(height: 20.0),
         ],
       ),
     );
   }
 
-  Column gamesFromBetslip(int index) {
-    // print(betGameDetails[index].documentID);
-    // get time variables
-    String hour = betGameDetails[index]['time']['1'];
-    String min = betGameDetails[index]['time']['2'];
-    String timeIndicator = betGameDetails[index]['time']['3'];
-    // get date variables
-    // String day = betGameDetails[index]['date']['1'].toString();
-    String mydate = betGameDetails[index]['date']['2'];
-    String month = betGameDetails[index]['date']['3'];
-    String year = betGameDetails[index]['date']['4'];
+  Column gamesFromTicket(int _index) {
+    // WE STORE DATA IN THE NEW ARRAY OF DATA
+    var _histDetails = _histData[_detailIndex];
+    // GET THE TIME
+    var _time =
+        _histDetails['matches']['dataTimes'][_index]['starting_at']['time'];
+    // GET THE DATE
+    var _date =
+        _histDetails['matches']['dataTimes'][_index]['starting_at']['date'];
+    // GET LOCAL TEAM
+    var _localTeam = _histDetails['matches']['localTeams'][_index];
+    // GET VISITOR TEAM
+    var _visitorTeam = _histDetails['matches']['visitorTeams'][_index];
+    // GET THE CHAMPIONSHIP
+    var _league = _histDetails['matches']['teamLeagues'][_index];
+    // GET THE COUNTRY
+    var _country = _histDetails['matches']['teamCountries'][_index];
+    // GET THE RATE
+    var _rate = _histDetails['matches']['oddValues'][_index];
+    // GET THE ODD NAME, CHOICE, LABEL, TOTAL, HANDICAP
+    var _oddName = _histDetails['matches']['oddNames'][_index];
+    var _oddLabel = _histDetails['matches']['oddLabels'][_index];
+    var _oddTotal = _histDetails['matches']['oddTotals'][_index];
+    var _oddHand = _histDetails['matches']['oddHandicaps'][_index];
 
-    // get the status needed for the icon color and type
-    // print(betGameDetails[index]['result']);
-    // print(betGameDetails[index]['status']);
-    // double singleRate = _transactionDisplay[_detailIndex]['gameRates'][index];
-    // String gameRate = _transactionDisplay[_detailIndex]['gameRates'][index].toStringAsFixed(2);
-    // get the status needed for the icon color and type
-    // load all ids within the betslip
-    var getBetslipIDs = [];
-    getBetslipIDs = _transactionDisplay[_detailIndex]['gameIDs'];
-    // get the index of a particular ID
-    // _transactindisplay loads betslips
-    // betgameDetails loads ganeHistory -
-    // print(_transactionDisplay[_detailIndex]['gameIDs']);
-    int positionId =
-        getBetslipIDs.indexOf(betGameDetails[index]['gameID'].toString());
-    // print('The position is: $positionId');
-    // should use result from betslip for this prticular game
-    String statusGame =
-        _transactionDisplay[_detailIndex]['gameResults'][positionId].toString();
-    // String statusGame = betGameDetails[index]['status'].toString();
-    // print('the result of this game is: $statusGame');
-    Icon icon;
-    Color color;
-    if (betGameDetails[index]['status'].toString().compareTo('cancelled') ==
-        0) {
-      icon = Icon(FontAwesomeIcons.minus);
-      color = Colors.orange;
-    } else {
-      if (statusGame.compareTo('null') == 0) {
-        icon = Icon(FontAwesomeIcons.clock);
-        color = Colors.grey;
-      }
-      if (statusGame.compareTo('true') == 0) {
-        icon = Icon(FontAwesomeIcons.checkCircle);
-        color = Colors.lightGreen[400];
-      }
-      if (statusGame.compareTo('false') == 0) {
-        icon = Icon(FontAwesomeIcons.timesCircle);
-        color = Colors.red;
-      }
-      if (statusGame.compareTo('cancelled') == 0) {
-        icon = Icon(FontAwesomeIcons.minus);
-        color = Colors.orange;
-      }
+    if (_oddName == null) _oddName = '';
+    if (_oddLabel == null) _oddLabel = '';
+
+    _oddTotal == null ? _oddTotal = '' : _oddTotal = ' ' + _oddTotal;
+    _oddHand == null ? _oddHand = '' : _oddHand = ' ' + _oddHand;
+
+    String _getGameChoice =
+        _oddName.toString() + ' ($_oddLabel$_oddTotal$_oddHand) ';
+
+    Icon _thisIcon;
+    Color _thisColor;
+    // GET THE STATUS
+    String _status = _histDetails['matches']['teamResults'][_index].toString();
+    // CHECKING
+    if (_status.compareTo('cancelled') == 0) {
+      _thisIcon = Icon(FontAwesomeIcons.timesCircle);
+      _thisColor = Colors.red.shade300;
+    } else if (_status.compareTo('null') == 0) {
+      _thisIcon = Icon(FontAwesomeIcons.squareFull);
+      _thisColor = Colors.grey;
+    } else if (_status.compareTo('true') == 0) {
+      _thisIcon = Icon(FontAwesomeIcons.squareFull);
+      _thisColor = Colors.lightGreen[400];
+    } else if (_status.compareTo('false') == 0) {
+      _thisIcon = Icon(FontAwesomeIcons.squareFull);
+      _thisColor = Colors.red.shade300;
     }
-    // display score if not null
-    String score1 =
-        _transactionDisplay[_detailIndex]['gameScoreTeam1'][index].toString();
-    String score2 =
-        _transactionDisplay[_detailIndex]['gameScoreTeam2'][index].toString();
 
-    if (score1.compareTo('null') == 0) score1 = '?';
-    if (score2.compareTo('null') == 0) score2 = '?';
+    // GET THE GAME SCORE
+    var _score = _histDetails['matches']['teamScores'][_index];
+    if (_score == null) _score = ' ?-?';
 
     return Column(
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                    // day + '/' +
-                    mydate + '/' + month + '/' + year,
-                    // '23/12/2020',
-                    style: TextStyle(fontSize: 12.0, color: Colors.grey)),
+                  _date.toString(),
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.grey,
+                  ),
+                ),
                 SizedBox(height: 2.0),
-                Text(hour + ':' + min + ' ' + timeIndicator,
-                    // '12:53 AM',
-                    style: TextStyle(
-                      fontSize: 12.0,
-                      color: Colors.black,
-                    )),
+                Text(
+                  _time.toString(),
+                  style: TextStyle(
+                    fontSize: 12.0,
+                    color: Colors.black,
+                  ),
+                ),
               ],
             ),
             SizedBox(width: 5.0),
@@ -437,20 +365,17 @@ class _HistoryState extends State<History> {
                           ? 170
                           : 200,
                   child: Text(
-                    betGameDetails[index]['team1'] +
-                        ' - ' +
-                        betGameDetails[index]['team2'],
-                    // 'Hatayspor - Balikesirspor',
+                    _localTeam.toString() + ' vs ' + _visitorTeam.toString(),
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 14.0,
                       // fontWeight: FontWeight.bold,
                     ),
                     maxLines: 4,
-                    overflow: TextOverflow.clip,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                SizedBox(height: 1.0),
+                SizedBox(height: 2.0),
                 Container(
                   alignment: Alignment.centerLeft,
                   width: ResponsiveWidget.isExtraSmallScreen(context)
@@ -459,21 +384,19 @@ class _HistoryState extends State<History> {
                           ? 170
                           : 200,
                   child: Text(
-                    betGameDetails[index]['type'] +
-                        ' - ' +
-                        betGameDetails[index]['championship'],
-                    // 'Football - Turkey - 1. Lig',
+                    _league.toString() + ' - ' + _country.toString(),
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 12.0,
                       // fontWeight: FontWeight.bold,
                     ),
+                    maxLines: 4,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                SizedBox(height: 1.0),
+                SizedBox(height: 2.0),
                 Text(
-                  _transactionDisplay[_detailIndex]['gameChoices'][index],
-                  // '1x2 - FT [ 1 ]'.toUpperCase(),
+                  _getGameChoice.toString(),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 12.0,
@@ -486,24 +409,26 @@ class _HistoryState extends State<History> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  score1 + '-' + score2,
-                  // '3-0',
+                  _score.toString(),
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 14.0,
                     // fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 1.0),
-                Icon(icon.icon, size: 18.0, color: color),
                 SizedBox(height: 2.0),
+                // GET THE RIGHT ICON
+                Icon(
+                  _thisIcon.icon,
+                  size: 13.0,
+                  color: _thisColor,
+                ),
+                SizedBox(height: 3.0),
                 Text(
-                  _transactionDisplay[_detailIndex]['gameRates'][index]
-                      .toStringAsFixed(2),
-                  // '2.10',
+                  _rate.toString(),
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 14.0,
+                    fontSize: 13.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -518,7 +443,7 @@ class _HistoryState extends State<History> {
     );
   }
 
-  askLoginFirst() {
+  Column myHistView(BuildContext context) {
     return Column(
       children: [
         Text('Mon Historique'.toUpperCase(),
@@ -526,221 +451,123 @@ class _HistoryState extends State<History> {
                 color: Colors.black,
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold)),
-        SizedBox(height: 10.0),
-        Divider(thickness: 0.4, color: Colors.grey),
-        SizedBox(height: 15.0),
-        ConnexionRequired(),
+        SizedBox(height: 5.0),
+        Divider(color: Colors.grey, thickness: 0.4),
+        SizedBox(height: 5.0),
+        // DISPLAY ONLY IF WE HAVE DATA OR ACTIVE BETS
+        _histData.length > 0
+            ? Container(
+                height: MediaQuery.of(context).size.height - 240.0,
+                child: ListView.builder(
+                  // controller: _scrollController,
+                  itemCount: _histData.length,
+                  itemBuilder: (context, index) {
+                    return myHistWidget(context, index);
+                  },
+                ),
+              )
+            : _isNoInternetNetwork
+                ? Center(child: noNetworkWidget())
+                : Center(
+                    child: _isNoHistData
+                        ? noRecordFound('Aucun pari dans l\'historique')
+                        : recordLoading(),
+                  ),
       ],
     );
   }
 
-  Column myBetsView(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Date - Heure',
-                style: TextStyle(color: Colors.grey, fontSize: 13.0)),
-            Text('Détails de mon pari',
-                style: TextStyle(color: Colors.grey, fontSize: 13.0)),
-            Text('Résultat',
-                style: TextStyle(color: Colors.grey, fontSize: 13.0)),
-          ],
-        ),
-        SizedBox(height: 5.0),
-        Divider(color: Colors.grey, thickness: 0.4),
-        SizedBox(height: 5.0),
-        _transactionDisplay.length > 0
-            ? Container(
-                height: ResponsiveWidget.isSmallScreen(context)
-                    ? MediaQuery.of(context).size.height - 240.0
-                    : MediaQuery.of(context).size.height - 170.0,
-                child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: _transactionDisplay.length,
-                  itemBuilder: (context, index) {
-                    return myBetsWidget(context, index);
-                  },
-                ),
-              )
-            : Center(
-                child: Column(
-                  children: [
-                    if (_isHistoryEmpty)
-                      Text('Aucune donnée disponible',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.bold,
-                          )),
-                    if (_isHistoryEmpty) SizedBox(height: 5.0),
-                    SpinKitCubeGrid(
-                      color: Colors.lightGreen[400],
-                      size: 20.0,
-                    ),
-                  ],
-                ),
-              ),
-      ],
-    );
+  void checkInternet() async {
+    try {
+      final response =
+          await http.get('https://jsonplaceholder.typicode.com/albums/1');
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        _isNoInternetNetwork = false;
+      } else {
+        // If the server did not return a 200 OK response,
+        // if there is an error
+        if (mounted)
+          setState(() {
+            // print('failed to load data');
+            _isNoInternetNetwork = true;
+          });
+      }
+    } catch (e) {
+      if (mounted)
+        setState(() {
+          // clear the array so the condition can be reached
+          // if there is an error based on network
+          _isNoInternetNetwork = true;
+          // print('network error is: $e');
+        });
+    }
   }
 
   @override
   void initState() {
     // initially load transactions with no condition
-    loadBetslip(transactionLoadLimit);
+    if (mounted)
+      setState(() {
+        // LOAD BETS ON FIRST PAGE RENDERING
+        loadHist(_histLoadLimit);
+        // CHEKC THE INTERNET CONNECTIVITY
+        checkInternet();
+      });
     super.initState();
-
-    //listen to body scrolling and execute itself
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        // Future thisData;
-        // clear the loading array before adding new items
-        // clear everything before adding new items
-        // _transactionLoader.clear();
-        // load more data + condition to filter games already loaded
-        transactionLoadLimit = transactionLoadLimit + 1;
-        if (mounted)
-          setState(() {
-            // execute this method so that new content can be added to the listview
-            // secondly load transaction by listening to the scrolling view
-            loadBetslip(transactionLoadLimit);
-          });
-      }
-    });
   }
 
-  Future loadBetslip(int limit) async {
+  loadHist(int limit) async {
+    // GET THE USER ID BEFORE FETCHING THRE TRANSACTIONS
     if (Selection.user != null) {
+      // GET THE USER ID
       String user = Selection.user.uid;
-      // print('the user is : $user');
-      // print('executing the loading transaction collection');
+      // CREATE THE INSTANCE OF FIRESTORE
       var firestore = Firestore.instance;
-      // QuerySnapshot qn;
       // load all transaction of the user
-      // qn = await firestore
+      // LOAD ALL TRANSACTIONS OF THIS PARTICULAR USER
       await firestore
-          .collection('BetSlip')
-          .where('uid', isEqualTo: user.toString())
-          .orderBy('sorter', descending: true)
+          .collection('betslip')
+          .where('uid', isEqualTo: user)
+          .where('update_status', isEqualTo: 'completed')
+          .orderBy('time.date_time', descending: true)
           .limit(limit)
           .getDocuments()
-          .then((result) {
-        // delete all before adding new items
-        _transactionLoader.clear();
-        // print('FROM DB: $result');
+          .then((_betResult) {
+        // DISPLAYING PROCESS
         if (mounted)
           setState(() {
-            // this condition will loop through all loaded elements
-            for (var j = 0; j < result.documents.length; j++) {
-              // this boolean validate if the item is not IN
-              bool alreadyIn = false;
-              // add the first elemets if display is empty
-              if (_transactionLoader.length > 0) {
-                // check if the elemet exists already in the array
-                for (var i = 0; i < _transactionLoader.length; i++) {
-                  if (_transactionLoader[i].documentID.toString().compareTo(
-                          result.documents[j].documentID.toString()) ==
-                      0) {
-                    // set to true if the item exists already in the array
-                    alreadyIn = true;
-                    // print(_transactionLoader[i].documentID);
-                    // }
-                  }
-                }
-                // if the item does not exists in the array display then add it
-                if (!alreadyIn) {
-                  // show a game only if the status if different to pending.
-                  if (result.documents[j]['status']
-                          .toString()
-                          .compareTo('pending') !=
-                      0) {
-                    // add the element after all checking otherwise nothing will be added
-                    _transactionLoader.add(result.documents[j]);
-                  }
-                }
-              } else {
-                // show a game only if the status if different to pending.
-                if (result.documents[j]['status']
-                        .toString()
-                        .compareTo('pending') !=
-                    0) {
-                  // add the first element to allow easy computing
-                  _transactionLoader.add(result.documents[j]);
-                }
-              }
+            // IF WE HAVE NO DATA WE DISPLAY IT TO THE SCREEN
+            if (_betResult.documents.isEmpty) {
+              // SET THE VARIABLE TO TRUE
+              _isNoHistData = true;
+            } else {
+              // SET THE VARIABLE TO FALSE
+              _isNoHistData = false;
             }
+            // PROCEED WITH GAME ADDING HERE
+            // CLEAR ALL CONTENT BEFORE ADDING NEW
+            _histData.clear();
+            // ADD NEW ITEMS HERE SO THAT THEY WILL BE ADDED AUTOMATICALLY TO THE LIST
+            _histData.addAll(_betResult.documents);
           });
-        return result;
       });
-      // check if result is not empty to display "no data found"
-      if (mounted)
-        setState(() {
-          if (_transactionLoader.length == 0) {
-            _isHistoryEmpty = true;
-          } else {
-            _isHistoryEmpty = false;
-          }
-        });
-
-      _transactionDisplay.clear();
-      _transactionDisplay.addAll(_transactionLoader);
-      // print('initial transaction to display is: $_transactionDisplay');
-      // return qn.documents;
     }
   }
 
-  Future _loadGameAfterGame(int index) async {
-    // save the lenght of games in the betslip
-    int _len = _transactionDisplay[_detailIndex]['gameIDs'].length;
-    // print(index);
-    var firestore = Firestore.instance;
-    // QuerySnapshot qn;
-    // load all transaction of the user
-    // qn = await firestore
-    //loop to get all needed games to display
-    for (var j = 0; j < _len; j++) {
-      // get specific game index
-      String gameId = _transactionDisplay[_detailIndex]['gameIDs'][j];
-      // print('Lenght is: ${_transactionDisplay[_detailIndex]['gameIDs'].length}');
-      // print('Ids are: ${_transactionDisplay[_detailIndex]['gameIDs']}');
-      await firestore
-          .collection('GamesHistory')
-          // .document(gameId)
-          .where('gameID', isEqualTo: gameId)
-          .getDocuments()
-          .then((result) {
-        // delete all before adding new items
-        _transactionLoader.clear();
-        // print('FROM DB: $result');
-        if (mounted)
-          setState(() {
-            // add the fetch result to the array
-            // betGameDetails.add(result);
-            betGameDetails.add(result.documents[0]);
-          });
+  Widget myHistWidget(BuildContext context, int index) {
+    // GET THE TIME
+    var _time = _histData[index]['time']['time'];
+    // GET THE DATE
+    var _date = _histData[index]['time']['date'];
+    // GET THE TOTAL PAYOUT
+    var _payout = _histData[index]['rewards']['payout'];
+    // GET THE STAKE OF THE TICKET
+    var _stake = _histData[index]['rewards']['stake'];
+    // GET THE CURRENCY SYMBOL
+    var _currency = _histData[index]['rewards']['currency'];
 
-        return result;
-      });
-    }
-
-    // for()
-  }
-
-  Widget myBetsWidget(BuildContext context, int index) {
-    // print('Data to display: ${_transactionDisplay[index].data}');
-    String minutes = _transactionDisplay[index]['time'][1].toString().length > 1
-        ? _transactionDisplay[index]['time'][1].toString()
-        : '0' + _transactionDisplay[index]['time'][1].toString();
-    // format the stake
-    double s = double.parse(_transactionDisplay[index]['stake'].toString());
-    String stake = s.toStringAsFixed(2);
-    // format the payout
-    double p =
-        double.parse(_transactionDisplay[index]['totalPayout'].toString());
-    String price = p.toStringAsFixed(2);
     return Column(
       children: [
         MouseRegion(
@@ -749,16 +576,12 @@ class _HistoryState extends State<History> {
             onTap: () {
               if (mounted)
                 setState(() {
-                  isDetailVisible = true;
+                  // DISPLAY THE PANEL FOR MORE DETAILS
+                  showDetailPanel = true;
+                  // SET THE INDEX TO DISPLAY TO THIS CURRENT INDEX
                   _detailIndex = index;
-                  // remove previous games to load new ones based on the betslip
-                  betGameDetails.clear();
-                  // load all games details from the components
-                  _loadGameAfterGame(index);
-                  // Window.showWindow = 15;
-                  // Window.backToHistory = 0;
-                  // Navigator.push(
-                  //     context, MaterialPageRoute(builder: (_) => skiiyabet()));
+                  // CHECK THE INTERNET CONNECTIVITY
+                  checkInternet();
                 });
             },
             child: Row(
@@ -768,27 +591,20 @@ class _HistoryState extends State<History> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                        // _transactionDisplay[index]['date'][0].toString() +
-                        //     ' ' +
-                        _transactionDisplay[index]['date'][1].toString() +
-                            '/' +
-                            _transactionDisplay[index]['date'][2].toString() +
-                            '/' +
-                            _transactionDisplay[index]['date'][3].toString(),
-                        // '23/12/2020',
-                        style: TextStyle(fontSize: 12.0, color: Colors.grey)),
+                      _date.toString(),
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.grey,
+                      ),
+                    ),
                     SizedBox(height: 2.0),
                     Text(
-                        _transactionDisplay[index]['time'][0].toString() +
-                            ':' +
-                            minutes +
-                            ' ' +
-                            _transactionDisplay[index]['time'][2].toString(),
-                        // '12:53 AM',
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.black,
-                        )),
+                      _time.toString(),
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: Colors.black,
+                      ),
+                    ),
                   ],
                 ),
                 // SizedBox(height: 2.0),
@@ -796,14 +612,17 @@ class _HistoryState extends State<History> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
                           'Montant: ',
                           style: TextStyle(color: Colors.grey, fontSize: 11.0),
                         ),
                         Text(
-                          stake.toString(),
-                          // '100.00',
+                          _currency.toString() +
+                              ' ' +
+                              Price.getWinningValues(_stake),
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 12.0,
@@ -813,57 +632,64 @@ class _HistoryState extends State<History> {
                     ),
                     SizedBox(width: 4.0),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          'Gain: ',
+                          'Profit: ',
                           style: TextStyle(color: Colors.grey, fontSize: 11.0),
                         ),
                         Text(
-                          price.toString(),
-                          // '154034.00',
+                          _currency.toString() +
+                              ' ' +
+                              Price.getWinningValues(_payout),
                           style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold),
+                            color: Colors.black,
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
                   ],
                 ),
-                !ResponsiveWidget.isExtraSmallScreen(context)
-                    ? Text(
-                        _transactionDisplay[index]['result']
-                                    .toString()
-                                    .compareTo('pending') ==
-                                0
-                            ? 'En attente'.toUpperCase()
-                            : (_transactionDisplay[index]['result']
-                                        .toString()
-                                        .compareTo('won') ==
-                                    0
-                                ? 'Gagné'.toUpperCase()
-                                : 'Perdu'.toUpperCase()),
-                        // 'won or Lost...',
-                        style: TextStyle(
-                          color: _transactionDisplay[index]['result']
-                                      .toString()
-                                      .toLowerCase()
-                                      .compareTo('won') ==
-                                  0
-                              ? Colors.green
-                              : Colors.red,
-                          fontSize: 12.0,
-                        ),
-                      )
-                    : Icon(Icons.more_vert,
-                        size: 18.0, color: Colors.lightGreen[400]),
               ],
             ),
           ),
         ),
         SizedBox(height: 5.0),
-        Divider(color: Colors.grey, thickness: 0.4),
+        Divider(color: Colors.grey.shade300, thickness: 0.4),
         SizedBox(height: 5.0),
+        // SHOW THIS WHEN THE LAST ITEM IS REACHED
+        if (_histData.length - 1 == index)
+          Container(
+            width: double.infinity,
+            child: RawMaterialButton(
+              padding: new EdgeInsets.all(10.0),
+              fillColor: Colors.lightGreen[300],
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0)),
+              onPressed: () {
+                // INCREASE THE LOADING LIMIT OF TRANSACTIONS HERE
+                _histLoadLimit = _histLoadLimit + 10;
+                if (mounted)
+                  setState(() {
+                    // WHEN CLICKED, LOAD MORE BETS AND RE-RENDERED THE SCREEN
+                    // THIS WILL BE FETCHING MORE DATA THAT PREVIOUSLY FETCHED
+                    loadHist(_histLoadLimit);
+                  });
+              },
+              child: Text(
+                'Plus...',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
