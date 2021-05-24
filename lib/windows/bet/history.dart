@@ -5,8 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:skiiyabet/windows/bet/bets.dart';
-import 'package:skiiyabet/windows/transaction/transaction.dart';
+import 'package:skiiyabet/windows/bet/widget.dart';
 import 'package:http/http.dart' as http;
 
 // this display the game details or game List
@@ -68,7 +67,9 @@ class _HistoryState extends State<History> {
     if (_status.compareTo('won') == 0) {
       _colorItem = Colors.lightGreen[400];
     } else if (_status.compareTo('lost') == 0) {
-      _colorItem = Colors.red;
+      _colorItem = Colors.red.shade300;
+    } else if (_status.compareTo('cancelled') == 0) {
+      _colorItem = Colors.orange.shade300;
     } else {
       _colorItem = Colors.grey;
     }
@@ -137,135 +138,8 @@ class _HistoryState extends State<History> {
               ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Taux Total',
-                style: TextStyle(color: Colors.grey, fontSize: 12.0),
-              ),
-              Text(
-                _totalRate.toStringAsFixed(2),
-                // '162 115.50',
-                style: TextStyle(
-                    color: Colors.black,
-                    // fontWeight: FontWeight.bold,
-                    fontSize: 13.0),
-              ),
-            ],
-          ),
-          SizedBox(height: 5.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Mon Montant',
-                style: TextStyle(color: Colors.grey, fontSize: 12.0),
-              ),
-              Text(
-                _currency.toString() + ' ' + Price.getWinningValues(_stake),
-                style: TextStyle(color: Colors.black, fontSize: 13.0),
-              ),
-            ],
-          ),
-          SizedBox(height: 5.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Gain Total',
-                style: TextStyle(color: Colors.grey, fontSize: 12.0),
-              ),
-              Text(
-                _currency.toString() +
-                    ' ' +
-                    Price.getWinningValues(_toatalWinning),
-                style: TextStyle(color: Colors.black, fontSize: 13.0),
-              ),
-            ],
-          ),
-          SizedBox(height: 5.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Gain Bonus',
-                style: TextStyle(color: Colors.grey, fontSize: 12.0),
-              ),
-              Text(
-                _currency.toString() + ' ' + Price.getWinningValues(_bonus),
-                style: TextStyle(color: Colors.black, fontSize: 13.0),
-              ),
-            ],
-          ),
-          // SizedBox(height: 5.0),
-          SizedBox(height: 5.0),
-          Divider(color: Colors.grey, thickness: 0.5),
-          SizedBox(height: 5.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Paiement Total'.toUpperCase(),
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 12.0,
-                  // fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                _currency.toString() + ' ' + Price.getWinningValues(_payout),
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14.0,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 5.0),
-          Divider(color: Colors.grey, thickness: 0.5),
-          SizedBox(height: 5.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Résultat:',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 13.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                _status.toString().compareTo('pending') == 0
-                    ? 'En attente'
-                    : (_status.toString().compareTo('won') == 0
-                        ? 'Gagné'
-                        : 'Perdu'),
-                // 'Lost'.toUpperCase(),
-                style: TextStyle(
-                  color: _colorItem,
-                  fontWeight: FontWeight.w300,
-                  fontSize: 13.0,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 5.0),
-          Divider(color: Colors.grey, thickness: 0.5),
-          // SizedBox(height: 5.0),
-          SizedBox(height: 15.0),
-          Container(
-            alignment: Alignment.center,
-            child: Text(
-              'Pari placé le ' + _date.toString() + ' à ' + _time.toString(),
-              style: TextStyle(color: Colors.grey, fontSize: 11.0),
-            ),
-          ),
-          SizedBox(height: 10.0),
-          bottomDescriptionWidget(),
-          SizedBox(height: 20.0),
+          bottomData(_totalRate, _currency, _stake, _toatalWinning, _bonus,
+              _payout, _status, _colorItem, _date, _time),
         ],
       ),
     );
@@ -311,8 +185,8 @@ class _HistoryState extends State<History> {
     String _status = _histDetails['matches']['teamResults'][_index].toString();
     // CHECKING
     if (_status.compareTo('cancelled') == 0) {
-      _thisIcon = Icon(FontAwesomeIcons.timesCircle);
-      _thisColor = Colors.red.shade300;
+      _thisIcon = Icon(FontAwesomeIcons.squareFull);
+      _thisColor = Colors.orange.shade300;
     } else if (_status.compareTo('null') == 0) {
       _thisIcon = Icon(FontAwesomeIcons.squareFull);
       _thisColor = Colors.grey;
@@ -412,15 +286,15 @@ class _HistoryState extends State<History> {
                   _score.toString(),
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 14.0,
-                    // fontWeight: FontWeight.bold,
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 2.0),
                 // GET THE RIGHT ICON
                 Icon(
                   _thisIcon.icon,
-                  size: 13.0,
+                  size: 12.0,
                   color: _thisColor,
                 ),
                 SizedBox(height: 3.0),
@@ -428,7 +302,7 @@ class _HistoryState extends State<History> {
                   _rate.toString(),
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 13.0,
+                    fontSize: 12.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -567,6 +441,19 @@ class _HistoryState extends State<History> {
     var _stake = _histData[index]['rewards']['stake'];
     // GET THE CURRENCY SYMBOL
     var _currency = _histData[index]['rewards']['currency'];
+    // GET THE CURRENT BET STATUS
+    String _status = _histData[index]['status'].toString();
+    // GET THE COLOR OF THE WIDGET STATUS
+    Color _colorItem;
+    if (_status.compareTo('won') == 0) {
+      _colorItem = Colors.lightGreen[400];
+    } else if (_status.compareTo('lost') == 0) {
+      _colorItem = Colors.red.shade300;
+    } else if (_status.compareTo('cancelled') == 0) {
+      _colorItem = Colors.orange.shade300;
+    } else {
+      _colorItem = Colors.grey;
+    }
 
     return Column(
       children: [
@@ -608,48 +495,61 @@ class _HistoryState extends State<History> {
                   ],
                 ),
                 // SizedBox(height: 2.0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Montant: ',
-                          style: TextStyle(color: Colors.grey, fontSize: 11.0),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Montant: ',
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 11.0),
+                            ),
+                            Text(
+                              _currency.toString() +
+                                  ' ' +
+                                  Price.getWinningValues(_stake),
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
                         ),
-                        Text(
-                          _currency.toString() +
-                              ' ' +
-                              Price.getWinningValues(_stake),
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold),
+                        SizedBox(width: 4.0),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Profit: ',
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 11.0),
+                            ),
+                            Text(
+                              _currency.toString() +
+                                  ' ' +
+                                  Price.getWinningValues(_payout),
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    SizedBox(width: 4.0),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          'Profit: ',
-                          style: TextStyle(color: Colors.grey, fontSize: 11.0),
-                        ),
-                        Text(
-                          _currency.toString() +
-                              ' ' +
-                              Price.getWinningValues(_payout),
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 12.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                    SizedBox(width: 5.0),
+                    Icon(
+                      FontAwesomeIcons.squareFull,
+                      color: _colorItem,
+                      size: 13.0,
                     ),
                   ],
                 ),

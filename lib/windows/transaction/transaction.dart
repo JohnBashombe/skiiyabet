@@ -1,11 +1,10 @@
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:skiiyabet/Responsive/responsive_widget.dart';
 import 'package:skiiyabet/components/price.dart';
 import 'package:skiiyabet/components/selection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:skiiyabet/methods/connexion.dart';
 import 'package:http/http.dart' as http;
+import 'package:skiiyabet/windows/bet/widget.dart';
 
 class Transactions extends StatefulWidget {
   @override
@@ -267,73 +266,4 @@ class _TransactionsState extends State<Transactions> {
       ],
     );
   }
-}
-
-Column notLoggedInYetHeader(String header) {
-  return Column(
-    children: [
-      Text(header.toUpperCase(),
-          style: TextStyle(
-              color: Colors.black,
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold)),
-      SizedBox(height: 10.0),
-      Divider(thickness: 0.4, color: Colors.grey),
-      SizedBox(height: 15.0),
-      ConnexionRequired(),
-    ],
-  );
-}
-
-Column noNetworkWidget() {
-  return Column(
-    children: [
-      SizedBox(height: 10.0),
-      Text(
-        'Pas de réseau internet',
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 13.0,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ],
-  );
-}
-
-Column recordLoading() {
-  return Column(
-    children: [
-      SizedBox(height: 10.0),
-      Text(
-        'Chargement...',
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 13.0,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      SizedBox(height: 10.0),
-      SpinKitCircle(
-        color: Colors.lightBlue,
-        size: 20.0,
-      ),
-    ],
-  );
-}
-
-Column noRecordFound(String message) {
-  return Column(
-    children: [
-      SizedBox(height: 10.0),
-      Text(
-        message.toString(),
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 13.0,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ],
-  );
 }
