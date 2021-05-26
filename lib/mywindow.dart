@@ -1,6 +1,6 @@
 class Window {
   // change body panel when clicked on side menu or top menu
-  static int showWindow = 0;
+  static int showWindow = 8;
   // show jackpot panel specially when we click on the jackpot ADD PANEL
   static int showJackpotIndex = 0;
   // help to get back to bets list or history bets list respectively

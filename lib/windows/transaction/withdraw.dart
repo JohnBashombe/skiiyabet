@@ -371,6 +371,8 @@ class _WithdrawState extends State<Withdraw> {
       } else {
         // DISPLAY DENIED MESSAGE HERE
         failMessage(context, 'Vous avez une demande de retrait en cours');
+        // LOAD ALL TRANSACTIONS
+        loadWithdrawRequest(); 
       }
     });
     // OTHERWISE DENIED WITHDRAWAL REQUEST
