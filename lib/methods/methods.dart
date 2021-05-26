@@ -5,7 +5,7 @@ import 'package:skiiyabet/components/selection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Method {
-  // GET THE POURCENTAGE VALUE OF THE
+  // GET THE POURCENTAGE VALUE OF THE BONUS
   static int pourcentageRate = 0;
 
   static String displayUserBonus() { 
@@ -266,27 +266,6 @@ class Method {
       _teamResults.add(null); // RESULTS OF ALL TEAMS
     }
 
-    // print(_gameIDs);
-    // print(_oddIDs);
-    // print(_oddNames);
-    // print(_oddIndexes);
-    // print(_oddLabels);
-    // print(_oddValues);
-    // print(_oddTotals);
-    // print(_oddHandicaps);
-    // print(_localTeams);
-    // print(_visitorTeams);
-    // print(_teamLeagues);
-    // print(_teamCountries);
-    // print(_dataTimes);
-    // print(_teamScores);
-    // print(_teamResults);
-
-    // print('THE LENGTH IS: $_numberOfGames');
-    // print('SELECTED GAMES ARE: ${_selectedGames.length}');
-
-    // TO BE CONTINUED
-
     return Firestore.instance.collection('betslip').add(
       {
         'uid': _uid,
@@ -333,9 +312,6 @@ class Method {
   static Future updateUserBalance(String _transID) {
     // WE GET THE USER ID FIRST
     String _uid = Selection.user.uid;
-    // print('Transaction ID in balance Update');
-    // print(_transID);
-    // print('==================================');
     // WE UPDATE THE BALANCE NEGATIVELY WITH THE STAKE VALUE
     // THEN WE CONTINUE WITH THE PROCESS
     return Firestore.instance

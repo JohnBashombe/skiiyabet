@@ -10,14 +10,12 @@ class ConnexionRequired extends StatelessWidget {
       width: double.infinity,
       padding: new EdgeInsets.all(10.0),
       margin: new EdgeInsets.only(bottom: 15.0),
-      // alignment: Alignment.center,
       decoration: BoxDecoration(
-          // color: Colors.green[100],
           border: Border(
-        top: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-        bottom: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-        left: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-        right: BorderSide(color: Colors.lightGreen[400], width: 2.0),
+        top: BorderSide(color: Colors.grey.shade300),
+        bottom: BorderSide(color: Colors.grey.shade300),
+        left: BorderSide(color: Colors.grey.shade300),
+        right: BorderSide(color: Colors.grey.shade300),
       )),
       child: Column(
         children: [
@@ -35,8 +33,8 @@ class ConnexionRequired extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 5.0),
-                child: SpinKitCubeGrid(
-                  color: Colors.lightGreen[400],
+                child: SpinKitCircle(
+                  color: Colors.lightBlue,
                   size: 20.0,
                 ),
               ),

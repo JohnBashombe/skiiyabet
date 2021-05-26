@@ -12,11 +12,17 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 // THE USER AMOUNT TO WITHDRAW
 double withdrawAmount = 0;
 // CHECK IF THE USER IS ALLOW TO WITHDRAW
-bool allowRequest = true;
+bool allowRequest = false;
 // HOLD REQUESTS
-var _currentRequest = [];
-// BLOCKER
-int loadOnce = 0;
+var _currentRequest;
+
+// CHECKING OPERATORS
+bool _isOrangeMoney = false;
+bool _isAirtelMoney = false;
+bool _isMPesa = false;
+
+// CHECK IF WE HAVE A PENDING REQUEST
+bool _isRequestPending = false;
 
 class Withdraw extends StatefulWidget {
   @override
@@ -26,8 +32,6 @@ class Withdraw extends StatefulWidget {
 class _WithdrawState extends State<Withdraw> {
   @override
   Widget build(BuildContext context) {
-    // Load any pending request of withdraw for this particular user
-    loadRequests();
     return Expanded(
       child: Container(
         width: double.infinity,
@@ -35,10 +39,10 @@ class _WithdrawState extends State<Withdraw> {
         padding: new EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: Colors.grey, width: 0.5),
-            bottom: BorderSide(color: Colors.grey, width: 0.5),
-            left: BorderSide(color: Colors.grey, width: 0.5),
-            right: BorderSide(color: Colors.grey, width: 0.5),
+            top: BorderSide(color: Colors.grey.shade300),
+            bottom: BorderSide(color: Colors.grey.shade300),
+            left: BorderSide(color: Colors.grey.shade300),
+            right: BorderSide(color: Colors.grey.shade300),
           ),
         ),
         child: ListView(
@@ -56,174 +60,201 @@ class _WithdrawState extends State<Withdraw> {
               ),
             ),
             SizedBox(height: 10.0),
-            Divider(
-              color: Colors.grey,
-              thickness: 0.4,
-            ),
-            SizedBox(height: 10.0),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // LOAD THIS IF A USER HAS LOGGED IN IT HAS DB VALUE
-                if (_currentRequest.length > 0) loadTransaction(),
+                // DISPLAY PENDING TRANSACTION
+                if (Selection.user != null) loadTransaction(),
                 // SHOW THIS IF NO USER HAS LOGGED IN
                 if (Selection.user == null) ConnexionRequired(),
 
                 Text(
-                  'L\'argent retiré sera envoyé au compte électronique du numéro de téléphone associé avec ce compte de SKIIYA BET',
+                  'L\'argent retiré sera envoyé au compte électronique du numéro associé avec ce compte',
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 13.0,
+                    // fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 10.0),
                 Text(
                   'Retrait minimum: ' +
+                      Price.currency_symbol +
+                      ' ' +
                       Price.getWinningValues(Price.minimumWithdraw) +
-                      ' Fc \nRetrait maximum: ' +
-                      Price.getWinningValues(Price.maximumWithdraw) +
-                      ' Fc',
+                      '\nRetrait maximum: ' +
+                      Price.currency_symbol +
+                      ' ' +
+                      Price.getWinningValues(Price.maximumWithdraw),
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 14.0,
+                    fontSize: 13.0,
                     // fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 10.0),
                 Text(
                   'Remarque: \nRetrait maximum quotidien : ' +
-                      Price.getWinningValues(Price.maximumDailyWithdraw) +
-                      ' Fc',
+                      Price.currency_symbol +
+                      ' ' +
+                      Price.getWinningValues(Price.maximumDailyWithdraw),
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 13.0,
+                    // fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 15.0),
-                SizedBox(height: 20.0),
-                Divider(
-                  color: Colors.grey,
-                  thickness: 0.4,
-                ),
-                SizedBox(height: 20.0),
-                Center(
-                  child: Text(
-                    'Bientôt disponible'.toUpperCase(),
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.bold,
+                // IF ONE OF THE NETWORK OPERATOR IS DETECTED
+                if (_isAirtelMoney || _isOrangeMoney || _isMPesa)
+                  Center(
+                    child: Container(
+                      height: 70.0,
+                      child: Image.asset(
+                        _isAirtelMoney
+                            ? 'images/airtel-money.png'
+                            : _isOrangeMoney
+                                ? 'images/orange-money.png'
+                                : 'images/m-pesa.jpeg',
+                        // color: Colors.lightBlue,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 10.0),
-                Container(
-                  width: double.infinity,
-                  child: RawMaterialButton(
-                    padding: new EdgeInsets.all(15.0),
-                    onPressed: () {
-                      if (mounted)
-                        setState(() {
-                          // do deposit logic here
-                          successMessage(context, 'En cours de developement!');
-                        });
-                    },
-                    fillColor: Colors.lightGreen[400],
-                    disabledElevation: 3.0,
-                    child: Text(
-                      'Vérifier'.toUpperCase(),
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15.0),
+                if (!_isAirtelMoney && !_isOrangeMoney && !_isMPesa)
+                  Container(
+                    padding: new EdgeInsets.only(bottom: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 50.0,
+                            width: 60.0,
+                            child: Image.asset(
+                              'images/airtel-money.png',
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 5.0),
+                        Expanded(
+                          child: Container(
+                            height: 50.0,
+                            width: 60.0,
+                            child: Image.asset('images/orange-money.png',
+                                fit: BoxFit.contain),
+                          ),
+                        ),
+                        SizedBox(width: 5.0),
+                        Expanded(
+                          child: Container(
+                            height: 50.0,
+                            width: 60.0,
+                            child: Image.asset(
+                              'images/m-pesa.jpeg',
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                // Container(
-                //   // margin: EdgeInsets.all(10.0),
-                //   padding: EdgeInsets.symmetric(horizontal: 10.0),
-                //   decoration: BoxDecoration(
-                //     color: Colors.white,
-                //     border: Border(
-                //       top:
-                //           BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                //       bottom:
-                //           BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                //       left:
-                //           BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                //       right:
-                //           BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                //     ),
-                //   ),
-                //   child: TextField(
-                //     onChanged: (value) {
-                //       if (mounted)
-                //       setState(() {
-                //         if (value.isEmpty) {
-                //           withdrawAmount = 0.0;
-                //         } else {
-                //           withdrawAmount = double.parse(value);
-                //         }
-                //       });
-                //       // print('filed double: $withdrawAmount');
-                //     },
-                //     cursorColor: Colors.lightGreen,
-                //     maxLines: 1,
-                //     keyboardType: TextInputType.number,
-                //     inputFormatters: <TextInputFormatter>[
-                //       FilteringTextInputFormatter.digitsOnly
-                //     ],
-                //     style: TextStyle(
-                //         color: Colors.black,
-                //         fontSize: 15.0,
-                //         fontWeight: FontWeight.bold,
-                //         letterSpacing: 0.5),
-                //     decoration: InputDecoration(
-                //       border: InputBorder.none,
-                //       hintText: 'e.x. 5000 Fc',
-                //       hintMaxLines: 1,
-                //     ),
-                //   ),
-                // ),
-                // SizedBox(height: 20.0),
-                // Container(
-                //   width: double.infinity,
-                //   child: RawMaterialButton(
-                //     padding: new EdgeInsets.all(15.0),
-                //     onPressed: () {
-                //       if (mounted)
-                //       setState(() {
-                //         if (Selection.user == null) {
-                //           failMessage(context, 'Connectez-Vous d\'Abord');
-                //         } else {
-                //           if (withdrawAmount < Price.minimumWithdraw) {
-                //             failMessage(context,
-                //                 'Min. is: ${Price.getWinningValues(Price.minimumWithdraw)} Fc');
-                //           } else if (withdrawAmount > Price.maximumWithdraw) {
-                //             failMessage(context,
-                //                 'Max. is: ${Price.getWinningValues(Price.maximumWithdraw)} Fc');
-                //           } else if (withdrawAmount > Selection.userBalance) {
-                //             failMessage(context, 'Votre Solde est insuffisant');
-                //           } else {
-                //             mainRequest();
-                //           }
-                //         }
-                //       });
-                //     },
-                //     fillColor: Colors.lightGreen[400],
-                //     disabledElevation: 3.0,
-                //     child: Text(
-                //       'retirez'.toUpperCase(),
-                //       style: TextStyle(
-                //           color: Colors.white,
-                //           fontWeight: FontWeight.bold,
-                //           fontSize: 15.0),
-                //     ),
-                //   ),
-                // ),
+                if (_isAirtelMoney || _isOrangeMoney || _isMPesa)
+                  SizedBox(height: 10.0),
+
+                // SHOW THIS IF WE HAVE ANY PENDING REQUEST
+                if (!_isRequestPending)
+                  Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white70,
+                          border: Border(
+                            top: BorderSide(color: Colors.grey.shade300),
+                            bottom: BorderSide(color: Colors.grey.shade300),
+                            left: BorderSide(color: Colors.grey.shade300),
+                            right: BorderSide(color: Colors.grey.shade300),
+                          ),
+                        ),
+                        child: TextField(
+                          onChanged: (value) {
+                            if (mounted)
+                              setState(() {
+                                if (value.isEmpty) {
+                                  withdrawAmount = 0.0;
+                                } else {
+                                  withdrawAmount = double.parse(value);
+                                }
+                              });
+                            // print('filed double: $withdrawAmount');
+                          },
+                          cursorColor: Colors.lightGreen[400],
+                          maxLines: 1,
+                          keyboardType: TextInputType.number,
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.5),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Montant',
+                            hintStyle: TextStyle(fontWeight: FontWeight.bold),
+                            hintMaxLines: 1,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20.0),
+                      Container(
+                        width: double.infinity,
+                        child: RawMaterialButton(
+                          padding: new EdgeInsets.all(15.0),
+                          onPressed: () {
+                            if (mounted)
+                              setState(() {
+                                if (Selection.user == null) {
+                                  failMessage(context,
+                                      'Connectez votre compte d\'Abord.');
+                                } else {
+                                  if (withdrawAmount < Price.minimumWithdraw) {
+                                    failMessage(context,
+                                        'Le montant minimum est: ${Price.currency_symbol} ${Price.getWinningValues(Price.minimumWithdraw)}');
+                                  } else if (withdrawAmount >
+                                      Price.maximumWithdraw) {
+                                    failMessage(context,
+                                        'Le montant maximum est: ${Price.currency_symbol} ${Price.getWinningValues(Price.maximumWithdraw)}');
+                                  } else if (withdrawAmount >
+                                      Selection.userBalance) {
+                                    failMessage(context,
+                                        'Votre solde est insuffisant.');
+                                  } else {
+                                    mainRequest();
+                                  }
+                                }
+                              });
+                          },
+                          fillColor: Colors.lightGreen[400],
+                          disabledElevation: 3.0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0)),
+                          child: Text(
+                            'retirez maintenant'.toUpperCase(),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15.0),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 SizedBox(height: 30.0),
               ],
             ),
@@ -233,51 +264,105 @@ class _WithdrawState extends State<Withdraw> {
     );
   }
 
-  mainRequest() {
-    // GET THE DATE FOR COMPARISON
-    var date = new DateTime.now();
-    String _thisDay =
-        date.day < 10 ? '0' + date.day.toString() : date.day.toString();
-    String _thisMonth =
-        date.month < 10 ? '0' + date.month.toString() : date.month.toString();
-    String _thisYear = date.year.toString();
+  getNetworkOperator() {
+    // GET THE USER PHONE NUMBER
+    String _phone = Selection.userTelephone;
+    // print('THE PHONE: $_phone');
+    if (_phone.compareTo('') != 0) {
+      // LET US GET THE AIRTEL NUMBER
+      if (_phone.substring(0, 2) == '09') {
+        _isAirtelMoney = true;
+        _isOrangeMoney = false;
+        _isMPesa = false;
+        // print('airtel money');
+      } else if (_phone.substring(0, 3) == '084' ||
+          _phone.substring(0, 3) == '085' ||
+          _phone.substring(0, 3) == '089') {
+        _isOrangeMoney = true;
+        _isAirtelMoney = false;
+        _isMPesa = false;
+        // print('orange et tigo money');
+      } else if (_phone.substring(0, 3) == '081' ||
+          _phone.substring(0, 3) == '082') {
+        _isMPesa = true;
+        _isAirtelMoney = false;
+        _isOrangeMoney = false;
+        // print('m-pesa');
+      }
+    }
+    // else {
+    //   print('no phone number');
+    // }
+    // print('checking operator...');
+  }
 
-    // print('$_thisDay - $_thisMonth - $_thisYear');
+  mainRequest() async {
+    // LET US GET THE USER ID
+    String _uid = Selection.user.uid;
+    // WE ADD OUR CUSTOM DATE FORMAT TO VARIABLES
+    String _date = _getDate();
+    // WE GET THE CUSTOM TIME HERE
+    var _time = _getTime();
+
     // THE VARIABLE THAT STORES DAILY MAX WITHDRAW
     double dailyMaxCash = 0.0;
     // CHECK ALSO IF THE DAILY AMOUNT HAS NOT BEEN REACHED YET
     // CHECK IF A WITHDRAWAL REQUEST IS STILL AVAILABLE
-    Firestore.instance
-        .collection('Withdraw')
-        .where('userID', isEqualTo: Selection.user.uid)
+    await Firestore.instance
+        .collection('withdraw')
+        .where('uid', isEqualTo: _uid)
         .getDocuments()
-        .then((_result) {
-      // CHECK IF ANY PARTICULAR USER WITHDRAW REQUEST IS STILL PENDIND TO DENY NEW REQUEST
-      _result.documents.forEach((element) {
-        // WE CHECK FOR A ACTIVE REQUEST
-        if (element['status'].toString().compareTo('pending') == 0) {
-          // WE CHECK FOR DAILY WITHDRAW
-          allowRequest = false;
-        }
-        if ((element['date'][1].toString().compareTo(_thisDay) == 0) &&
-            (element['date'][2].toString().compareTo(_thisMonth) == 0) &&
-            (element['date'][3].toString().compareTo(_thisYear) == 0)) {
-          dailyMaxCash += element['amount'];
-        }
-        // print(element['amount']);
-      });
+        .then((_withdrawRequest) {
+      // CHECK ONLY IF WE HAVE DATA
+      if (_withdrawRequest != null) {
+        // CHECK IF ANY PARTICULAR USER WITHDRAW REQUEST IS STILL PENDIND TO DENY NEW REQUEST
+        _withdrawRequest.documents.forEach((element) {
+          // GET THE STATUS OF THE EACH AND EVERY TRANSACTION
+          String _status = element['status'].toString();
+          // WE CHECK FOR A ACTIVE REQUEST
+          if (_status.compareTo('pending') != 0) {
+            // WE CHECK FOR DAILY WITHDRAW
+            allowRequest = true;
+          }
+          // GET THE REQUEST DATE AND TIME TO COMPARE FOR MAXIMUM AMOUNT TO WITHDRAW PER SINGLE DAY
+          String _requestTime = element['time']['time'];
+          String _requestDate = element['time']['date'];
+          // WE GET THE TOTAL AMOUNT TO WITHDRAWAWN IN A SINGLE DATA
+          if (_requestTime.compareTo(_time) == 0 &&
+              _requestDate.compareTo(_date) == 0) {
+            // ADD IT TO THE SUM
+            dailyMaxCash += element['amount'];
+          }
+        });
+      }
       // IF NO PENDING REQUEST FOUND, THEN ALLOW REQUEST
       if (allowRequest) {
+        // IF THE DAILY WITHDRAW BALANCE IS LESS THAN THE MAXIMUM DAILY
+        // THEN ALLOW THE REQUEST TO BE PROCESSED
         if (dailyMaxCash <= Price.maximumDailyWithdraw) {
           // SUBSTRACT THE AMOUNT TO BALANCE FIRST THEN
-          Firestore.instance
-              .collection('UserBalance')
-              .document(Selection.user.uid)
-              .updateData(
-                  {'balance': FieldValue.increment(-withdrawAmount)}).then((_) {
-            // ADD A NEW REQUEST
-            Method.addNewTransaction('Retrait', withdrawAmount, '-');
-            addWithdrawRequest();
+          // ADD A NEW REQUEST
+          Method.addNewTransaction('Retrait', withdrawAmount, '-')
+              .then((_trans) {
+            // LET US GET THE TRANSACTION ID HERE
+            String _transID = _trans.documentID.toString();
+            Firestore.instance
+                .collection('UserBalance')
+                .document(_uid)
+                .updateData(
+              {
+                'balance': FieldValue.increment(-withdrawAmount),
+                'transaction_id': '$_transID',
+              },
+            ).then((_) {
+              addWithdrawRequest(withdrawAmount);
+            }).catchError((e) {
+              // BALANCE UPDATE ERROR
+              failMessage(context, 'Une erreur est survenue.');
+            });
+          }).catchError((e) {
+            // TRANSACTION UPDATE ERROR
+            failMessage(context, 'Une erreur est survenue.');
           });
         } else {
           failMessage(
@@ -285,66 +370,84 @@ class _WithdrawState extends State<Withdraw> {
         }
       } else {
         // DISPLAY DENIED MESSAGE HERE
-        failMessage(context, 'Vous avez une demande en cours');
+        failMessage(context, 'Vous avez une demande de retrait en cours');
       }
     });
     // OTHERWISE DENIED WITHDRAWAL REQUEST
   }
 
-  addWithdrawRequest() {
-    var date = new DateTime.now();
-    String min = date.minute < 10
-        ? '0' + date.minute.toString()
-        : date.minute.toString();
-    String hour =
-        date.hour < 10 ? '0' + date.hour.toString() : date.hour.toString();
+  static String _getTime() {
+    // GET CURRENT TIME IN UTC FORMAT
+    var _datetime = new DateTime.now().toUtc();
+    // GET MINUTE IN A CUSTOM FORMAT
+    String _minute = _formatOf10(_datetime.minute);
+    // GET HOUR IN A CUSTOM FORMAT
+    String _hour = _formatOf10(_datetime.hour);
+    // GET SECOND IN A CUSTOM FORMAT
+    String _second = _formatOf10(_datetime.second);
+    // RETURN A STRING IN TIME FORMAT
+    return _hour + ':' + _minute + ':' + _second;
+  }
 
-    int indicRef = date.hour;
-    String timeIndicator = '';
-    if (indicRef < 12)
-      timeIndicator = 'AM';
-    else
-      timeIndicator = 'PM';
+  static String _getDate() {
+    // GET CURRENT TIME IN UTC FORMAT
+    var _datetime = new DateTime.now().toUtc();
+    // WE ADD OUR CUSTOM DATE FORMAT TO VARIABLES
+    // WE GET THE DAY
+    String _day = _formatOf10(_datetime.day);
+    // WE GET THE MONTH
+    String _month = _formatOf10(_datetime.month);
+    // WE GET THE YEAR
+    String _year = _datetime.year.toString();
+    // RETURN A STRING IN DATE FORMAT
+    return _day + '-' + _month + '-' + _year;
+  }
 
-    String day =
-        date.day < 10 ? '0' + date.day.toString() : date.day.toString();
-    String month =
-        date.month < 10 ? '0' + date.month.toString() : date.month.toString();
-    String year = date.year.toString();
-    int today = date.weekday;
-    String weekday = '';
+  static String _formatOf10(int _newVal) {
+    // WE CREATE AN EMPTY VALUE
+    String _val = _newVal.toString();
+    // IF THE VALUE IS LESS THAN 10 ADD A ZERO BEFORE
+    // OTHERWISE DO NOT ADD ANYTHING BEFORE THE VALUE
+    if (_newVal < 10) _val = '0' + _newVal.toString();
+    // RETURN THE MODIFIED VALUE
+    return _val;
+  }
 
-    if (today == 1) weekday = 'Lun';
-    if (today == 2) weekday = 'Mar';
-    if (today == 3) weekday = 'Mer';
-    if (today == 4) weekday = 'Jeu';
-    if (today == 5) weekday = 'Ven';
-    if (today == 6) weekday = 'Sam';
-    if (today == 7) weekday = 'Dim';
-    // do withdraw logic here
-    // print(withdrawAmount);
-    // Amount, date added, time added, date completed, time completed
-    // userId, admin Id, status[pending, completed]
-    Firestore.instance.collection('Withdraw').add({
-      'amount': withdrawAmount,
-      'userID': Selection.user.uid,
-      'time': [hour.toString(), min.toString(), timeIndicator.toString()],
-      'date': [
-        weekday.toString(),
-        day.toString(),
-        month.toString(),
-        year.toString()
-      ],
-      'timeCompleted': [],
-      'dateCompleted': [],
-      'adminId': 'null',
+  addWithdrawRequest(double _amount) {
+    // WE GET THE USER ID
+    String _uid = Selection.user.uid;
+    // GET THE CURRENT DATE TIME IN UTC FORMAT
+    var _datetime = new DateTime.now().toUtc();
+    // STORE THE TIMESTAMP
+    int _timestamp = _datetime.toUtc().millisecondsSinceEpoch;
+
+    // WE ADD OUR CUSTOM DATE FORMAT TO VARIABLES
+    String _date = _getDate();
+    // WE GET THE CUSTOM TIME HERE
+    var _time = _getTime();
+
+    // ADD THE REQUEST TO THE DATABASE
+    Firestore.instance.collection('withdraw').add({
+      'uid': _uid,
+      'amount': _amount,
+      'action_sign': '-',
+      'currency': Price.currency_symbol,
+      'admin_id': null,
       'status': 'pending',
-      'sorter': day.toString() +
-          month.toString() +
-          year.toString() +
-          hour.toString() +
-          min.toString(),
-      'timestamp': new DateTime.now()
+      'time': {
+        'time': '$_time',
+        'date': '$_date',
+        'date_time': '$_datetime',
+        'timestamp': _timestamp,
+        'timezone': 'UTC'
+      },
+      'time_completed': {
+        'time': null,
+        'date': null,
+        'date_time': null,
+        'timestamp': null,
+        'timezone': null
+      },
     }).then((value) {
       // UPDATE THE USER BALANCE LOCALLY
       if (mounted)
@@ -354,84 +457,80 @@ class _WithdrawState extends State<Withdraw> {
           // UPDATE THE USER BALANCE
           Selection.userBalance = Selection.userBalance - withdrawAmount;
           // AFTER A SUCCESSFULL PROCESS, RELOAD THE REQUEST LIST
-          // RESET THE BLOCKER
-          loadOnce = 0;
           // EXECUTE THE METHOD
-          loadRequests();
-          // Reload the screen to refresh variables
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => SkiiyaBet(),
-            ),
-          );
+          loadWithdrawRequest();
         });
+    }).catchError((e) {
+      // ADD WITHDRAW REQUEST ERROR
+      failMessage(context, 'Une erreur est survenue');
     });
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   if (mounted)
-  //   setState(() {
-  //     // LOAD REQUEST IF THE USER HAS LOGGED IN
-  //     loadRequests();
-  //   });
-  // }
+  @override
+  void initState() {
+    if (mounted)
+      setState(() {
+        // LET US GET THE NETWORK OPERATOR
+        getNetworkOperator();
+        // LOAD REQUEST IF THE USER HAS LOGGED IN
+        // WE DO CHECK FOR REQUESTS OF THIS CURRENT USER
+        loadWithdrawRequest();
+        // print('loaded on start');
+      });
+    super.initState();
+  }
 
-  loadRequests() {
+  loadWithdrawRequest() async {
+    // CHECK IF THE USER IS DIFFERENT FROM NULL
     if (Selection.user != null) {
-      loadOnce++;
-      // Make sure it loads this once
-      if (loadOnce < 2) {
-        // print('load once $loadOnce');
-        Firestore.instance
-            .collection('Withdraw')
-            .where('userID', isEqualTo: Selection.user.uid)
-            .getDocuments()
-            .then((_result) {
-          _result.documents.forEach((_element) {
-            // IF A RECORD HAS A PENDING STATUS
-            if (_element['status'].toString().compareTo('pending') == 0) {
-              if (mounted)
-                setState(() {
-                  _currentRequest.add(_element);
-                  // print('load here even');
-                });
-            }
-          });
-        });
-        loadOnce++;
-      }
+      // GET THE USER ID
+      String _uid = Selection.user.uid;
+      // GET THE PENDING TRANSACTION
+      await Firestore.instance
+          .collection('withdraw')
+          .where('uid', isEqualTo: _uid)
+          .where('status', isEqualTo: 'pending')
+          .limit(1)
+          .getDocuments()
+          .then((_getRequest) {
+        // IF THE REQUEST IS NOT EMPTY
+        if (_getRequest.documents.isNotEmpty) {
+          if (mounted)
+            setState(() {
+              // SET THE REQUEST TO THE VALUE
+              _currentRequest = _getRequest.documents;
+              // SET THE REQUEST TO TRUE
+              _isRequestPending = true;
+            });
+        } else {
+          // SET THE REQUEST TO FALSE
+          if (mounted)
+            setState(() {
+              _isRequestPending = false;
+            });
+        }
+      });
     }
-    // else {
-    //   print('No User Found');
-    // }
   }
 
   Widget loadTransaction() {
-    String status = 'En attente',
-        weekday = '..',
-        day = '..',
-        month = '..',
-        year = '....';
-    String timeIndic = '..', min = '..', hour = '..';
-    double amount = 50000.0;
-
-    if (_currentRequest.length > 0) {
-      // status = _currentRequest[0]['status'].toString();
-      status = 'En attente';
-      // GET THE DATE VARIABLES
-      weekday = _currentRequest[0]['date'][0].toString();
-      day = _currentRequest[0]['date'][1].toString();
-      month = _currentRequest[0]['date'][2].toString();
-      year = _currentRequest[0]['date'][3].toString();
-      // GET THE TIME VARIABLES
-      hour = _currentRequest[0]['time'][0].toString();
-      min = _currentRequest[0]['time'][1].toString();
-      timeIndic = _currentRequest[0]['time'][2].toString();
-      // GET THE AMOUNT
-      amount = _currentRequest[0]['amount'];
+    // GET THE STATUS
+    String _status = '...';
+    // GET THE TIME
+    String _time = '...';
+    // GET THE DATE
+    String _date = '...';
+    // GET THE RECORD AMOUNT
+    double _amount = 0.0;
+    // GET THE CURRENCY SYMBOL
+    String _currency = '...';
+    // SET DATA IF WE HAVE THEM
+    if (_currentRequest != null) {
+      _status = 'En attente';
+      _time = _currentRequest[0]['time']['time'];
+      _date = _currentRequest[0]['time']['date'];
+      _amount = _currentRequest[0]['amount'];
+      _currency = _currentRequest[0]['currency'];
     }
 
     return Container(
@@ -440,139 +539,120 @@ class _WithdrawState extends State<Withdraw> {
         margin: new EdgeInsets.only(bottom: 15.0),
         // alignment: Alignment.center,
         decoration: BoxDecoration(
-            color: Colors.green[100],
+            color: Colors.white70,
             border: Border(
-              top: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-              bottom: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-              left: BorderSide(color: Colors.lightGreen[400], width: 2.0),
-              right: BorderSide(color: Colors.lightGreen[400], width: 2.0),
+              top: BorderSide(color: Colors.grey.shade300),
+              bottom: BorderSide(color: Colors.grey.shade300),
+              left: BorderSide(color: Colors.grey.shade300),
+              right: BorderSide(color: Colors.grey.shade300),
             )),
         child:
-
             // SHOW THIS IF THE USER HAS A REQUEST
             Column(
-          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Vous avez une demande en attente.'.toUpperCase(),
+              _isRequestPending
+                  ? 'Vous avez une demande de retrait en attente.'
+                  : 'Vous n\'avez aucune demande de retrait en attente.',
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
                 fontSize: 12.0,
               ),
             ),
-            SizedBox(height: 8.0),
-            Divider(thickness: 0.4, color: Colors.grey),
-            SizedBox(height: 8.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Montant:'.toUpperCase(),
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12.0,
-                  ),
-                ),
-                SizedBox(width: 5.0),
-                Text(
-                  Price.getWinningValues(amount) + ' Fc',
-                  // '$amount FC',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20.0,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 5.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Date de la requête: '.toUpperCase(),
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12.0,
-                  ),
-                ),
-                SizedBox(width: 5.0),
-                Text(
-                  '$weekday $day/$month/$year'.toUpperCase(),
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 5.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Heure de la requête: '.toUpperCase(),
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12.0,
-                  ),
-                ),
-                SizedBox(width: 5.0),
-                Text(
-                  '$hour:$min $timeIndic'.toUpperCase(),
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
-                  ),
-                ),
-              ],
-            ),
-            // SizedBox(height: 15.0),
-            SizedBox(height: 8.0),
-            Divider(thickness: 0.4, color: Colors.grey),
-            SizedBox(height: 8.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Statut '.toUpperCase(),
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12.0,
-                  ),
-                ),
-                SizedBox(width: 5.0),
-                Row(
-                  children: [
-                    Text(
-                      '$status'.toUpperCase(),
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12.0,
+            // DO NOT DISPLAY THIS WIDGET IF WE HAVE NO DATA AT ALL
+            if (_isRequestPending)
+              Column(
+                children: [
+                  SizedBox(height: 8.0),
+                  Divider(thickness: 0.4, color: Colors.grey.shade300),
+                  SizedBox(height: 8.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Montant:',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.0,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 5.0),
-                    SpinKitChasingDots(
-                      color: Colors.lightGreen,
-                      size: 25.0,
-                    )
-                  ],
-                ),
-              ],
-            ),
+                      SizedBox(width: 5.0),
+                      Text(
+                        _currency + ' ' + Price.getWinningValues(_amount),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 5.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Date - Temps: ',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.0,
+                        ),
+                      ),
+                      SizedBox(width: 5.0),
+                      Text(
+                        _date + ' ' + _time,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8.0),
+                  Divider(thickness: 0.4, color: Colors.grey.shade300),
+                  SizedBox(height: 8.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Statut '.toUpperCase(),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.0,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            _status,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12.0,
+                            ),
+                          ),
+                          SizedBox(width: 5.0),
+                          SpinKitCircle(
+                            color: Colors.lightBlue,
+                            size: 20.0,
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
           ],
         ));
   }
 
   failMessage(BuildContext context, String message) {
+    // ignore: deprecated_member_use
     return Scaffold.of(context).showSnackBar(
       SnackBar(
         elevation: 0,
@@ -596,6 +676,7 @@ class _WithdrawState extends State<Withdraw> {
   }
 
   successMessage(BuildContext context, String message) {
+    // ignore: deprecated_member_use
     return Scaffold.of(context).showSnackBar(
       SnackBar(
         elevation: 0,
