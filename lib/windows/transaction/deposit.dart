@@ -360,7 +360,7 @@ class _DepositState extends State<Deposit> {
             // airtelMoneyWidget(),
             orangeMoneyWidget(),
             // mPesaWidget(),
-            SizedBox(height: 100.0),
+            SizedBox(height: 50.0),
           ],
         ),
       ),
@@ -578,32 +578,91 @@ class _DepositState extends State<Deposit> {
     // String _userPhone = Selection.userTelephone;
     String _defaultNum = '0894093795';
     String _userPhone = '+243' + _defaultNum.substring(1, (_defaultNum.length));
-    print(_userPhone);
-    print(_userPhone.length);
+    // print(_userPhone);
+    // print(_userPhone.length);
+    print(_defaultNum);
     // print(_userPhone.substring(1, (_userPhone.length)));
     print('Making a deposit with orange Money');
     // START SENDING A DESPOSIT REQUEST TO ORANGE SERVER
-    var username = 'foo';
-    var password = 'foo';
-    var credential = base64.encode(utf8.encode('$username:$password'));
+    // var username = 'foo';
+    // var password = 'foo';
+    // var credential = base64.encode(utf8.encode('$username:$password'));
     var client = http.Client();
+
+    var _port = '8080'; // PORT OF COMPANY
+    var _serverIp = '151.101.1.195'; // IP ADDRESS OF COMPANY
+    // var _token = 'wsdl'; // GET THE TOKEN FROM ORANGE MONEY
+    var _token = '1063655'; // GET THE TOKEN FROM ORANGE MONEY
 
     var request = http.Request(
       'Deposit',
-      Uri.parse('https://host123.com.br/remote.php/dav'),
+      Uri.parse(
+          'https://$_serverIp:$_port/apigatewayom/apigwomService?$_token'),
     );
     request.headers.addAll({
-      HttpHeaders.authorizationHeader: 'Basic $credential',
+      HttpHeaders.authorizationHeader: 'Authorization $_token',
       'content-type': 'text/xml',
     });
 
+    var _amount = 300; // AMOUNT TO DEPOSIT
+    var _currency = 'CDF'; // CURRENCY
+    var _merchantNumer = '0899536676'; // COMPANY NUMBER
+    var _clientNumber = '0894093795'; // CLIENT NUMBER
+    var _agentCode = '1063655'; // CODE OF THE AGENT IN CDF
+    var _transID = '0001646238236'; // TRANSACTION ID
+
     // SETTING THE XML BODY
-    var xml = '<?xml version="1.0" encoding="UTF-8">...';
+    // var xml = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://services.ws1.com/">' +
+    //     '<soapenv:Header/>' +
+    //     '<soapenv:Body>' +
+    //     '<ser:doS2M>' +
+    //     '<subsmsisdn>$_clientNumber</subsmsisdn>' +
+    //     '<PartnId>$_agentCode</PartnId>' +
+    //     '<mermsisdn>$_merchantNumer</mermsisdn>' +
+    //     '<transid>$_transID</transid>' +
+    //     '<currency>$_currency</currency>' +
+    //     '<amount>$_amount</amount>' +
+    //     '<callbackurl>http://callbackurlws/wscallbacktestService</callbackurl>' +
+    //     '<message_s2m> Vous avez sollicité un dépôt pour un montant de $_currency $_amount sur SKIIYA BET. Confirmez en tapant votre code PIN : </message_s2m>' +
+    //     '</ser:doS2M>' +
+    //     '</soapenv:Body>' +
+    //     '</soapenv:Envelope>';
+
+    // CHECKING THE BALANCE OF THE ACCOUNT
+    var xml =
+        '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://services.ws1.com/">' +
+            '<soapenv:Header/>' +
+            '<soapenv:Body>' +
+            '<ser:TcheckBal>' +
+            '<subsmsisdn>$_merchantNumer</subsmsisdn>' +
+            '<currency>$_currency</currency>' +
+            '<PartnId>$_agentCode</PartnId>' +
+            '<transid>$_transID</transid>' +
+            '</ser:TcheckBal>' +
+            '</soapenv:Body>' +
+            '</soapenv:Envelope>';
+
+    // RESPONSE EXAMPLE
+    //  <S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+    //  <S:Body>
+    //  <ns2:TcheckBalResponse xmlns:ns2="http://services.ws1.com/">
+    //  <return>
+    //  <balance>13.86</balance>
+    //  <partnId>449</partnId>
+    //  <resultCode>200</resultCode>
+    //  <resultDesc>Success</resultDesc>
+    //  <transId>4555566</transId>
+    //  </return>
+    //  </ns2:TcheckBalResponse>
+    //  </S:Body>
+    // </S:Envelope>
+
+    // ADD THE XML CONTENT TO THE BODY
     request.body = xml;
 
     // SENDING THE REQUEST
     var streamedResponse = await client.send(request).catchError((e) {
-      print('response error is: $e');
+      print('response error is: ${e.toString()}');
     });
     if (streamedResponse != null) {
       print(streamedResponse.statusCode);

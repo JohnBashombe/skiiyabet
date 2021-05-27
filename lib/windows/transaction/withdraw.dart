@@ -1,5 +1,3 @@
-import 'package:skiiyabet/Responsive/responsive_widget.dart';
-import 'package:skiiyabet/app/skiiyaBet.dart';
 import 'package:skiiyabet/components/price.dart';
 import 'package:skiiyabet/components/selection.dart';
 import 'package:skiiyabet/methods/connexion.dart';
@@ -90,8 +88,8 @@ class _WithdrawState extends State<Withdraw> {
                       Price.getWinningValues(Price.maximumWithdraw),
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 13.0,
-                    // fontWeight: FontWeight.bold,
+                    fontSize: 12.0,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 10.0),
