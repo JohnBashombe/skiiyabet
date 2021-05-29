@@ -22,19 +22,15 @@ class Login extends StatefulWidget {
 
   // DO LOGOUT OF THE USER
   static void doLogout() async {
+    // SIGN THE USER OUT
     _auth.signOut();
-    // Manage local storage in user login and register section
-    // final LocalStorage storage = new LocalStorage('SKIIYA_BET');
-    // storage.clear();
-    // storage.setItem('userID', null);
-    // storage.setItem('customID', null);
+    // INITIALIZE THE SESSION
     var session = FlutterSession();
-    // sign out the user
-    // set all varaibles back to default
-    Selection.user = null;
-    Selection.userBalance = 0.0;
-    Selection.userTelephone = '';
-    // set relogin session to false
+    // SET ALL TO DEFAULTS
+    Selection.user = null; // FIREBASE USER
+    Selection.userBalance = 0.0; // USER BALANCE
+    Selection.userTelephone = ''; // USER TELEPHONE
+    // SET ALL LOCAL VARIABLES TO NULL
     await session.set("_ph_1_", null);
     await session.set("_ph_2_", null);
     await session.set("_p1_", null);
@@ -55,29 +51,24 @@ class _LoginState extends State<Login> {
   String _phoneNumber = ''; // PHONE NUMBER
   String _password = ''; // PASSWORD
   String _passwordConfirm = ''; // CONFIRM PASSWORD
-
   // these are material displaying variables
   // this store the phone to be checked
   // FIELDS FILTERS
   String _numberFilter = ''; // PHONE NUMBER FILTER
   String _passwordFilter = ''; // PASSWORD FILTER
   String _confirmPasswordFilter = ''; // CONFIRM PASSWORD FILTER
-
   // ERROR MESSAGES VARIABLES
   String _phoneMessage = ''; // PHONE NUMBER MESSAGE
   String _passwordError = ''; // PASSWORD ERROR MESSAGE
   String _passwordConfirmError = ''; // CONFIRM PASSWORD ERROR MESSAGE
-
   // ERRORS HANDLERS
   bool _displayPhoneError = false; // PHONE NUMBER HANDLER ERROR
   bool _displayPasswordError = false; // PASSORD HANDLER ERROR
   bool _displayConfirmPasswordError = false; // CONFIRM PASSWORD HANDLER ERROR
-
   // SUCCESS HANDLERS
   bool _displayPhoneSuccess = false; // PHONE HANDLER SUCCESS
   bool _displayPasswordSuccess = false; // PASSWORD HANDLER SUCCESS
   bool _displayConfirmPasswordSuccess = false; // CONFIRM HANDLER SUCCESS
-
   // FIELD VALIDATORS
   bool _validNumber = false; // PHONE NUMBER VALIDATOR
   bool _validPassword = false; // PASSWORD VALIDATOR
