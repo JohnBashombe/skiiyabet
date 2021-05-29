@@ -29,14 +29,10 @@ import 'package:skiiyabet/windows/transaction/transaction.dart';
 import 'package:skiiyabet/windows/transaction/withdraw.dart';
 import 'package:skiiyabet/app/entities/match.dart';
 import 'package:http/http.dart' as http;
-
 import 'entities/fetching.dart';
 
-// COLOR ATTRIBUTES
-Color color, colorBg, colorRounded, colorCaption;
+// THE SELECTED INDEX
 int _selectedIndex = 0;
-// this variable indicated which field should have load more
-// int fieldLoadMore = 0;
 // display the betslip error message
 int displayInputErrorMessage = -1;
 // variable from search panel
@@ -46,17 +42,8 @@ var _queryResults = [];
 var _queryDisplay = [];
 // check weither input is empty or not to display no data found
 bool _isQueryEmpty = true;
-// this variable display betting slip error message
-bool showBetslipMessagePanel = false;
-String showBetslipMessage = '';
-// color to show along with the message
-Color showBetslipMessageColor = Colors.black;
-Color showBetslipMessageColorBg = Colors.red[200];
-// bool _resendCode = false;
+// FIREBASE AUTHENTICATION INITIALIZATION
 FirebaseAuth _auth = FirebaseAuth.instance;
-// boolean that displays the loading process.. on buttons
-// bool _loadingBettingButton = false;
-
 // FTECH MATCH INSTAMCE
 FetchMatch _fetchMatch = new FetchMatch();
 
@@ -1307,8 +1294,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // checkMatchValidity();
     // New methods loading...
     // removedTheOldMatch();
-    // keep loading user balance
-    // loopUserDetails();
     // placed here because this widget execute only once
     // this method helps us to detect if a certain user was already logged in
     if (mounted)
@@ -1316,6 +1301,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         // reload from existing session and set new values
         // logged the user in if existed before
         reLoginUser(); // uncomment after coding
+        // keep loading user balance
+        loopUserBalanceRecord();
       });
     // this loadingGames method load only once at first lunch
     // loadingGames(fieldLoadMore);
@@ -3971,96 +3958,57 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       // print(_qn.documents.length);
       // return null;
     });
-
     // return qn.documents;
   }
 
   // sesssion management
   reLoginUser() async {
+    // INITIALIZE THE SESSION
     var session = FlutterSession();
-    // await session.set("email", null);
-    String userID = await session.get("sB1");
-    String userID1 = await session.get("sB2");
-    String customID = await session.get("sB3");
-    String customID1 = await session.get("sB4");
-    // LocalStorage storage = new LocalStorage('SKIIYA_BET');
-    // print(Selection.user.uid);
-    // if (email.compareTo('null') != 0) {
-    //   if (id1.compareTo('null') != 0) {
-    //     if (id2.compareTo('null') != 0) {
-    // print('data logins is different from null');
-    // print('Phone: $userID$userID1 and Passcode: $customID$customID1');
+    // GET ALL VVALUES FROM LOCAL STORAGE
+    String _phone1 = await session.get('_ph_1_');
+    String _phone2 = await session.get('_ph_2_');
+    String _pass1 = await session.get('_p1_');
+    String _pass2 = await session.get('_p2_');
     // RELOGGIN THE USER IF NO USER IS FOUND
     if (Selection.user == null) {
-      if (userID == null ||
-          userID1 == null ||
-          customID == null ||
-          customID1 == null) {
-        // print('values are null, No relogin will be made');
-      } else {
-        // print('login process started');
-        doSessionUserLogin((userID + userID1), (customID + customID1));
+      if (_phone1 != null &&
+          _phone2 != null &&
+          _pass1 != null &&
+          _pass2 != null) {
+        // LOGIN THE USER
+        doSessionUserLogin((_phone1 + _phone2), (_pass1 + _pass2));
       }
     }
-    //  else {
-    //   print('User logged in already');
-    // }
-    //     }
-    //   }
-    //   // else {
-    //   //   print('password is empty $password');
-    //   // }
-    // }
   }
 
-  static setSessionLogin(String telephone, String pass) async {
-    // Encrypting the email before saving it to user Device
-    String tel = Encryption.encryptAESCryptoJS(telephone, 'SKIIYA_Telephone');
-    // String customEmail = email;
-    // Encrypting the password before saving it to user device
-    String customID = Encryption.encryptAESCryptoJS(pass, tel);
-    // print(customEmail);
-    // print(customID);
-    // EMAIL
-    int partTelephone = tel.length / 2 as int;
-    String partTelephone1 = customID.substring(0, (partTelephone));
-    String partTelephone2 =
-        customID.substring(partTelephone, (customID.length));
-    // PASSCODE
-    int partPass = customID.length / 2 as int;
-    String partPass1 = customID.substring(0, (partPass));
-    String partPass2 = customID.substring(partPass, (customID.length));
-    // using session to store user login details
-    var session = FlutterSession();
-    await session.set("userID", partTelephone1.toString());
-    await session.set("userID1", partTelephone2.toString());
-    await session.set("customID", partPass1.toString());
-    await session.set("customID1", partPass2.toString());
-  }
-
-  doSessionUserLogin(String telephone, String passCode) async {
-    // String code = '243';
+  doSessionUserLogin(String _telephone, String _passCode) async {
     checkInternet();
     String congoCode = '243';
     // print('The telephone is: $telephone');
     // print('The passcode is: $passCode');
-    String phone =
-        Encryption.decryptAESCryptoJS(telephone, 'SKIIYA001_Telephone');
-    String email = congoCode + phone + '@gmail.com';
-    String pass = Encryption.decryptAESCryptoJS(passCode, phone);
+    String _phone = Encryption.decryptAESCryptoJS(
+      _telephone,
+      '_skiiya_sarl_session_login_',
+    );
+    // FORMAT THE EMAIL
+    String _email = congoCode + _phone + '@gmail.com';
+    // GET THE PASSWORD FROM LOCAL STORAGE
+    String _password = Encryption.decryptAESCryptoJS(
+      _passCode, // PASS ENCRYPT
+      _phone, // USER PHONE
+    );
     // print('login has been reached and phone is $phone');
     // print('login has been reached and email is $email');
     // print('login has been reached and code is $code');
-    // String email =
-    //     Encryption.decryptAESCryptoJS(generatedEmail, generatedEmail);
-    // String email = generatedEmail;
     await _auth
-        .signInWithEmailAndPassword(email: email, password: pass)
+        .signInWithEmailAndPassword(
+      email: _email,
+      password: _password,
+    )
         .then((result) {
+      // SET THE USER VALUE
       Selection.user = result.user;
-      // store credentials to session
-      setSessionLogin(phone.toString(), passCode.toString());
-      // save the current user into the local storage for upcoming connection
       // get the right user balance and the right user phone number
       Firestore.instance
           .collection('UserInfo')
@@ -4068,32 +4016,20 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           .get()
           .then((_result) {
         // GET THE BLOCKING STATUS
-        // bool isBlocked = false;
-        if (_result['isBlocked'] == null) {
-          // create the column if not there already
-          Firestore.instance
-              .collection('UserInfo')
-              .document(result.user.uid)
-              .updateData({'isBlocked': false});
-          // The column has been created
-          // print('This blocked status is now created');
-        }
         if (_result['isBlocked'] == true) {
           // logout the user if he is being blocked in the system
-          Login.doLogout();
-          // print('The user has been blocked');
+          Login.doLogout(); // LOG OUT
         } else {
           Firestore.instance
               .collection('UserBalance')
               .document(result.user.uid)
               .get()
-              .then((_result) {
+              .then((_resultBalance) {
             if (mounted)
               setState(() {
-                // String id = _result.documentID.toString();
                 // print('the ID is $id');
-                Selection.userTelephone = '0' + phone;
-                Selection.userBalance = _result['balance'];
+                Selection.userTelephone = '0' + _phone;
+                Selection.userBalance = _resultBalance['balance'];
                 // successMessage(context, 'Login Success!');
                 // hide all messages error based
                 isNoInternetNetwork = false;
@@ -4576,29 +4512,30 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       });
   }
 
-  // keep on loading user blance details every 30s
-  // loopUserDetails() {
-  //   // keep loading user balance every t seconds
-  //   Timer.periodic(new Duration(seconds: 30), (timer) {
-  //     // load details only if user has logged in
-  //     if (Selection.user != null) {
-  //       Firestore.instance
-  //           .collection('UserBalance')
-  //           .document(Selection.user.uid)
-  //           .get()
-  //           .then((_result) {
-  //         // if the login is successful then go ack to home Page
-  //         if (mounted)
-  //           setState(() {
-  //             Selection.userBalance =
-  //                 double.parse(_result['balance'].toString());
-  //           });
-  //       }).catchError((e) {
-  //         print('e: $e');
-  //       });
-  //     }
-  //   });
-  // }
+  // keep on loading user blance details every 45s
+  loopUserBalanceRecord() {
+    String _uid = Selection.user.uid;
+    // keep loading user balance every t seconds
+    if (Selection.user != null)
+      Timer.periodic(new Duration(seconds: 45), (timer) {
+        // load details only if user has logged in
+        Firestore.instance
+            .collection('UserBalance')
+            .document(_uid)
+            .get()
+            .then((_result) {
+          // UPDATE THE BALANCE ON SUCCESSFULL LOADING
+          if (mounted)
+            setState(() {
+              // UPDATE THE USER BALANCE HERE
+              Selection.userBalance =
+                  double.parse(_result['balance'].toString());
+            });
+        }).catchError((e) {
+          // print('e: $e');
+        });
+      });
+  }
 
   // removedTheOldMatch() {
   //   // LOOP THROUGH THE DATA ARRAY EVERY 1 SECOND TO REMOVE OLD MATCHES ONE BY ONE

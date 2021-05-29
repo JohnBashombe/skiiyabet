@@ -1,6 +1,4 @@
 import 'dart:math';
-
-import 'package:skiiyabet/Responsive/responsive_widget.dart';
 import 'package:skiiyabet/app/skiiyaBet.dart';
 import 'package:skiiyabet/components/selection.dart';
 import 'package:skiiyabet/encryption/encryption.dart';
@@ -11,17 +9,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_session/flutter_session.dart';
-// import 'package:flutter_session/flutter_session.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+// CHANGE FROM LOGIN TO REGISTER
 bool _showLoginPage = true;
-// bool _resendCode = false;
+// INITIALIZE THE FIREBASE AUTH INSTANCE
 FirebaseAuth _auth = FirebaseAuth.instance;
 
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
 
+  // DO LOGOUT OF THE USER
   static void doLogout() async {
     _auth.signOut();
     // Manage local storage in user login and register section
@@ -36,52 +35,59 @@ class Login extends StatefulWidget {
     Selection.userBalance = 0.0;
     Selection.userTelephone = '';
     // set relogin session to false
-    await session.set("sB1", 'null');
-    await session.set("sB2", 'null');
-    await session.set("sB3", 'null');
-    await session.set("sB4", 'null');
+    await session.set("_ph_1_", null);
+    await session.set("_ph_2_", null);
+    await session.set("_p1_", null);
+    await session.set("_p2_", null);
   }
 }
 
 class _LoginState extends State<Login> {
   // Note: This is a `GlobalKey<FormState>`,
   // not a GlobalKey<MyCustomFormState>.
+  // INITIALIZE THE VARIABLE KEYS
   final _formKeyPhone = GlobalKey<FormState>();
   final _formKeyPassword = GlobalKey<FormState>();
   final _formKeyConfirmPassword = GlobalKey<FormState>();
 
-  // String verificationID;
   //these are manipulation variables for the login page
-  String _phoneNumber = '';
-  String _password = '';
-  String _passwordConfirm = '';
+  // SAVE THE VALUE OF DATA AND MAIN VARIABLES
+  String _phoneNumber = ''; // PHONE NUMBER
+  String _password = ''; // PASSWORD
+  String _passwordConfirm = ''; // CONFIRM PASSWORD
 
   // these are material displaying variables
   // this store the phone to be checked
-  String _numberFilter = '';
-  String _passwordFilter = '';
-  String _confirmPasswordFilter = '';
+  // FIELDS FILTERS
+  String _numberFilter = ''; // PHONE NUMBER FILTER
+  String _passwordFilter = ''; // PASSWORD FILTER
+  String _confirmPasswordFilter = ''; // CONFIRM PASSWORD FILTER
 
-  String _phoneMessage = '';
-  String _passwordError = '';
-  String _passwordConfirmError = '';
+  // ERROR MESSAGES VARIABLES
+  String _phoneMessage = ''; // PHONE NUMBER MESSAGE
+  String _passwordError = ''; // PASSWORD ERROR MESSAGE
+  String _passwordConfirmError = ''; // CONFIRM PASSWORD ERROR MESSAGE
 
-  bool _displayPhoneError = false;
-  bool _displayPasswordError = false;
-  bool _displayConfirmPasswordError = false;
+  // ERRORS HANDLERS
+  bool _displayPhoneError = false; // PHONE NUMBER HANDLER ERROR
+  bool _displayPasswordError = false; // PASSORD HANDLER ERROR
+  bool _displayConfirmPasswordError = false; // CONFIRM PASSWORD HANDLER ERROR
 
-  bool _displayPhoneSuccess = false;
-// display the check icon
-  bool _validNumber = false;
-// display password success message
-  bool _displayPasswordSuccess = false;
-  bool _displayConfirmPasswordSuccess = false;
-  bool _validPassword = false;
-  bool _validConfirmPassword = false;
+  // SUCCESS HANDLERS
+  bool _displayPhoneSuccess = false; // PHONE HANDLER SUCCESS
+  bool _displayPasswordSuccess = false; // PASSWORD HANDLER SUCCESS
+  bool _displayConfirmPasswordSuccess = false; // CONFIRM HANDLER SUCCESS
+
+  // FIELD VALIDATORS
+  bool _validNumber = false; // PHONE NUMBER VALIDATOR
+  bool _validPassword = false; // PASSWORD VALIDATOR
+  bool _validConfirmPassword = false; // CONFIRM HANDLER SUCCESS
   // boolean that displays the loading process.. on buttons
-  bool loadingLoginButton = false;
+  // SHOW LOGIN LOADING BUTTON ACTION HANDLER
+  bool loadingLoginButton = false; // LOGIN LOADER BUTTON ACTION
   // boolean that displays the loading process.. on buttons
-  bool loadingRegisterButton = false;
+  // SHOW REGISTER LOADING BUTTON ACTION HANDLER
+  bool loadingRegisterButton = false; // REGISTER LOADER BUTTON ACTION
 
   @override
   Widget build(BuildContext context) {
@@ -92,10 +98,10 @@ class _LoginState extends State<Login> {
         padding: new EdgeInsets.all(15.0),
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: Colors.grey, width: 0.5),
-            bottom: BorderSide(color: Colors.grey, width: 0.5),
-            left: BorderSide(color: Colors.grey, width: 0.5),
-            right: BorderSide(color: Colors.grey, width: 0.5),
+            top: BorderSide(color: Colors.grey.shade300),
+            bottom: BorderSide(color: Colors.grey.shade300),
+            left: BorderSide(color: Colors.grey.shade300),
+            right: BorderSide(color: Colors.grey.shade300),
           ),
         ),
         child: ListView(
@@ -1134,6 +1140,7 @@ class _LoginState extends State<Login> {
   }
 
   successMessage(BuildContext context, String message) {
+    // ignore: deprecated_member_use
     return Scaffold.of(context).showSnackBar(
       SnackBar(
         elevation: 0,
@@ -1157,6 +1164,7 @@ class _LoginState extends State<Login> {
   }
 
   failMessage(BuildContext context, String message) {
+    // ignore: deprecated_member_use
     return Scaffold.of(context).showSnackBar(
       SnackBar(
         elevation: 0,
@@ -1179,30 +1187,36 @@ class _LoginState extends State<Login> {
     );
   }
 
-  setSessionLogin(String telephone, String pass) async {
+  setSessionLogin(String _telephone, String _password) async {
     // Encrypting the email before saving it to user Device
-    String tel =
-        Encryption.encryptAESCryptoJS(telephone, 'SKIIYA001_Telephone');
+    String _telephoneOriginal = Encryption.encryptAESCryptoJS(
+      _telephone,
+      '_skiiya_sarl_session_login_',
+    );
     // String customEmail = email;
     // Encrypting the password before saving it to user device
-    String customID = Encryption.encryptAESCryptoJS(pass, telephone);
+    String _passOriginal = Encryption.encryptAESCryptoJS(
+      _password, // USER PASSWORD
+      _telephone, // USER PHONE
+    );
     // print(customEmail);
     // print(customID);
     // EMAIL
-    int partTelephone = tel.length / 2 as int;
-    String partTelephone1 = tel.substring(0, (partTelephone));
-    String partTelephone2 = tel.substring(partTelephone, (tel.length));
+    int _phoneParts = _telephoneOriginal.length / 2 as int;
+    String _phone1 = _telephoneOriginal.substring(0, (_phoneParts));
+    String _phone2 =
+        _telephoneOriginal.substring(_phoneParts, (_telephoneOriginal.length));
     // PASSCODE
-    int partPass = customID.length / 2 as int;
-    String partPass1 = customID.substring(0, (partPass));
-    String partPass2 = customID.substring(partPass, (customID.length));
+    int _passParts = _passOriginal.length / 2 as int;
+    String _pass1 = _passOriginal.substring(0, (_passParts));
+    String _pass2 = _passOriginal.substring(_passParts, (_passOriginal.length));
     // using session to store user login details
     var session = FlutterSession();
     // sB = SKIIYA BET
-    await session.set("sB1", partTelephone1.toString());
-    await session.set("sB2", partTelephone2.toString());
-    await session.set("sB3", partPass1.toString());
-    await session.set("sB4", partPass2.toString());
+    await session.set("_ph_1_", _phone1.toString());
+    await session.set("_ph_2_", _phone2.toString());
+    await session.set("_p1_", _pass1.toString());
+    await session.set("_p2_", _pass2.toString());
   }
 
   doUserLogin(String telephone, String passCode) async {
@@ -1227,15 +1241,15 @@ class _LoginState extends State<Login> {
           .then((_result) {
         // GET THE BLOCKING STATUS
         // bool isBlocked = false;
-        if (_result['isBlocked'] == null) {
-          // create the column if not there already
-          Firestore.instance
-              .collection('UserInfo')
-              .document(result.user.uid)
-              .updateData({'isBlocked': false});
-          // The column has been created
-          // print('This blocked status is now created');
-        }
+        // if (_result['isBlocked'] == null) {
+        //   // create the column if not there already
+        //   Firestore.instance
+        //       .collection('UserInfo')
+        //       .document(result.user.uid)
+        //       .updateData({'isBlocked': false});
+        //   // The column has been created
+        //   // print('This blocked status is now created');
+        // }
         if (_result['isBlocked'] == true) {
           // logout the user if he is being blocked in the system
           Login.doLogout();
@@ -1320,7 +1334,7 @@ class _LoginState extends State<Login> {
         .then((result) {
       if (result == null) {
         // print('We could not create a new account with this email');
-        failMessage(context, 'La création a échoué!');
+        failMessage(context, 'La création du compte a échoué!');
         if (mounted)
           setState(() {
             // show th register again because of an error
@@ -1355,7 +1369,8 @@ class _LoginState extends State<Login> {
             .setData({
           'resetPassword': generatedCode,
           'customID': secretKey.toString(),
-          'isBlocked': false,
+          'isBlocked': false, // FOR BLOCKING USERS
+          'isActivated': false, // FOR ACTIVATING ACCOUNTS
         }).then((value) {
           // print('value aupdated successfully');
           Selection.user = result.user;
