@@ -5,14 +5,17 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget { 
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // THIS IS THE MAIN METHOD FOR SKIIYA BET
-    return MaterialApp(  
-      title: 'SkiiYa Bet', 
+    return MaterialApp(
+      title: 'SkiiYa Bet',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(primaryColor: Colors.white, fontFamily: 'ROBOTO'),
+      theme: ThemeData(
+        primaryColor: Colors.white,
+        fontFamily: 'ROBOTO',
+      ),
       home: SkiiyaBet(),
     );
   }

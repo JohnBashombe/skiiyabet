@@ -45,8 +45,6 @@ class _LoginState extends State<Login> {
   final _formKeyPhone = GlobalKey<FormState>();
   final _formKeyPassword = GlobalKey<FormState>();
   final _formKeyConfirmPassword = GlobalKey<FormState>();
-
-  //these are manipulation variables for the login page
   // SAVE THE VALUE OF DATA AND MAIN VARIABLES
   String _phoneNumber = ''; // PHONE NUMBER
   String _password = ''; // PASSWORD
@@ -303,6 +301,7 @@ class _LoginState extends State<Login> {
             if (!_showLoginPage) getConfirmPassword(context),
             if (!_showLoginPage) SizedBox(height: 10.0),
             getValidator(context),
+            SizedBox(height: 50.0),
           ],
         ),
       ),
