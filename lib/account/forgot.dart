@@ -329,9 +329,12 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             Selection.resetPhone = '';
           });
       } else {
+        // GET THE USER ID
+        String _userId = result.documents[0].documentID.toString();
+        // GET USER INFO
         Firestore.instance
             .collection('UserInfo')
-            .document(result.documents[0].documentID.toString())
+            .document(_userId)
             .get()
             .then((thisResult) {
           // generate the code then update the user reset field then send the code to the user number
@@ -350,8 +353,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               .sendSMS(
                   toNumber: '+243' + phone,
                   messageBody:
-                      'https://www.skiiyabet.com - Le code de confirmation pour réinitialiser votre mot de passe est : ' +
-                          generatedCode)
+                      'Le code de confirmation pour modifier votre mot de passe sur SKIIYA BET est: ' +
+                          generatedCode + '\nPlus d\'info sur https://www.skiiyabet.com')
               .then((value) {
             if (mounted)
               setState(() {
