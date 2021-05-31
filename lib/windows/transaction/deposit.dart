@@ -579,7 +579,7 @@ class _DepositState extends State<Deposit> {
     String _defaultNum = '0894093795';
     String _userPhone = '+243' + _defaultNum.substring(1, (_defaultNum.length));
     // print(_userPhone);
-    // print(_userPhone.length);
+    // print(_userPhone.length); 
     print(_defaultNum);
     // print(_userPhone.substring(1, (_userPhone.length)));
     print('Making a deposit with orange Money');
@@ -604,8 +604,8 @@ class _DepositState extends State<Deposit> {
       'content-type': 'text/xml',
     });
 
-    var _amount = 300; // AMOUNT TO DEPOSIT
-    var _currency = 'CDF'; // CURRENCY
+    var _amount = 300; // AMOUNT TO DEPOSIT BY THE USER
+    var _currency = 'CDF'; // CURRENCY SUPPORTED
     var _merchantNumer = '0899536676'; // COMPANY NUMBER
     var _clientNumber = '0894093795'; // CLIENT NUMBER
     var _agentCode = '1063655'; // CODE OF THE AGENT IN CDF

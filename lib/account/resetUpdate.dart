@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:skiiyabet/Responsive/responsive_widget.dart';
 import 'package:skiiyabet/account/login.dart';
 import 'package:skiiyabet/app/skiiyaBet.dart';
 import 'package:skiiyabet/counter/countdown.dart';
@@ -23,27 +22,31 @@ String smsCode = '';
 String newPassword = '';
 String confirmNewPassword = '';
 // show loading status
-bool loadingStatusUpdate = false;
+bool loadingButtonUpdate = false;
+// SHOW THE PASSWORD IN PLAIN TEXT OR HIDDEN FORMAT
+bool _showPasswordHiddenFormat = true;
 
 class _RecoverPasswordState extends State<RecoverPassword> {
   // initialize the time needed to resend the SMS Code to client
-  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 30;
+  // RESEND THE NEW CODE AFTER 60 SECONDS
+  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60;
 
   @override
   Widget build(BuildContext context) {
+    // DISPLAY IF WE DETECT NO NUMBER
     if (Selection.resetPhone.isEmpty) {
       // print('the reset phone is empty');
       return Expanded(
         child: Container(
           width: double.infinity,
           margin: EdgeInsets.only(left: 10.0, top: 10.0),
-          padding: new EdgeInsets.all(15.0),
+          padding: new EdgeInsets.all(10.0),
           decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(color: Colors.grey, width: 0.5),
-              bottom: BorderSide(color: Colors.grey, width: 0.5),
-              left: BorderSide(color: Colors.grey, width: 0.5),
-              right: BorderSide(color: Colors.grey, width: 0.5),
+              top: BorderSide(color: Colors.grey.shade300),
+              bottom: BorderSide(color: Colors.grey.shade300),
+              left: BorderSide(color: Colors.grey.shade300),
+              right: BorderSide(color: Colors.grey.shade300),
             ),
           ),
           child: Column(
@@ -52,12 +55,13 @@ class _RecoverPasswordState extends State<RecoverPassword> {
               Text(
                 'Vous n\'avez fourni aucun numéro de téléphone',
                 style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w400,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12.0,
                 ),
               ),
               SizedBox(height: 10.0),
-              Divider(color: Colors.grey, thickness: 0.5),
+              Divider(color: Colors.grey, thickness: 0.4),
               SizedBox(height: 10.0),
               Center(
                 child: RawMaterialButton(
@@ -72,8 +76,10 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                   },
                   fillColor: Colors.lightGreen[400],
                   disabledElevation: 3.0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0)),
                   child: Text(
-                    'Ajouter un numéro de téléphone',
+                    'Ajouter numéro'.toUpperCase(),
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -89,17 +95,18 @@ class _RecoverPasswordState extends State<RecoverPassword> {
       );
     } else {
       // print('the reset phone is not empty: ${Selection.resetPhone}');
+      // IF WE DO HAVE A PHONE NUMBER THEN DISPLAY THIS
       return Expanded(
         child: Container(
           width: double.infinity,
           margin: EdgeInsets.only(left: 10.0, top: 10.0),
-          padding: new EdgeInsets.all(15.0),
+          padding: new EdgeInsets.all(10.0),
           decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(color: Colors.grey, width: 0.5),
-              bottom: BorderSide(color: Colors.grey, width: 0.5),
-              left: BorderSide(color: Colors.grey, width: 0.5),
-              right: BorderSide(color: Colors.grey, width: 0.5),
+              top: BorderSide(color: Colors.grey.shade300),
+              bottom: BorderSide(color: Colors.grey.shade300),
+              left: BorderSide(color: Colors.grey.shade300),
+              right: BorderSide(color: Colors.grey.shade300),
             ),
           ),
           child: ListView(
@@ -111,22 +118,22 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                   'Modifier Mot de passe',
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.w200,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              SizedBox(height: 20.0),
+              // SizedBox(height: 20.0),
               Divider(color: Colors.grey, thickness: 0.4),
-              SizedBox(height: 20.0),
+              SizedBox(height: 10.0),
               // Divider(color: Colors.grey, thickness: 0.4),
               // SizedBox(height: 10.0),
               Center(
                 child: Text(
                   'Un code à 6 chiffres a été envoyé à ',
                   style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14.0,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12.0,
                     color: Colors.black,
                   ),
                 ),
@@ -137,44 +144,23 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                   '+243 ' + Selection.resetPhone,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 13.0,
+                    fontSize: 12.0,
                     color: Colors.black,
                   ),
                 ),
               ),
-              SizedBox(height: 15.0),
-              Row(
-                children: [
-                  Icon(
-                    Icons.sms,
-                    color: Colors.black,
-                    size: 18.0,
-                  ),
-                  SizedBox(width: 5.0),
-                  Text(
-                    'SMS Code à 6 chiffres',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12.0,
-                    ),
-                  ),
-                ],
-              ),
-              // SizedBox(height: 5.0),
+              SizedBox(height: 10.0),
               Container(
-                // padding: EdgeInsets.only(left: 5.0),
-                height: 40.0,
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                height: 50.0,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                     color: Colors.white70,
                     border: Border(
-                      // top:
-                      //     BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                      bottom: BorderSide(color: Colors.grey, width: 1.0),
-                      // left:
-                      //     BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                      // right:
-                      //     BorderSide(color: Colors.lightGreen[400], width: 2.0),
+                      top: BorderSide(color: Colors.grey.shade300),
+                      bottom: BorderSide(color: Colors.grey.shade300),
+                      left: BorderSide(color: Colors.grey.shade300),
+                      right: BorderSide(color: Colors.grey.shade300),
                     )),
                 child: TextField(
                   onChanged: (value) {
@@ -184,7 +170,7 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                         // print('SMS Code is: $smsCode');
                       });
                   },
-                  cursorColor: Colors.lightGreen,
+                  cursorColor: Colors.lightBlue,
                   maxLines: 1,
                   keyboardType: TextInputType.number,
                   inputFormatters: <TextInputFormatter>[
@@ -205,41 +191,51 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                           fontSize: 12.0)),
                 ),
               ),
-              SizedBox(height: 20.0),
-              // Divider(color: Colors.grey, thickness: 0.4),
-              // SizedBox(height: 10.0),
-              Row(
-                children: [
-                  Icon(
-                    Icons.vpn_key,
-                    color: Colors.black,
-                    size: 18.0,
-                  ),
-                  SizedBox(width: 5.0),
-                  Text(
-                    'Nouveau mot de passe',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12.0,
+              SizedBox(height: 10.0),
+              Container(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                  onTap: () {
+                    if (mounted)
+                      setState(() {
+                        // WE SHOW THE PLAIN TEXT OR HIDE IT
+                        if (_showPasswordHiddenFormat) {
+                          // HIDE
+                          _showPasswordHiddenFormat = false;
+                        } else {
+                          // SHOW
+                          _showPasswordHiddenFormat = true;
+                        }
+                      });
+                  },
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Text(
+                      _showPasswordHiddenFormat
+                          ? 'afficher le mot de passe'
+                          : 'masquer le mot de passe',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 13.0,
+                        // fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
-                ],
+                ),
               ),
-              // SizedBox(height: 5.0),
+              SizedBox(height: 5.0),
               Container(
-                // padding: EdgeInsets.only(left: 5.0),
-                height: 40.0,
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                height: 50.0,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                     color: Colors.white70,
                     border: Border(
-                      // top:
-                      //     BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                      bottom: BorderSide(color: Colors.grey, width: 1.0),
-                      // left:
-                      //     BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                      // right:
-                      //     BorderSide(color: Colors.lightGreen[400], width: 2.0),
+                      top: BorderSide(color: Colors.grey.shade300),
+                      bottom: BorderSide(color: Colors.grey.shade300),
+                      left: BorderSide(color: Colors.grey.shade300),
+                      right: BorderSide(color: Colors.grey.shade300),
                     )),
                 child: TextField(
                   onChanged: (value) {
@@ -249,8 +245,8 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                         // print('New Password is: $newPassword');
                       });
                   },
-                  obscureText: true,
-                  cursorColor: Colors.lightGreen,
+                  obscureText: _showPasswordHiddenFormat,
+                  cursorColor: Colors.lightBlue,
                   maxLines: 1,
                   keyboardType: TextInputType.visiblePassword,
                   style: TextStyle(
@@ -260,8 +256,6 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                       letterSpacing: 0.5),
                   decoration: InputDecoration(
                       border: InputBorder.none,
-                      // fillColor: Colors.deepOrange[400],
-                      // contentPadding: EdgeInsets.all(10.0),
                       hintText: 'Nouveau mot de passe',
                       hintMaxLines: 1,
                       hintStyle: TextStyle(
@@ -270,39 +264,18 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                           fontSize: 12.0)),
                 ),
               ),
-              SizedBox(height: 20.0),
-              // Divider(color: Colors.grey, thickness: 0.4),
-              // SizedBox(height: 10.0),
-              Row(
-                children: [
-                  Icon(
-                    Icons.vpn_key,
-                    color: Colors.black,
-                    size: 18.0,
-                  ),
-                  SizedBox(width: 5.0),
-                  Text(
-                    'Confirmer le mot de passe',
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 12.0),
-                  ),
-                ],
-              ),
-              // SizedBox(height: 5.0),
+              SizedBox(height: 10.0),
               Container(
-                // padding: EdgeInsets.only(left: 5.0),
-                height: 40.0,
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                height: 50.0,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                     color: Colors.white70,
                     border: Border(
-                      // top:
-                      //     BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                      bottom: BorderSide(color: Colors.grey, width: 1.0),
-                      // left:
-                      //     BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                      // right:
-                      //     BorderSide(color: Colors.lightGreen[400], width: 2.0),
+                      top: BorderSide(color: Colors.grey.shade300),
+                      bottom: BorderSide(color: Colors.grey.shade300),
+                      left: BorderSide(color: Colors.grey.shade300),
+                      right: BorderSide(color: Colors.grey.shade300),
                     )),
                 child: TextField(
                   onChanged: (value) {
@@ -312,8 +285,8 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                         // print('Confirm New Password is: $confirmNewPassword');
                       });
                   },
-                  obscureText: true,
-                  cursorColor: Colors.lightGreen,
+                  obscureText: _showPasswordHiddenFormat,
+                  cursorColor: Colors.lightBlue,
                   maxLines: 1,
                   keyboardType: TextInputType.visiblePassword,
                   style: TextStyle(
@@ -323,9 +296,7 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                       letterSpacing: 0.5),
                   decoration: InputDecoration(
                       border: InputBorder.none,
-                      // fillColor: Colors.deepOrange[400],
-                      // contentPadding: EdgeInsets.all(10.0),
-                      hintText: 'Confirmer le mot de passe',
+                      hintText: 'Confirmer mot de passe',
                       hintMaxLines: 1,
                       hintStyle: TextStyle(
                           color: Colors.grey,
@@ -334,17 +305,15 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                 ),
               ),
               SizedBox(height: 15.0),
-              // SizedBox(height: 20.0),
               Text(
-                'N\'a pas reçu le code?',
+                'N\'a pas reçu le code ? ',
                 style: TextStyle(
                   color: Colors.grey,
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.w200,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 3.0),
-
+              SizedBox(height: 5.0),
               if (!Selection.showResendSMS)
                 Row(
                   children: [
@@ -352,17 +321,28 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                       'Réessayer dans',
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 12.0,
-                        // fontWeight: FontWeight.w300,
+                        fontSize: 13.0,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     CountdownTimer(
                       secSymbol: "s",
                       endTime: endTime,
+                      // secSymbolTextStyle: TextStyle(
+                      //   fontSize: 15.0,
+                      //   fontWeight: FontWeight.bold,
+                      //   color: Colors.lightBlue,
+                      // ),
                       hoursTextStyle:
-                          TextStyle(fontSize: 1, color: Colors.black),
-                      minTextStyle: TextStyle(fontSize: 1, color: Colors.black),
+                          TextStyle(fontSize: 1.0, color: Colors.transparent),
+                      minTextStyle:
+                          TextStyle(fontSize: 1.0, color: Colors.transparent),
                       // secTextStyle: TextStyle(fontSize: 18, color: Colors.black),
+                      textStyle: TextStyle(
+                        color: Colors.lightBlue,
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                       onEnd: () {
                         if (mounted)
                           setState(() {
@@ -397,28 +377,28 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 14.0,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.bold,
                         decoration: TextDecoration.underline,
                       ),
                     ),
                   ),
                 ),
-              // SizedBox(height: 5.0),
-              // Divider(color: Colors.grey, thickness: 0.5),
               SizedBox(height: 15.0),
               Container(
                 width: double.infinity,
-                child: loadingStatusUpdate
+                child: loadingButtonUpdate
                     ? RawMaterialButton(
                         padding: new EdgeInsets.symmetric(vertical: 15.0),
                         onPressed: null,
                         fillColor: Colors.lightGreen[200],
                         disabledElevation: 1.0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Vérification',
+                              'Modification'.toUpperCase(),
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -437,179 +417,16 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                         onPressed: () {
                           if (mounted)
                             setState(() {
-                              // show the loading status in update and check the code
-                              loadingStatusUpdate = true;
-                              // testing();
-                              // return false if one of fields is empty
-                              if (smsCode.length > 0 &&
-                                  newPassword.length > 0 &&
-                                  confirmNewPassword.length > 0) {
-                                if (smsCode.length > 6 || smsCode.length < 6) {
-                                  resultMessage(
-                                      context,
-                                      'Format de code non accepté',
-                                      Colors.red,
-                                      3);
-                                  // hide the loading status in update and check the code
-                                  loadingStatusUpdate = false;
-                                } else {
-                                  // if passwords lenght is between 6 and 15
-                                  if ((newPassword.length > 5 &&
-                                          newPassword.length < 16) &&
-                                      (confirmNewPassword.length > 5 &&
-                                          confirmNewPassword.length < 16)) {
-                                    // return false if password do not match
-                                    if (newPassword
-                                            .compareTo(confirmNewPassword) ==
-                                        0) {
-                                      // Now we can perform update operation
-                                      // get the user Id
-                                      Firestore.instance
-                                          .collection('UserTelephone')
-                                          .where('telephone',
-                                              isEqualTo: Selection.resetPhone)
-                                          .limit(1)
-                                          .getDocuments()
-                                          .then((_result) {
-                                        // get the user id
-                                        // do all operations if the record exists.
-                                        if (_result.documents.length > 0) {
-                                          Firestore.instance
-                                              .collection('UserInfo')
-                                              .document(_result
-                                                  .documents[0].documentID
-                                                  .toString())
-                                              .get()
-                                              .then((infoValue) {
-                                            if (infoValue['resetPassword']
-                                                    .toString()
-                                                    .compareTo(smsCode) ==
-                                                0) {
-                                              String access = ('243' +
-                                                  _result.documents[0]
-                                                      ['telephone'] +
-                                                  '@gmail.com');
-                                              var customID =
-                                                  Encryption.decryptAESCryptoJS(
-                                                      infoValue['customID'],
-                                                      access);
-                                              // sign the user in to update his password
-                                              FirebaseAuth.instance
-                                                  .signInWithEmailAndPassword(
-                                                      email: access,
-                                                      password: customID)
-                                                  .then((value) {
-                                                if (value.user != null) {
-                                                  // update the user password
-                                                  updateUserPassword(access);
-                                                  resultMessage(
-                                                      context,
-                                                      'Chargement...',
-                                                      Colors.lightGreen[400],
-                                                      3);
-                                                } else {
-                                                  // hide the loading status in update and check the code
-                                                  loadingStatusUpdate = false;
-                                                }
-                                              }).catchError((e) {
-                                                // if the login fails, show the trying again button
-                                                // hide the loading status in update and check the code
-                                                loadingStatusUpdate = false;
-                                                if (e.toString().compareTo(
-                                                        'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
-                                                    0) {
-                                                  resultMessage(
-                                                      context,
-                                                      'Pas d\'Internet',
-                                                      Colors.red,
-                                                      3);
-                                                  // print('Internet Connection Error');
-                                                } else {
-                                                  resultMessage(
-                                                      context,
-                                                      'Erreur inconnue',
-                                                      Colors.red,
-                                                      3);
-                                                }
-                                                // print('login error is: $e');
-                                              });
-                                            } else {
-                                              // if the user provide a wrong code
-                                              resultMessage(
-                                                  context,
-                                                  'Ce Code est invalide',
-                                                  Colors.red,
-                                                  3);
-                                              // hide the loading status in update and check the code
-                                              loadingStatusUpdate = false;
-                                            }
-                                          });
-                                          // FirebaseAuth.instance.
-
-                                        } else {
-                                          if (mounted)
-                                            setState(() {
-                                              // if the user provide a wrong code
-                                              resultMessage(
-                                                  context,
-                                                  'Utilisateur non trouvé',
-                                                  Colors.red,
-                                                  3);
-                                              // print('Unfound user');
-                                              // show button if no user has been found in the db
-                                              // hide the loading status in update and check the code
-                                              loadingStatusUpdate = false;
-                                            });
-                                        }
-                                      }).catchError((e) {
-                                        if (e.toString().compareTo(
-                                                'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
-                                            0) {
-                                          resultMessage(context,
-                                              'Pas d\'Internet', Colors.red, 3);
-                                          // print('Internet Connection Error');
-                                        } else {
-                                          resultMessage(context,
-                                              'Erreur inconnue', Colors.red, 3);
-                                        }
-                                      });
-                                    } else {
-                                      // if passwords are not identicals
-                                      resultMessage(
-                                          context,
-                                          'Les mots de passe ne correspondent pas',
-                                          Colors.red,
-                                          3);
-                                      // hide the loading status in update and check the code
-                                      loadingStatusUpdate = false;
-                                    }
-                                  } else {
-                                    // if passwords lenght is not between 6 and 15
-                                    resultMessage(
-                                        context,
-                                        'Format de mot de passe non accepté',
-                                        Colors.red,
-                                        3);
-                                    // hide the loading status in update and check the code
-                                    loadingStatusUpdate = false;
-                                  }
-                                }
-                              } else {
-                                // hide the loading status in update and check the code
-                                loadingStatusUpdate = false;
-                                // if at least one field is not filled
-                                resultMessage(
-                                    context,
-                                    'S\'il vous plaît! \nRemplissez tous les champs',
-                                    Colors.red,
-                                    3);
-                              }
+                              // RESET AND UPDATE THE USER PASSWORD
+                              updatePasswordMethod();
                             });
                         },
                         fillColor: Colors.lightGreen[400],
                         disabledElevation: 3.0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
                         child: Text(
-                          'Changer Mot de Passe',
+                          'Modifier'.toUpperCase(),
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -625,22 +442,26 @@ class _RecoverPasswordState extends State<RecoverPassword> {
   }
 
   void updateUserPassword(String email) async {
-    // print('the current user ID : $id');
+    // THE NEXT USER RESET PASSWORD CODE
     String generatedCode = '';
+    // RANDOM CLASS INITIALIZATION
     Random random = new Random();
+    // LOOPING
     for (int i = 0; i < 6; i++) {
+      // GENERATE 6 RANDOM INTEGERS AND STORE THEM IN A STRING
       generatedCode = generatedCode + random.nextInt(10).toString();
     }
     // encrypt the user password before storing it to the database
+    // ENCRYPTING THE PASSWORD BEFORE SENDING IT TO THE DATABASE
     var secretKey = Encryption.encryptAESCryptoJS(newPassword, email);
-
+    // FIREBASE USER INITIALIZATION
     FirebaseUser _auth = await FirebaseAuth.instance.currentUser();
     // update the password
     _auth.updatePassword(newPassword).then((value) {
       // update code for password reset
       Firestore.instance.collection('UserInfo').document(_auth.uid).updateData({
-        'resetPassword': generatedCode,
-        'customID': secretKey,
+        'resetPassword': generatedCode, // 6 DIGITS INITIALIZATION
+        'customID': secretKey, // ENCRYPTED PASSWORD
       }).then((value) {
         if (mounted)
           setState(() {
@@ -655,28 +476,30 @@ class _RecoverPasswordState extends State<RecoverPassword> {
             Navigator.push(
                 context, MaterialPageRoute(builder: (_) => SkiiyaBet()));
             // hide the loading status in update and check the code
-            loadingStatusUpdate = false;
+            loadingButtonUpdate = false;
           });
       });
     }).catchError((e) {
       if (mounted)
         setState(() {
+          print('Update Password error: $e');
           // hide the loading status in update and check the code
-          loadingStatusUpdate = false;
+          loadingButtonUpdate = false;
           // resultMessage(context, 'Error Detected', Colors.red, 3);
           if (e.toString().compareTo(
                   'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
               0) {
-            resultMessage(context, 'Pas d\'Internet', Colors.red, 3);
+            resultMessage(context, 'Pas d\'Internet', Colors.red.shade300, 3);
             // print('Internet Connection Error');
           } else {
-            resultMessage(context, 'Erreur inconnue', Colors.red, 3);
+            resultMessage(context, 'Erreur inconnue', Colors.red.shade300, 3);
           }
         });
     });
   }
 
   resultMessage(BuildContext context, String message, Color color, int sec) {
+    // ignore: deprecated_member_use
     return Scaffold.of(context).showSnackBar(
       SnackBar(
         elevation: 0,
@@ -697,5 +520,149 @@ class _RecoverPasswordState extends State<RecoverPassword> {
         ),
       ),
     );
+  }
+
+  void updatePasswordMethod() {
+    // show the loading status in update and check the code
+    loadingButtonUpdate = true;
+    // return false if one of fields is empty
+    if (smsCode.length > 0 &&
+        newPassword.length > 0 &&
+        confirmNewPassword.length > 0) {
+      if (smsCode.length > 6 || smsCode.length < 6) {
+        resultMessage(
+            context, 'Format du code non accepté', Colors.red.shade300, 3);
+        // hide the loading status in update and check the code
+        loadingButtonUpdate = false;
+      } else {
+        // if passwords lenght is between 6 and 15
+        if ((newPassword.length > 5 && newPassword.length < 16) &&
+            (confirmNewPassword.length > 5 && confirmNewPassword.length < 16)) {
+          // return false if password do not match
+          if (newPassword.compareTo(confirmNewPassword) == 0) {
+            // Now we can perform update operation
+            // get the user Id
+            Firestore.instance
+                .collection('UserTelephone')
+                .where('telephone', isEqualTo: Selection.resetPhone)
+                .limit(1)
+                .getDocuments()
+                .then((_result) {
+              // get the user id
+              // do all operations if the record exists.
+              if (_result.documents.length > 0) {
+                String _uid = _result.documents[0].documentID.toString();
+                Firestore.instance
+                    .collection('UserInfo')
+                    .document(_uid)
+                    .get()
+                    .then((infoValue) {
+                  if (infoValue['resetPassword']
+                          .toString()
+                          .compareTo(smsCode) ==
+                      0) {
+                    // GET THE USER PHONE NUMBER
+                    String _tel = _result.documents[0]['telephone'].toString();
+                    // BUILD THE EMAIL
+                    String _customEmail = ('243' + _tel + '@gmail.com');
+                    // PASSWORD ENCRYPTED
+                    String _crypt = infoValue['customID'].toString();
+                    // DECRYPTING THE CURRENT PASSWORD BEFORE UPDATING IT
+                    var _customPassword =
+                        Encryption.decryptAESCryptoJS(_crypt, _customEmail);
+
+                    // sign the user in to update his password
+                    FirebaseAuth.instance
+                        .signInWithEmailAndPassword(
+                            email: _customEmail, password: _customPassword)
+                        .then((value) {
+                      if (value.user != null) {
+                        // update the user password
+                        updateUserPassword(_customEmail);
+                        // resultMessage(context, 'Chargement...',
+                        //     Colors.lightGreen[400], 3);
+                      } else {
+                        // hide the loading status in update and check the code
+                        loadingButtonUpdate = false;
+                      }
+                    }).catchError((e) {
+                      if (mounted)
+                        setState(() {
+                          // if the login fails, show the trying again button
+                          // hide the loading status in update and check the code
+                          loadingButtonUpdate = false;
+                          if (e.toString().compareTo(
+                                  'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
+                              0) {
+                            resultMessage(context, 'Pas d\'Internet',
+                                Colors.red.shade300, 3);
+                            // print('Internet Connection Error');
+                          } else {
+                            resultMessage(context, 'Erreur inconnue',
+                                Colors.red.shade300, 3);
+                          }
+                          print('login error is: $e');
+                        });
+                    });
+                  } else {
+                    if (mounted)
+                      setState(() {
+                        // if the user provide a wrong code
+                        resultMessage(context, 'Ce code est invalide',
+                            Colors.red.shade300, 3);
+                        // hide the loading status in update and check the code
+                        loadingButtonUpdate = false;
+                      });
+                  }
+                });
+                // FirebaseAuth.instance.
+
+              } else {
+                if (mounted)
+                  setState(() {
+                    // if the user provide a wrong code
+                    resultMessage(context, 'Ce compte est introuvable',
+                        Colors.red.shade300, 3);
+                    // print('Unfound user');
+                    // show button if no user has been found in the db
+                    // hide the loading status in update and check the code
+                    loadingButtonUpdate = false;
+                  });
+              }
+            }).catchError((e) {
+              if (e.toString().compareTo(
+                      'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
+                  0) {
+                resultMessage(
+                    context, 'Pas d\'Internet', Colors.red.shade300, 3);
+                // print('Internet Connection Error');
+              } else {
+                resultMessage(
+                    context, 'Erreur inconnue', Colors.red.shade300, 3);
+              }
+              print('getting the phone number');
+            });
+          } else {
+            // if passwords are not identicals
+            resultMessage(context, 'Les mots de passe ne sont pas identiques',
+                Colors.red.shade300, 3);
+            // hide the loading status in update and check the code
+            loadingButtonUpdate = false;
+          }
+        } else {
+          // if passwords lenght is not between 6 and 15
+          resultMessage(context, 'Format de mot de passe non accepté',
+              Colors.red.shade300, 3);
+          // hide the loading status in update and check the code
+          loadingButtonUpdate = false;
+        }
+      }
+    } else {
+      // hide the loading status in update and check the code
+      loadingButtonUpdate = false;
+      // if at least one field is not filled
+      resultMessage(context, 'S\'il vous plaît! \nRemplissez tous les champs',
+          Colors.red.shade300, 3);
+    }
   }
 }

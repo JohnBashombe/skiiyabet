@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'dart:ui';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:skiiyabet/app/skiiyaBet.dart';
 import 'package:skiiyabet/components/selection.dart';
 import 'package:skiiyabet/encryption/encryption.dart';
@@ -31,10 +33,10 @@ class Login extends StatefulWidget {
     Selection.userBalance = 0.0; // USER BALANCE
     Selection.userTelephone = ''; // USER TELEPHONE
     // SET ALL LOCAL VARIABLES TO NULL
-    await session.set("_ph_1_", null);
-    await session.set("_ph_2_", null);
-    await session.set("_p1_", null);
-    await session.set("_p2_", null);
+    await session.set("_ph_1_", '');
+    await session.set("_ph_2_", '');
+    await session.set("_p1_", '');
+    await session.set("_p2_", '');
   }
 }
 
@@ -68,15 +70,17 @@ class _LoginState extends State<Login> {
   bool _displayPasswordSuccess = false; // PASSWORD HANDLER SUCCESS
   bool _displayConfirmPasswordSuccess = false; // CONFIRM HANDLER SUCCESS
   // FIELD VALIDATORS
-  bool _validNumber = false; // PHONE NUMBER VALIDATOR
-  bool _validPassword = false; // PASSWORD VALIDATOR
-  bool _validConfirmPassword = false; // CONFIRM HANDLER SUCCESS
+  // bool _validNumber = false; // PHONE NUMBER VALIDATOR
+  // bool _validPassword = false; // PASSWORD VALIDATOR
+  // bool _validConfirmPassword = false; // CONFIRM HANDLER SUCCESS
   // boolean that displays the loading process.. on buttons
   // SHOW LOGIN LOADING BUTTON ACTION HANDLER
   bool loadingLoginButton = false; // LOGIN LOADER BUTTON ACTION
   // boolean that displays the loading process.. on buttons
   // SHOW REGISTER LOADING BUTTON ACTION HANDLER
   bool loadingRegisterButton = false; // REGISTER LOADER BUTTON ACTION
+  // SHOW THE PASSWORD IN PLAIN TEXT OR HIDDEN FORMAT
+  bool _showPasswordHiddenFormat = true;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +88,7 @@ class _LoginState extends State<Login> {
       child: Container(
         width: double.infinity,
         margin: EdgeInsets.only(left: 10.0, top: 10.0),
-        padding: new EdgeInsets.all(15.0),
+        padding: new EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           border: Border(
             top: BorderSide(color: Colors.grey.shade300),
@@ -111,16 +115,16 @@ class _LoginState extends State<Login> {
                     padding: new EdgeInsets.all(10.0),
                     margin: new EdgeInsets.only(bottom: 10.0),
                     decoration: BoxDecoration(
-                      color: Colors.lightGreen[100],
+                      color: Colors.white70,
                       border: Border(
-                        top: BorderSide(color: Colors.grey, width: 1.0),
-                        bottom: BorderSide(color: Colors.grey, width: 1.0),
-                        left: BorderSide(color: Colors.grey, width: 1.0),
-                        right: BorderSide(color: Colors.grey, width: 1.0),
+                        top: BorderSide(color: Colors.grey.shade300),
+                        bottom: BorderSide(color: Colors.grey.shade300),
+                        left: BorderSide(color: Colors.grey.shade300),
+                        right: BorderSide(color: Colors.grey.shade300),
                       ),
                     ),
                     child: Text(
-                        'Votre mot de passe a été modifié. \n    Connectez-vous maintenant!',
+                        'Votre mot de passe a été modifié. \nConnectez-vous maintenant.',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 12.0,
@@ -130,185 +134,34 @@ class _LoginState extends State<Login> {
                 ),
               ),
             Container(
-                alignment: Alignment.center,
-                child: Text(
-                  'Bienvenue!',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.w200,
-                  ),
-                )),
-            SizedBox(height: 20.0),
-            Divider(color: Colors.grey, thickness: 0.4),
-            SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    if (mounted)
-                      setState(() {
-                        // display the login page
-                        _showLoginPage = true;
-                      });
-                  },
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: Container(
-                      padding: new EdgeInsets.symmetric(
-                          vertical: 5.0, horizontal: 15.0),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          // top: BorderSide(
-                          //     color: _showLoginPage
-                          //         ? Colors.lightGreen[400]
-                          //         : Colors.grey,
-                          //     width: 5.0),
-                          bottom: BorderSide(
-                            color: _showLoginPage
-                                ? Colors.lightGreen[400]
-                                : Colors.grey,
-                            width: 2.0,
-                          ),
-                          // left: BorderSide(
-                          //     color: _showLoginPage
-                          //         ? Colors.lightGreen[400]
-                          //         : Colors.grey,
-                          //     width: 5.0),
-                          // right: BorderSide(
-                          //     color: _showLoginPage
-                          //         ? Colors.lightGreen[400]
-                          //         : Colors.grey,
-                          //     width: 5.0),
-                        ),
-                        // borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Row(
-                        children: [
-                          // _showLoginPage
-                          //     ? Icon(
-                          //         Icons.check,
-                          //         color: Colors.lightGreen[400],
-                          //         size: 20.0,
-                          //       )
-                          //     : Icon(
-                          //         Icons.verified_user,
-                          //         color: Colors.black,
-                          //         size: 20.0,
-                          //       ),
-                          // SizedBox(width: 10.0),
-                          Text(
-                            'Connexion'.toUpperCase(),
-                            style: TextStyle(
-                              color: _showLoginPage
-                                  ? Colors.lightGreen[400]
-                                  : Colors.black,
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+              alignment: Alignment.center,
+              child: Text(
+                'Connexion',
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.bold,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    if (mounted)
-                      setState(() {
-                        // display the register page
-                        _showLoginPage = false;
-                        // set the confirm password to empty so that it can be reconfirmed
-                        _confirmPasswordFilter = '';
-                        _passwordConfirmError = '';
-                        _displayConfirmPasswordSuccess = false;
-                        _displayConfirmPasswordError = false;
-                      });
-                  },
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: Container(
-                      padding: new EdgeInsets.symmetric(
-                          vertical: 5.0, horizontal: 15.0),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          // top: BorderSide(
-                          // color: !_showLoginPage
-                          //     ? Colors.lightGreen[400]
-                          //     : Colors.grey,
-                          // width: 5.0),
-                          bottom: BorderSide(
-                              color: !_showLoginPage
-                                  ? Colors.lightGreen[400]
-                                  : Colors.grey,
-                              width: 2.0),
-                          // left: BorderSide(
-                          //     color: !_showLoginPage
-                          //         ? Colors.lightGreen[400]
-                          //         : Colors.grey,
-                          //     width: 5.0),
-                          // right: BorderSide(
-                          //     color: !_showLoginPage
-                          //         ? Colors.lightGreen[400]
-                          //         : Colors.grey,
-                          //     width: 5.0),
-                        ),
-                        // borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Row(
-                        children: [
-                          // !_showLoginPage
-                          //     ? Icon(
-                          //         Icons.check,
-                          //         color: Colors.lightGreen[400],
-                          //         size: 20.0,
-                          //       )
-                          //     : Icon(
-                          //         Icons.add_circle_outlined,
-                          //         color: Colors.black,
-                          //         size: 20.0,
-                          //       ),
-                          // SizedBox(width: 10.0),
-                          Text(
-                            'Inscription'.toUpperCase(),
-                            style: TextStyle(
-                              color: !_showLoginPage
-                                  ? Colors.lightGreen[400]
-                                  : Colors.black,
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
+            SizedBox(height: 15.0),
+            // DISPLAY PHONE NUMBER FIELD
+            getPhoneNumber(context),
             SizedBox(height: 10.0),
-            // Divider(color: Colors.grey, thickness: 0.4),
-            SizedBox(height: 20.0),
-            getPhone(context),
-            SizedBox(height: 10.0),
-            // Divider(color: Colors.grey, thickness: 0.4),
-            SizedBox(height: 10.0),
+            // DISPLAY PASSWORD FIELD
             getPassword(context),
             SizedBox(height: 10.0),
-            // if (!_showLoginPage) Divider(color: Colors.grey, thickness: 0.4),
-            if (!_showLoginPage) SizedBox(height: 10.0),
             if (!_showLoginPage) getConfirmPassword(context),
             if (!_showLoginPage) SizedBox(height: 10.0),
-            getValidator(context),
-            SizedBox(height: 50.0),
+            sendToDatabase(context),
+            SizedBox(height: 100.0),
           ],
         ),
       ),
     );
   }
 
-  getValidator(BuildContext context) {
+  sendToDatabase(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -324,27 +177,22 @@ class _LoginState extends State<Login> {
                   // this is here because of login is outside of the main app but will be set inside
                   Navigator.push(
                       context, MaterialPageRoute(builder: (_) => SkiiyaBet()));
+                  // print('mot de passe forgot');
                 });
             },
             child: Container(
               alignment: Alignment.centerLeft,
               child: Row(
                 children: [
-                  Icon(
-                    Icons.refresh,
-                    color: Colors.black,
-                    size: 16.0,
-                  ),
-                  SizedBox(width: 3.0),
                   Expanded(
                     child: MouseRegion(
                       cursor: SystemMouseCursors.click,
                       child: Text(
-                        'Mot de passe oublié?',
+                        'Mot de passe oublié ? ',
                         style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 13.0,
-                          // decoration: TextDecoration.underline,
+                          color: Colors.lightBlue,
+                          fontSize: 14.0,
+                          decoration: TextDecoration.underline,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -354,248 +202,299 @@ class _LoginState extends State<Login> {
               ),
             ),
           ),
-        SizedBox(height: 5.0),
-        GestureDetector(
-          onTap: () {
-            if (mounted)
-              setState(() {
-                Window.showJackpotIndex = 2;
-                // show help and how to play page
-                Window.showWindow = 3;
-                // this is here because of login is outside of the main app but will be set inside
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (_) => SkiiyaBet()));
-              });
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.check,
-                color: Colors.black,
-                size: 16.0,
-              ),
-              SizedBox(width: 3.0),
-              Expanded(
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: Text(
-                    'J\'accepte les conditions d\'utilisation',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 12.0,
-                      // decoration: TextDecoration.underline,
+        SizedBox(height: 15.0),
+        Row(
+          children: [
+            Container(
+              width: 80.0,
+              child: RawMaterialButton(
+                padding: new EdgeInsets.symmetric(vertical: 15.0),
+                onPressed: () {
+                  if (mounted)
+                    setState(() {
+                      if (_showLoginPage) {
+                        // HIDE LOGIN PAGE, SHOW REGISTER
+                        _showLoginPage = false;
+                        // SET TO DEFAULT VALUES
+                        _confirmPasswordFilter = '';
+                        _passwordConfirmError = '';
+                        _displayConfirmPasswordSuccess = false;
+                        _displayConfirmPasswordError = false;
+                      } else {
+                        // SHOW LOGIN PAGE, HIDE REGISTER
+                        _showLoginPage = true;
+                      }
+                    });
+                  // print('Creer un compte ici');
+                },
+                fillColor: Colors.lightBlue.shade300,
+                disabledElevation: 1.0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
+                child: Text(
+                  _showLoginPage ? 'Créer' : 'Connexion',
+                  style: TextStyle(
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                      fontSize: 13.0),
                 ),
               ),
-            ],
-          ),
-        ),
-        SizedBox(height: 15.0),
-        _showLoginPage
-            ? Container(
-                width: double.infinity,
-                child: loadingLoginButton
-                    ? RawMaterialButton(
-                        padding: new EdgeInsets.symmetric(vertical: 15.0),
-                        onPressed: null,
-                        fillColor: Colors.lightGreen[200],
-                        disabledElevation: 1.0,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Chargement',
-                              style: TextStyle(
+            ),
+            SizedBox(width: 10.0),
+            _showLoginPage
+                ? Expanded(
+                    child: loadingLoginButton
+                        ? RawMaterialButton(
+                            padding: new EdgeInsets.symmetric(vertical: 15.0),
+                            onPressed: null,
+                            fillColor: Colors.lightGreen[200],
+                            disabledElevation: 1.0,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Chargement...',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15.0),
+                                ),
+                                SizedBox(width: 3.0),
+                                SpinKitCircle(
                                   color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15.0),
+                                  size: 13.0,
+                                ),
+                              ],
                             ),
-                            SizedBox(width: 3.0),
-                            SpinKitCircle(
-                              color: Colors.white,
-                              size: 13.0,
-                            ),
-                          ],
-                        ),
-                      )
-                    : RawMaterialButton(
-                        padding: new EdgeInsets.symmetric(vertical: 15.0),
-                        onPressed: () {
-                          if (mounted)
-                            setState(() {
-                              // hide the action button and display the loading button
-                              loadingLoginButton = true;
-                              // set the show window to false
-                              Selection.isPasswordChanged = false;
-                              // Window.showWindow = 0;
-                              // print(_numberFilter.length);
-                              // print(_numberFilter);
-                              if (_numberFilter.length != 9) {
-                                _displayPhoneError = true;
-                                _displayPhoneSuccess = false;
-                                _validNumber = false;
-                                _phoneMessage = 'Numéro non accepté';
-                                // show the action button and hide the loading button
-                                loadingLoginButton = false;
-                              } else if (_passwordFilter.length < 6 ||
-                                  _passwordFilter.length > 15) {
-                                _displayPasswordError = true;
-                                _displayPasswordSuccess = false;
-                                _validPassword = false;
-                                _passwordError = 'Format non accepté';
-                                // show the action button and hide the loading button
-                                loadingLoginButton = false;
-                              } else {
-                                // print('this phone number: $_phoneNumber');
-                                // check if the phone number is valid
-                                if (checkNumber(_phoneNumber)) {
-                                  // check if the password is valid
-                                  if (_checkPassword(_password)) {
-                                    // do login or register here
-                                    doUserLogin(_phoneNumber, _password);
-                                    // print('do login here bro!');
-                                  } else {
-                                    // to be displayed when the password meet the requirements
+                          )
+                        : RawMaterialButton(
+                            padding: new EdgeInsets.symmetric(vertical: 15.0),
+                            onPressed: () {
+                              if (mounted)
+                                setState(() {
+                                  // hide the action button and display the loading button
+                                  loadingLoginButton = true;
+                                  // set the show window to false
+                                  Selection.isPasswordChanged = false;
+                                  // Window.showWindow = 0;
+                                  // print(_numberFilter.length);
+                                  // print(_numberFilter);
+                                  if (_numberFilter.length != 9) {
+                                    _displayPhoneError = true;
+                                    _displayPhoneSuccess = false;
+                                    // _validNumber = false;
+                                    _phoneMessage = 'Numéro non accepté';
+                                    // show the action button and hide the loading button
+                                    loadingLoginButton = false;
+                                  } else if (_passwordFilter.length < 6 ||
+                                      _passwordFilter.length > 15) {
                                     _displayPasswordError = true;
                                     _displayPasswordSuccess = false;
-                                    _validPassword = false;
+                                    // _validPassword = false;
                                     _passwordError = 'Format non accepté';
                                     // show the action button and hide the loading button
                                     loadingLoginButton = false;
+                                  } else {
+                                    // print('this phone number: $_phoneNumber');
+                                    // check if the phone number is valid
+                                    if (checkNumber(_phoneNumber)) {
+                                      // check if the password is valid
+                                      if (_checkPassword(_password)) {
+                                        // do login or register here
+                                        doUserLogin(_phoneNumber, _password);
+                                        // print('do login here bro!');
+                                      } else {
+                                        // to be displayed when the password meet the requirements
+                                        _displayPasswordError = true;
+                                        _displayPasswordSuccess = false;
+                                        // _validPassword = false;
+                                        _passwordError = 'Format non accepté';
+                                        // show the action button and hide the loading button
+                                        loadingLoginButton = false;
+                                      }
+                                    } else {
+                                      // show the action button and hide the loading button
+                                      loadingLoginButton = false;
+                                      // to be displayed if everything is ok in phone input
+                                      _displayPhoneError = true;
+                                      _displayPhoneSuccess = false;
+                                      // _validNumber = false;
+                                      _phoneMessage =
+                                          'Mauvais Format du numéro';
+                                      return;
+                                    }
                                   }
-                                } else {
-                                  // show the action button and hide the loading button
-                                  loadingLoginButton = false;
-                                  // to be displayed if everything is ok in phone input
-                                  _displayPhoneError = true;
-                                  _displayPhoneSuccess = false;
-                                  _validNumber = false;
-                                  _phoneMessage = 'Mauvais Format du numéro';
-                                  return;
-                                }
-                              }
-                            });
-                        },
-                        fillColor: Colors.lightGreen[400],
-                        disabledElevation: 5.0,
-                        child: Text(
-                          'connexion'.toUpperCase(),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0),
-                        ),
-                      ),
-              )
-            : Container(
-                width: double.infinity,
-                child: loadingRegisterButton
-                    ? RawMaterialButton(
-                        padding: new EdgeInsets.symmetric(vertical: 15.0),
-                        onPressed: null,
-                        fillColor: Colors.lightGreen[200],
-                        disabledElevation: 1.0,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Création',
+                                });
+                            },
+                            fillColor: Colors.lightGreen[400],
+                            disabledElevation: 5.0,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0)),
+                            child: Text(
+                              'connexion'.toUpperCase(),
                               style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15.0),
                             ),
-                            SizedBox(width: 3.0),
-                            SpinKitCircle(
-                              color: Colors.white,
-                              size: 13.0,
+                          ),
+                  )
+                : Expanded(
+                    child: loadingRegisterButton
+                        ? RawMaterialButton(
+                            padding: new EdgeInsets.symmetric(vertical: 15.0),
+                            onPressed: null,
+                            fillColor: Colors.lightGreen[200],
+                            disabledElevation: 1.0,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0)),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Création...',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15.0),
+                                ),
+                                SizedBox(width: 3.0),
+                                SpinKitCircle(
+                                  color: Colors.white,
+                                  size: 13.0,
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      )
-                    : RawMaterialButton(
-                        padding: new EdgeInsets.symmetric(vertical: 15.0),
-                        onPressed: () {
-                          if (mounted)
-                            setState(() {
-                              loadingRegisterButton = true;
-                              // Window.showWindow = 0;
-                              // print(_numberFilter.length);
-                              // print(_numberFilter);
-                              if (_numberFilter.length != 9) {
-                                _displayPhoneError = true;
-                                _displayPhoneSuccess = false;
-                                _validNumber = false;
-                                _phoneMessage = 'Numéro invalide';
-                                // show th register again because of an error
-                                loadingRegisterButton = false;
-                              } else if (_passwordFilter.length < 6 ||
-                                  _passwordFilter.length > 15) {
-                                _displayPasswordError = true;
-                                _displayPasswordSuccess = false;
-                                _validPassword = false;
-                                _passwordError = 'Format invalide';
-                                // show th register again because of an error
-                                loadingRegisterButton = false;
-                              } else if (_confirmPasswordFilter.length < 6 ||
-                                  _confirmPasswordFilter.length > 15) {
-                                _displayConfirmPasswordError = true;
-                                _displayConfirmPasswordSuccess = false;
-                                _validConfirmPassword = false;
-                                _passwordConfirmError = 'Format invalide';
-                                // show th register again because of an error
-                                loadingRegisterButton = false;
-                              } else {
-                                // print('password: $_password');
-                                // print('confirm password: $_passwordConfirm');
-                                // print('this phone number: $_phoneNumber');
-                                // check if the phone number is valid
-                                if (checkNumber(_phoneNumber)) {
-                                  // check if the password is valid
-                                  if (_checkPassword(_password)) {
-                                    // check if the user has confirmed the password
-                                    if (_checkConfirmPassword(
-                                        _passwordConfirm)) {
-                                      // do login or register here
-                                      doUserRegister(_phoneNumber, _password);
-                                      // print('do register here bro!');
-                                    }
-                                  } else {
-                                    // to be displayed when the password meet the requirements
-                                    _displayPasswordError = false;
-                                    _displayPasswordSuccess = true;
-                                    _validPassword = true;
-                                    _passwordError = 'Format accepté';
+                          )
+                        : RawMaterialButton(
+                            padding: new EdgeInsets.symmetric(vertical: 15.0),
+                            onPressed: () {
+                              if (mounted)
+                                setState(() {
+                                  loadingRegisterButton = true;
+                                  // Window.showWindow = 0;
+                                  // print(_numberFilter.length);
+                                  // print(_numberFilter);
+                                  if (_numberFilter.length != 9) {
+                                    _displayPhoneError = true;
+                                    _displayPhoneSuccess = false;
+                                    // _validNumber = false;
+                                    _phoneMessage = 'Numéro invalide';
                                     // show th register again because of an error
                                     loadingRegisterButton = false;
+                                  } else if (_passwordFilter.length < 6 ||
+                                      _passwordFilter.length > 15) {
+                                    _displayPasswordError = true;
+                                    _displayPasswordSuccess = false;
+                                    // _validPassword = false;
+                                    _passwordError = 'Format invalide';
+                                    // show th register again because of an error
+                                    loadingRegisterButton = false;
+                                  } else if (_confirmPasswordFilter.length <
+                                          6 ||
+                                      _confirmPasswordFilter.length > 15) {
+                                    _displayConfirmPasswordError = true;
+                                    _displayConfirmPasswordSuccess = false;
+                                    // _validConfirmPassword = false;
+                                    _passwordConfirmError = 'Format invalide';
+                                    // show th register again because of an error
+                                    loadingRegisterButton = false;
+                                  } else {
+                                    // print('password: $_password');
+                                    // print('confirm password: $_passwordConfirm');
+                                    // print('this phone number: $_phoneNumber');
+                                    // check if the phone number is valid
+                                    if (checkNumber(_phoneNumber)) {
+                                      // check if the password is valid
+                                      if (_checkPassword(_password)) {
+                                        // check if the user has confirmed the password
+                                        if (_checkConfirmPassword(
+                                            _passwordConfirm)) {
+                                          // do login or register here
+                                          doUserRegister(
+                                              _phoneNumber, _password);
+                                          // print('do register here bro!');
+                                        }
+                                      } else {
+                                        // to be displayed when the password meet the requirements
+                                        _displayPasswordError = false;
+                                        _displayPasswordSuccess = true;
+                                        // _validPassword = true;
+                                        _passwordError = 'Format accepté';
+                                        // show th register again because of an error
+                                        loadingRegisterButton = false;
+                                      }
+                                    } else {
+                                      // show th register again because of an error
+                                      loadingRegisterButton = false;
+                                      // to be displayed if everything is ok in phone input
+                                      _displayPhoneError = true;
+                                      _displayPhoneSuccess = false;
+                                      // _validNumber = false;
+                                      _phoneMessage = 'Numéro non accepté';
+                                      return;
+                                    }
                                   }
-                                } else {
-                                  // show th register again because of an error
-                                  loadingRegisterButton = false;
-                                  // to be displayed if everything is ok in phone input
-                                  _displayPhoneError = true;
-                                  _displayPhoneSuccess = false;
-                                  _validNumber = false;
-                                  _phoneMessage = 'Numéro non accepté';
-                                  return;
-                                }
-                              }
-                            });
-                        },
-                        fillColor: Colors.lightGreen[400],
-                        disabledElevation: 5.0,
-                        child: Text(
-                          'Inscription'.toUpperCase(),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0),
-                        ),
+                                });
+                            },
+                            fillColor: Colors.lightGreen[400],
+                            disabledElevation: 5.0,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0)),
+                            child: Text(
+                              'Inscription'.toUpperCase(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15.0),
+                            ),
+                          ),
+                  ),
+          ],
+        ),
+        SizedBox(height: 20.0),
+        if (!_showLoginPage)
+          GestureDetector(
+            onTap: () {
+              if (mounted)
+                setState(() {
+                  Window.showJackpotIndex = 2;
+                  // show help and how to play page
+                  Window.showWindow = 3;
+                  // this is here because of login is outside of the main app but will be set inside
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (_) => SkiiyaBet()));
+                });
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  FontAwesomeIcons.checkSquare,
+                  // Icons.check_box_outlined,
+                  color: Colors.black,
+                  size: 20.0,
+                ),
+                SizedBox(width: 5.0),
+                Expanded(
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Text(
+                      'J\'accepte les conditions d\'utilisation',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 14.0,
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.bold,
                       ),
-              ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         SizedBox(
           height: 40.0,
         ),
@@ -603,60 +502,49 @@ class _LoginState extends State<Login> {
     );
   }
 
-  getPhone(BuildContext context) {
+  getPhoneNumber(BuildContext context) {
     return Form(
       key: _formKeyPhone,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            'Téléphone',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 11.0,
-              color: Colors.grey,
-            ),
-          ),
-          // SizedBox(height: 5.0),
           Row(
             children: [
               Container(
-                height: 40.0,
-                padding: new EdgeInsets.only(left: 5.0, top: 8.0),
+                height: 50.0,
+                padding: new EdgeInsets.symmetric(horizontal: 8.0),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   border: Border(
-                    // top: BorderSide(color: Colors.lightGreen[400], width: 3.0),
-                    bottom: BorderSide(color: Colors.grey, width: 1.0),
-                    // left: BorderSide(color: Colors.lightGreen[400], width: 3.0),
+                    top: BorderSide(color: Colors.grey.shade300),
+                    bottom: BorderSide(color: Colors.grey.shade300),
+                    left: BorderSide(color: Colors.grey.shade300),
+                    // right: BorderSide(color: Colors.grey.shade300),
                   ),
                   // borderRadius: BorderRadius.circular(15.0),
                 ),
                 child: Text(
-                  '+ (243) -',
+                  '+243',
                   style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                      color: Colors.black,
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2.0),
                 ),
               ),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 5.0),
-                  height: 40.0,
+                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+                  height: 50.0,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                       color: Colors.white70,
                       border: Border(
-                        // top: BorderSide(
-                        //     color: Colors.lightGreen[400], width: 3.0),
-                        bottom: BorderSide(color: Colors.grey, width: 1.0),
-                        // left: BorderSide(
-                        //     color: Colors.lightGreen[400], width: 3.0),
-                        // right: BorderSide(
-                        //     color: Colors.lightGreen[400], width: 3.0),
+                        top: BorderSide(color: Colors.grey.shade300),
+                        bottom: BorderSide(color: Colors.grey.shade300),
+                        left: BorderSide(color: Colors.grey.shade300),
+                        right: BorderSide(color: Colors.grey.shade300),
                       )),
                   child: TextFormField(
                     onChanged: (value) {
@@ -670,7 +558,7 @@ class _LoginState extends State<Login> {
                           }
                         });
                     },
-                    cursorColor: Colors.lightGreen,
+                    cursorColor: Colors.lightBlue,
                     maxLines: 1,
                     keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[
@@ -685,7 +573,7 @@ class _LoginState extends State<Login> {
                         border: InputBorder.none,
                         // fillColor: Colors.deepOrange[400],
                         // contentPadding: EdgeInsets.all(10.0),
-                        hintText: '972..',
+                        hintText: 'Phone',
                         hintMaxLines: 1,
                         hintStyle: TextStyle(
                             color: Colors.grey,
@@ -701,7 +589,7 @@ class _LoginState extends State<Login> {
             Text(
               _phoneMessage,
               style: TextStyle(
-                color: Colors.red,
+                color: Colors.red.shade300,
                 fontSize: 12.0,
                 fontWeight: FontWeight.bold,
               ),
@@ -712,17 +600,17 @@ class _LoginState extends State<Login> {
                 Text(
                   _phoneMessage,
                   style: TextStyle(
-                    color: Colors.green,
+                    color: Colors.green.shade300,
                     fontSize: 12.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                if (_validNumber)
-                  Icon(
-                    Icons.check,
-                    size: 16.0,
-                    color: Colors.green,
-                  )
+                // if (_validNumber)
+                //   Icon(
+                //     Icons.check,
+                //     size: 16.0,
+                //     color: Colors.green.shade300,
+                //   )
               ],
             ),
         ],
@@ -770,13 +658,13 @@ class _LoginState extends State<Login> {
             // print(value.substring(1, 2).toString());
             _displayPhoneError = false;
             _displayPhoneSuccess = true;
-            _validNumber = true;
+            // _validNumber = true;
             _phoneMessage = 'Format accepté';
             // return true;
           } else if (value.length < 9) {
             _displayPhoneError = false;
             _displayPhoneSuccess = true;
-            _validNumber = false;
+            // _validNumber = false;
             _phoneMessage = 'Vérification...';
             return false;
           }
@@ -820,19 +708,19 @@ class _LoginState extends State<Login> {
       if (value.length < 6) {
         _displayPasswordError = true;
         _displayPasswordSuccess = false;
-        _validPassword = false;
+        // _validPassword = false;
         _passwordError = 'La longueur minimale est 6';
         return false;
       } else if (value.length > 15) {
         _displayPasswordError = true;
         _displayPasswordSuccess = false;
-        _validPassword = false;
+        // _validPassword = false;
         _passwordError = 'La longueur maximale est 15';
         return false;
       } else {
         _displayPasswordError = false;
         _displayPasswordSuccess = true;
-        _validPassword = true;
+        // _validPassword = true;
         _passwordError = 'Format accepté';
       }
     }
@@ -852,14 +740,14 @@ class _LoginState extends State<Login> {
         // check for lenght condition
         _displayConfirmPasswordError = true;
         _displayConfirmPasswordSuccess = false;
-        _validConfirmPassword = false;
+        // _validConfirmPassword = false;
         _passwordConfirmError = 'La longueur minimale est de 6';
         return false;
       } else if (value.length > 15) {
         // check for lenght condition
         _displayConfirmPasswordError = true;
         _displayConfirmPasswordSuccess = false;
-        _validConfirmPassword = false;
+        // _validConfirmPassword = false;
         _passwordConfirmError = 'La longueur maximale est de 15';
         return false;
       } else if (_password
@@ -868,12 +756,12 @@ class _LoginState extends State<Login> {
           0) {
         _displayConfirmPasswordError = false;
         _displayConfirmPasswordSuccess = true;
-        _validConfirmPassword = true;
+        // _validConfirmPassword = true;
         _passwordConfirmError = 'Mots de passe identiques';
       } else {
         _displayConfirmPasswordError = true;
         _displayConfirmPasswordSuccess = false;
-        _validConfirmPassword = false;
+        // _validConfirmPassword = false;
         _passwordConfirmError = 'Mots de passe non identiques';
         return false;
       }
@@ -886,50 +774,52 @@ class _LoginState extends State<Login> {
       key: _formKeyPassword,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
-          Text('Mot de Passe',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 11.0,
-                color: Colors.grey,
-              )),
-          // SizedBox(height: 5.0),
-          Row(
-            children: [
-              Container(
-                height: 40.0,
-                padding: new EdgeInsets.only(left: 5.0, top: 8.0),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border(
-                    // top: BorderSide(color: Colors.lightGreen[400], width: 3.0),
-                    bottom: BorderSide(color: Colors.grey, width: 1.0),
-                    // left: BorderSide(color: Colors.lightGreen[400], width: 3.0),
-                  ),
-                  // borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: Icon(
-                  Icons.vpn_key,
-                  size: 18.0,
-                  color: Colors.black,
+          GestureDetector(
+            onTap: () {
+              if (mounted)
+                setState(() {
+                  // WE SHOW THE PLAIN TEXT OR HIDE IT
+                  if (_showPasswordHiddenFormat) {
+                    // HIDE
+                    _showPasswordHiddenFormat = false;
+                  } else {
+                    // SHOW
+                    _showPasswordHiddenFormat = true;
+                  }
+                });
+            },
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Text(
+                _showPasswordHiddenFormat
+                    ? 'afficher le mot de passe'
+                    : 'masquer le mot de passe',
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontSize: 13.0,
+                  // fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
                 ),
               ),
+            ),
+          ),
+          SizedBox(height: 5.0),
+          Row(
+            children: [
               Expanded(
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 12.0),
-                  height: 40.0,
+                  height: 50.0,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                       color: Colors.white70,
                       border: Border(
-                        // top: BorderSide(
-                        //     color: Colors.lightGreen[400], width: 3.0),
-                        bottom: BorderSide(color: Colors.grey, width: 1.0),
-                        // left: BorderSide(
-                        //     color: Colors.lightGreen[400], width: 3.0),
-                        // right: BorderSide(
-                        //     color: Colors.lightGreen[400], width: 3.0),
+                        top: BorderSide(color: Colors.grey.shade300),
+                        bottom: BorderSide(color: Colors.grey.shade300),
+                        left: BorderSide(color: Colors.grey.shade300),
+                        right: BorderSide(color: Colors.grey.shade300),
                       )),
                   child: TextField(
                     onChanged: (result) {
@@ -941,10 +831,11 @@ class _LoginState extends State<Login> {
                           _checkPassword(result);
                         });
                     },
-                    cursorColor: Colors.lightGreen,
+                    cursorColor: Colors.lightBlue,
                     maxLines: 1,
                     keyboardType: TextInputType.visiblePassword,
-                    obscureText: true,
+                    // SHOW EITHER THE TEXT OR THE HIDDEN FORMAT PASSWORD
+                    obscureText: _showPasswordHiddenFormat,
                     inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.allow(
                           new RegExp(r'[a-zA-Z0-9]')),
@@ -956,7 +847,7 @@ class _LoginState extends State<Login> {
                         letterSpacing: 0.5),
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'Password',
+                      hintText: 'Mot de Passe',
                       hintMaxLines: 1,
                       hintStyle: TextStyle(
                         color: Colors.grey,
@@ -975,7 +866,7 @@ class _LoginState extends State<Login> {
                 Text(
                   _passwordError,
                   style: TextStyle(
-                    color: Colors.red,
+                    color: Colors.red.shade300,
                     fontSize: 12.0,
                     fontWeight: FontWeight.bold,
                   ),
@@ -988,17 +879,17 @@ class _LoginState extends State<Login> {
                 Text(
                   _passwordError,
                   style: TextStyle(
-                    color: Colors.green,
+                    color: Colors.green.shade300,
                     fontSize: 12.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                if (_validPassword)
-                  Icon(
-                    Icons.check,
-                    size: 16.0,
-                    color: Colors.green,
-                  )
+                // if (_validPassword)
+                //   Icon(
+                //     Icons.check,
+                //     size: 16.0,
+                //     color: Colors.green.shade300,
+                //   )
               ],
             ),
         ],
@@ -1013,48 +904,20 @@ class _LoginState extends State<Login> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text('Confirmez Mot de Passe',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 11.0,
-                color: Colors.grey,
-              )),
-          SizedBox(height: 5.0),
           Row(
             children: [
-              Container(
-                height: 40.0,
-                padding: new EdgeInsets.only(left: 5.0, top: 8.0),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border: Border(
-                    // top: BorderSide(color: Colors.lightGreen[400], width: 3.0),
-                    bottom: BorderSide(color: Colors.grey, width: 1.0),
-                    // left: BorderSide(color: Colors.lightGreen[400], width: 3.0),
-                  ),
-                  // borderRadius: BorderRadius.circular(15.0),
-                ),
-                child: Icon(
-                  Icons.vpn_key,
-                  size: 18.0,
-                  color: Colors.black,
-                ),
-              ),
               Expanded(
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 12.0),
-                  height: 40.0,
+                  height: 50.0,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                       color: Colors.white70,
                       border: Border(
-                        // top: BorderSide(
-                        //     color: Colors.lightGreen[400], width: 3.0),
-                        bottom: BorderSide(color: Colors.grey, width: 1.0),
-                        // left: BorderSide(
-                        //     color: Colors.lightGreen[400], width: 3.0),
-                        // right: BorderSide(
-                        //     color: Colors.lightGreen[400], width: 3.0),
+                        top: BorderSide(color: Colors.grey.shade300),
+                        bottom: BorderSide(color: Colors.grey.shade300),
+                        left: BorderSide(color: Colors.grey.shade300),
+                        right: BorderSide(color: Colors.grey.shade300),
                       )),
                   child: TextField(
                     onChanged: (result) {
@@ -1067,7 +930,7 @@ class _LoginState extends State<Login> {
                     cursorColor: Colors.lightGreen,
                     maxLines: 1,
                     keyboardType: TextInputType.visiblePassword,
-                    obscureText: true,
+                    obscureText: _showPasswordHiddenFormat,
                     inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.allow(
                           new RegExp(r'[a-zA-Z0-9]')),
@@ -1079,7 +942,7 @@ class _LoginState extends State<Login> {
                         letterSpacing: 0.5),
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'Confirmez Mot de Passe',
+                      hintText: 'Confirmer le mot de passe',
                       hintMaxLines: 1,
                       hintStyle: TextStyle(
                         color: Colors.grey,
@@ -1093,12 +956,13 @@ class _LoginState extends State<Login> {
             ],
           ),
           if (_displayConfirmPasswordError)
-            Row(
+            Column(
               children: [
+                SizedBox(height: 5.0),
                 Text(
                   _passwordConfirmError,
                   style: TextStyle(
-                    color: Colors.red,
+                    color: Colors.red.shade300,
                     fontSize: 12.0,
                     fontWeight: FontWeight.bold,
                   ),
@@ -1106,22 +970,23 @@ class _LoginState extends State<Login> {
               ],
             ),
           if (_displayConfirmPasswordSuccess)
-            Row(
+            Column(
               children: [
+                SizedBox(height: 5.0),
                 Text(
                   _passwordConfirmError,
                   style: TextStyle(
-                    color: Colors.green,
+                    color: Colors.green.shade300,
                     fontSize: 12.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                if (_validConfirmPassword)
-                  Icon(
-                    Icons.check,
-                    size: 16.0,
-                    color: Colors.green,
-                  )
+                // if (_validConfirmPassword)
+                //   Icon(
+                //     Icons.check,
+                //     size: 16.0,
+                //     color: Colors.green.shade300,
+                //   )
               ],
             ),
         ],
@@ -1183,14 +1048,11 @@ class _LoginState extends State<Login> {
       _telephone,
       '_skiiya_sarl_session_login_',
     );
-    // String customEmail = email;
     // Encrypting the password before saving it to user device
     String _passOriginal = Encryption.encryptAESCryptoJS(
       _password, // USER PASSWORD
       _telephone, // USER PHONE
     );
-    // print(customEmail);
-    // print(customID);
     // EMAIL
     int _phoneParts = _telephoneOriginal.length / 2 as int;
     String _phone1 = _telephoneOriginal.substring(0, (_phoneParts));
@@ -1287,7 +1149,7 @@ class _LoginState extends State<Login> {
                 // show th register again because of an error
                 loadingRegisterButton = false;
               });
-            failMessage(context, 'Erreur de chargement.');
+            failMessage(context, 'Erreur lors du chargement.');
           });
         }
       });
@@ -1302,10 +1164,10 @@ class _LoginState extends State<Login> {
           if (e.toString().compareTo(
                   'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
               0) {
-            failMessage(context, 'Pas d\'Internet');
+            failMessage(context, 'Pas d\'internet');
             // print('Internet Connection Error');
           } else {
-            failMessage(context, 'Mot de Passe Incorrect');
+            failMessage(context, 'Mot de passe incorrect');
           }
         });
     });

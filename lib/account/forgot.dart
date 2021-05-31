@@ -1,4 +1,3 @@
-import 'package:skiiyabet/Responsive/responsive_widget.dart';
 import 'package:skiiyabet/app/skiiyaBet.dart';
 import 'package:skiiyabet/components/selection.dart';
 import 'package:skiiyabet/mywindow.dart';
@@ -28,13 +27,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       child: Container(
         width: double.infinity,
         margin: EdgeInsets.only(left: 10.0, top: 10.0),
-        padding: new EdgeInsets.all(15.0),
+        padding: new EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: Colors.grey, width: 0.5),
-            bottom: BorderSide(color: Colors.grey, width: 0.5),
-            left: BorderSide(color: Colors.grey, width: 0.5),
-            right: BorderSide(color: Colors.grey, width: 0.5),
+            top: BorderSide(color: Colors.grey.shade300),
+            bottom: BorderSide(color: Colors.grey.shade300),
+            left: BorderSide(color: Colors.grey.shade300),
+            right: BorderSide(color: Colors.grey.shade300),
           ),
         ),
         child: ListView(
@@ -46,22 +45,22 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 'Réinitialisation',
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.w200,
+                  fontSize: 25.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            SizedBox(height: 20.0),
+            // SizedBox(height: 10.0),
             Divider(color: Colors.grey, thickness: 0.4),
-            SizedBox(height: 15.0),
+            SizedBox(height: 10.0),
             Selection.showResendSMSinForgot
                 ? Center(
                     child: Text(
-                      'S\'il vous plaît! Fournissez votre numéro de téléphone pour réinitialiser votre mot de passe',
+                      'Donner votre numéro de téléphone pour réinitialiser le mot de passe',
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.w300,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   )
@@ -70,7 +69,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       'Vous avez actuellement demandé un SMS pour la réinitialisation du mot de passe.',
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: 13.0,
+                        fontSize: 12.0,
                         fontWeight: FontWeight.w300,
                       ),
                     ),
@@ -79,137 +78,221 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             if (Selection.showResendSMSinForgot)
               Center(
                 child: Text(
-                  'Vous recevrez un code à 6 chiffres sur votre téléphone. Des frais supplementaires peuvent s\'appliquer',
+                  'Vous recevrez un code à 6 chiffres sur votre téléphone.\nDes frais supplementaires peuvent s\'appliquer',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 12.0,
-                    fontWeight: FontWeight.w300,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             if (Selection.showResendSMSinForgot) SizedBox(height: 20.0),
-            if (Selection.showResendSMSinForgot)
-              Text(
-                'Téléphone',
-                style: TextStyle(
-                  fontSize: 11.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+            // if (Selection.showResendSMSinForgot)
+            //   Text(
+            //     'Téléphone',
+            //     style: TextStyle(
+            //       fontSize: 11.0,
+            //       fontWeight: FontWeight.bold,
+            //     ),
+            //   ),
             // if (Selection.showResendSMSinForgot) SizedBox(height: 5.0),
             if (Selection.showResendSMSinForgot)
-              Container(
-                padding: EdgeInsets.only(left: 5.0),
-                height: 40.0,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: Colors.white70,
-                    border: Border(
-                      // top:
-                      //     BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                      bottom: BorderSide(color: Colors.grey, width: 1.0),
-                      // left:
-                      //     BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                      // right:
-                      //     BorderSide(color: Colors.lightGreen[400], width: 2.0),
-                    )),
-                child: TextField(
-                  onChanged: (value) {
-                    if (mounted)
-                      setState(() {
-                        _numberFilter = value;
-                        // if (!checkNumber(value)) {
-                        //   return;
-                        // }
-                        // print(_numberFilter);
-                      });
-                  },
-                  cursorColor: Colors.lightGreen,
-                  maxLines: 1,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5),
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'e.g. 972...',
-                      hintMaxLines: 1,
-                      hintStyle: TextStyle(
-                          color: Colors.grey,
+              Row(
+                children: [
+                  Container(
+                    height: 50.0,
+                    padding: new EdgeInsets.symmetric(horizontal: 8.0),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(color: Colors.grey.shade300),
+                        bottom: BorderSide(color: Colors.grey.shade300),
+                        left: BorderSide(color: Colors.grey.shade300),
+                        // right: BorderSide(color: Colors.grey.shade300),
+                      ),
+                      // borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: Text(
+                      '+243',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 15.0,
                           fontWeight: FontWeight.bold,
-                          fontSize: 12.0)),
-                ),
+                          letterSpacing: 2.0),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      height: 50.0,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: Colors.white70,
+                          border: Border(
+                            top: BorderSide(color: Colors.grey.shade300),
+                            bottom: BorderSide(color: Colors.grey.shade300),
+                            left: BorderSide(color: Colors.grey.shade300),
+                            right: BorderSide(color: Colors.grey.shade300),
+                          )),
+                      child: TextField(
+                        onChanged: (value) {
+                          if (mounted)
+                            setState(() {
+                              _numberFilter = value;
+                              // if (!checkNumber(value)) {
+                              //   return;
+                              // }
+                              // print(_numberFilter);
+                            });
+                        },
+                        cursorColor: Colors.lightBlue,
+                        maxLines: 1,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5),
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Phone',
+                            hintMaxLines: 1,
+                            hintStyle: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12.0)),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            SizedBox(height: 30.0),
+            SizedBox(height: 20.0),
             // Divider(color: Colors.grey, thickness: 0.5),
             // SizedBox(height: 15.0),
-            Container(
-              width: double.infinity,
-              // check if there is some unfinished restting process
-              child: Selection.showResendSMSinForgot
-                  ? // check if there is a loding status or not
-                  loadingPhoneReset
-                      ? RawMaterialButton(
-                          padding: new EdgeInsets.symmetric(vertical: 15.0),
-                          onPressed: null,
-                          fillColor: Colors.lightGreen[200],
-                          disabledElevation: 1.0,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'En traitement',
+            Row(
+              children: [
+                Container(
+                  width: 80.0,
+                  child: RawMaterialButton(
+                    padding: new EdgeInsets.symmetric(vertical: 15.0),
+                    onPressed: () {
+                      if (mounted)
+                        setState(() {
+                          Window.showWindow = 14;
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (_) => SkiiyaBet()));
+                        });
+                    },
+                    fillColor: Colors.lightBlue.shade300,
+                    disabledElevation: 1.0,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
+                    child: Text(
+                      'Connexion',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.0),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10.0),
+                Expanded(
+                  // width: double.infinity,
+                  // check if there is some unfinished restting process
+                  child: Selection.showResendSMSinForgot
+                      ? // check if there is a loding status or not
+                      loadingPhoneReset
+                          ? RawMaterialButton(
+                              padding: new EdgeInsets.symmetric(vertical: 15.0),
+                              onPressed: null,
+                              fillColor: Colors.lightGreen[200],
+                              disabledElevation: 1.0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0)),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'En traitement',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15.0),
+                                  ),
+                                  SizedBox(width: 3.0),
+                                  SpinKitCircle(
+                                    color: Colors.white,
+                                    size: 13.0,
+                                  ),
+                                ],
+                              ),
+                            )
+                          : RawMaterialButton(
+                              padding: new EdgeInsets.all(15.0),
+                              onPressed: () {
+                                if (mounted)
+                                  setState(() {
+                                    // show the loading status
+                                    loadingPhoneReset = true;
+                                    if (!checkNumber(_numberFilter)) {
+                                      resultMessage(context,
+                                          'Numéro non accepté', Colors.red, 3);
+                                      // return;
+                                      // hide the loading status
+                                      loadingPhoneReset = false;
+                                    } else {
+                                      resultMessage(
+                                          context,
+                                          'Vérification du numéro...',
+                                          Colors.lightGreen[400],
+                                          2);
+                                      // set the number filter to phone
+                                      _phoneNumber = _numberFilter;
+                                      Selection.resetPhone = _phoneNumber;
+                                      // set the not reset phone before ending of count to true
+                                      // Selection.noShowResendSMSinForgot = true;
+                                      // verify phone number
+                                      executeFunction(_phoneNumber);
+                                    }
+                                  });
+                              },
+                              fillColor: Colors.lightGreen[400],
+                              disabledElevation: 3.0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0)),
+                              child: Text(
+                                'Envoyer'.toUpperCase(),
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15.0),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              SizedBox(width: 3.0),
-                              SpinKitCircle(
-                                color: Colors.white,
-                                size: 13.0,
-                              ),
-                            ],
-                          ),
-                        )
+                            )
                       : RawMaterialButton(
                           padding: new EdgeInsets.all(15.0),
                           onPressed: () {
                             if (mounted)
                               setState(() {
-                                // show the loading status
-                                loadingPhoneReset = true;
-                                if (!checkNumber(_numberFilter)) {
-                                  resultMessage(context, 'Numéro non accepté',
-                                      Colors.red, 3);
-                                  // return;
-                                  // hide the loading status
-                                  loadingPhoneReset = false;
-                                } else {
-                                  resultMessage(
-                                      context,
-                                      'Vérification du numéro...',
-                                      Colors.lightGreen[400],
-                                      2);
-                                  // set the number filter to phone
-                                  _phoneNumber = _numberFilter;
-                                  Selection.resetPhone = _phoneNumber;
-                                  // set the not reset phone before ending of count to true
-                                  // Selection.noShowResendSMSinForgot = true;
-                                  // verify phone number
-                                  executeFunction(_phoneNumber);
-                                }
+                                // redirect to update password
+                                Window.showWindow = 19;
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => SkiiyaBet()));
                               });
                           },
                           fillColor: Colors.lightGreen[400],
                           disabledElevation: 3.0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0)),
                           child: Text(
-                            'Envoyer le code',
+                            'Terminer le processus',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
@@ -217,30 +300,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
-                        )
-                  : RawMaterialButton(
-                      padding: new EdgeInsets.all(15.0),
-                      onPressed: () {
-                        if (mounted)
-                          setState(() {
-                            // redirect to update password
-                            Window.showWindow = 19;
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (_) => SkiiyaBet()));
-                          });
-                      },
-                      fillColor: Colors.lightGreen[400],
-                      disabledElevation: 3.0,
-                      child: Text(
-                        'Terminer le processus',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15.0),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
+                        ),
+                ),
+              ],
             ),
           ],
         ),

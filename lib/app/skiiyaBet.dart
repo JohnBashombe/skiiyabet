@@ -3972,10 +3972,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     String _pass2 = await session.get('_p2_');
     // RELOGGIN THE USER IF NO USER IS FOUND
     if (Selection.user == null) {
-      if (_phone1 != null &&
-          _phone2 != null &&
-          _pass1 != null &&
-          _pass2 != null) {
+      if (_phone1.compareTo('') != 0 &&
+          _phone2.compareTo('') != 0 &&
+          _pass1.compareTo('') != 0 &&
+          _pass2.compareTo('') != 0) {
         // LOGIN THE USER
         doSessionUserLogin((_phone1 + _phone2), (_pass1 + _pass2));
       }
@@ -4514,9 +4514,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
 
   // keep on loading user blance details every 45s
   loopUserBalanceRecord() {
-    String _uid = Selection.user.uid;
     // keep loading user balance every t seconds
-    if (Selection.user != null)
+    if (Selection.user != null) {
+      String _uid = Selection.user.uid;
       Timer.periodic(new Duration(seconds: 45), (timer) {
         // load details only if user has logged in
         Firestore.instance
@@ -4535,6 +4535,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           // print('e: $e');
         });
       });
+    }
   }
 
   // removedTheOldMatch() {
