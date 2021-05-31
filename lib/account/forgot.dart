@@ -359,7 +359,6 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             if (mounted)
               setState(() {
                 // print('message sent successfully');
-                // pause for 5 seconds before redirecting to update password panel
                 // redirect to update password
                 Selection.showResendSMSinForgot = false;
                 Window.showWindow = 19;
