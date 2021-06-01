@@ -350,7 +350,7 @@ class _WithdrawState extends State<Withdraw> {
                 .updateData(
               {
                 'balance': FieldValue.increment(-withdrawAmount),
-                'transaction_id': '$_transID',
+                'last_trans_id': '$_transID',
               },
             ).then((_) {
               addWithdrawRequest(withdrawAmount);
@@ -370,7 +370,7 @@ class _WithdrawState extends State<Withdraw> {
         // DISPLAY DENIED MESSAGE HERE
         failMessage(context, 'Vous avez une demande de retrait en cours');
         // LOAD ALL TRANSACTIONS
-        loadWithdrawRequest(); 
+        loadWithdrawRequest();
       }
     });
     // OTHERWISE DENIED WITHDRAWAL REQUEST
@@ -439,7 +439,8 @@ class _WithdrawState extends State<Withdraw> {
         'date': '$_date',
         'date_time': '$_datetime',
         'timestamp': _timestamp,
-        'timezone': 'UTC'
+        'timezone': 'UTC',
+        'created': FieldValue.serverTimestamp(),
       },
       'time_completed': {
         'time': null,

@@ -744,7 +744,7 @@ class _DepositState extends State<Deposit> {
       Firestore.instance.collection('UserBalance').document(_uid).updateData(
         {
           'balance': FieldValue.increment(_depositAmount),
-          'transaction_id': '$_transID',
+          'last_trans_id': '$_transID',
         },
       ).then((_) {
         // ADD TO THE DEPOSIT COLLECTION
@@ -761,7 +761,8 @@ class _DepositState extends State<Deposit> {
             'date': '$_date',
             'date_time': '$_datetime',
             'timestamp': _timestamp,
-            'timezone': 'UTC'
+            'timezone': 'UTC',
+            'created': FieldValue.serverTimestamp(),
           },
         }).catchError((e) {
           // ADD THE DEPOSIT COLLECTION

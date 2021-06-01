@@ -1208,7 +1208,7 @@ class _LoginState extends State<Login> {
         Firestore.instance
             .collection('UserBalance')
             .document(result.user.uid)
-            .setData({'balance': 0.0, 'lastTransactionID': null});
+            .setData({'balance': 0.0, 'last_trans_id': null});
         // ADD USER TELEPHONE DETAILS HERE
         Firestore.instance
             .collection('UserTelephone')
@@ -1223,6 +1223,7 @@ class _LoginState extends State<Login> {
           'customID': secretKey.toString(),
           'isBlocked': false, // FOR BLOCKING USERS
           'isActivated': false, // FOR ACTIVATING ACCOUNTS
+          'created': FieldValue.serverTimestamp(),
         }).then((value) {
           // print('value aupdated successfully');
           Selection.user = result.user;

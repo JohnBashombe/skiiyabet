@@ -11,10 +11,10 @@ class Contact extends StatelessWidget {
         padding: new EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: Colors.grey, width: 0.5),
-            bottom: BorderSide(color: Colors.grey, width: 0.5),
-            left: BorderSide(color: Colors.grey, width: 0.5),
-            right: BorderSide(color: Colors.grey, width: 0.5),
+            top: BorderSide(color: Colors.grey.shade300),
+            bottom: BorderSide(color: Colors.grey.shade300),
+            left: BorderSide(color: Colors.grey.shade300),
+            right: BorderSide(color: Colors.grey.shade300),
           ),
         ),
         child: ListView(
@@ -27,7 +27,7 @@ class Contact extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 25.0,
-                  fontWeight: FontWeight.w200,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),

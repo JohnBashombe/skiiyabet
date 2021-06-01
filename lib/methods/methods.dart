@@ -8,7 +8,7 @@ class Method {
   // GET THE POURCENTAGE VALUE OF THE BONUS
   static int pourcentageRate = 0;
 
-  static String displayUserBonus() { 
+  static String displayUserBonus() {
     // COUNT THE MATCHES ON THE TICKET
     int counter = 0;
     // WE LOOP THROUGH THE GAMES ODDS ARRAY TO GET SELECTED GAMES
@@ -28,7 +28,7 @@ class Method {
     // int counter = 20;
     pourcentageRate = 0;
     String _bonus = '';
-    if (counter == 0) { 
+    if (counter == 0) {
       _bonus =
           'S\'IL VOUS PLAÎT! \nAjoutez au moins un match sur le ticket pour voir le bonus à gagner.';
     } else if ((counter > 0) && (counter <= 3)) {
@@ -281,12 +281,13 @@ class Method {
           'winning': possibleWinning(),
           'payout': totalPayout(),
         },
-        'time': { 
+        'time': {
           'date_time': '$_datetime',
           'time': '$_time',
           'date': '$_date',
           'timestamp': _timestamp,
-          'timezone': 'UTC'
+          'timezone': 'UTC',
+          'created': FieldValue.serverTimestamp(),
         },
         'matches': {
           'gameIDs': _gameIDs, // GAME IDS
@@ -320,7 +321,7 @@ class Method {
         .updateData(
       {
         'balance': FieldValue.increment(-Price.stake),
-        'transaction_id': '$_transID',
+        'last_trans_id': '$_transID',
       },
     );
   }
@@ -335,7 +336,8 @@ class Method {
     return _val;
   }
 
-  static Future addNewTransaction(String _type, double _amount, String _actionSign) {
+  static Future addNewTransaction(
+      String _type, double _amount, String _actionSign) {
     // WE GET THE USER ID
     String _uid = Selection.user.uid;
     // print('Transaction details');
@@ -361,10 +363,11 @@ class Method {
       'currency': Price.currency_symbol,
       'time': {
         'time': '$_time',
-        'date': '$_date',  
+        'date': '$_date',
         'date_time': '$_datetime',
         'timestamp': _timestamp,
-        'timezone': 'UTC'
+        'timezone': 'UTC',
+        'created': FieldValue.serverTimestamp(),
       },
     });
   }

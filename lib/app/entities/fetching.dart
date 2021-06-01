@@ -2,12 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:skiiyabet/app/entities/match.dart';
 
 class FetchMatch {
-  // STORE ALL MATCHES
-  // FIRESTORE INITIALIZATION
-  // Firestore _store = Firestore.instance;
-  // MATCH INITIALIZATIO
-  // Match _match = new Match();
-
   Future fetchMatchDetails(int limit) async {
     // ignore: deprecated_member_use
     var matches = List<Match>(); // Match Instance
@@ -18,7 +12,7 @@ class FetchMatch {
         .orderBy('time.starting_at.date_time', descending: false)
         .limit(limit)
         .getDocuments()
-        .then((value) { 
+        .then((value) {
       // print(value.documents);
       // LOOP THROUGH THE DATA TO ADD MATCH INSTANCES
       for (int _data = 0; _data < value.documents.length; _data++) {
