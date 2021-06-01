@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:skiiyabet/account/login.dart';
 import 'package:skiiyabet/app/skiiyaBet.dart';
 import 'package:skiiyabet/components/selection.dart';
+import 'package:skiiyabet/encryption/encryption.dart';
 import 'package:skiiyabet/methods/connexion.dart';
 import 'package:skiiyabet/mywindow.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -446,38 +448,57 @@ class _UpdatePasswordState extends State<UpdatePassword> {
               String phone = Selection.userTelephone.substring(1, 10);
               // print(phone);
               String code = '243';
-              String generatedEmail = (code + phone + '@gmail.com');
+              String _generatedEmail = (code + phone + '@gmail.com');
               // print('generated Email: $generatedEmail');
+              // ENCRYPTING THE PASSWORD BEFORE SENDING IT TO THE DATABASE
+              var _secretKey =
+                  Encryption.encryptAESCryptoJS(newPassword, _generatedEmail);
+              // SIGNING THE USER IN
               FirebaseAuth.instance
                   .signInWithEmailAndPassword(
-                      email: generatedEmail, password: oldPassword)
+                      email: _generatedEmail, password: oldPassword)
                   .then((_user) async {
                 // value.user
                 // if this account exists then change the user password
+                // GET THE CURRENT USER
                 _auth = await FirebaseAuth.instance.currentUser();
+                // UPDATE THE PASSWORD OOF THIS USER
                 _auth.updatePassword(newPassword).then((value) {
-                  // if the user has successfully updated the password
-                  showMessage(Colors.lightGreen[400], 'Mot de passe changé');
-                  // sign the user out to test the new password
-                  // LOG THIS VERY USER OUT
-                  Login.doLogout();
-                  // redirect the user to login page
-                  Window.showWindow = 14;
-                  // set the show change status to true
-                  Selection.isPasswordChanged = true;
-                  // hide the loading status of the button
-                  displayUpdateLoading = false;
-                  // reload the main frame so that we can be redirected to the login page
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (_) => SkiiyaBet()));
+                  // print(_auth.uid);
+                  // UPDATE BASIC USER INFO
+                  Firestore.instance.collection('UserInfo').document(_auth.uid)
+                      // ADDING THE ENCRYPTED PASSWORD
+                      .updateData({'customID': _secretKey}).then((value) {
+                    // if the user has successfully updated the password
+                    showMessage(Colors.lightGreen[400], 'Mot de passe changé');
+                    // sign the user out to test the new password
+                    // LOG THIS VERY USER OUT
+                    Login.doLogout();
+                    // redirect the user to login page
+                    Window.showWindow = 14;
+                    // set the show change status to true
+                    Selection.isPasswordChanged = true;
+                    // hide the loading status of the button
+                    displayUpdateLoading = false;
+                    // reload the main frame so that we can be redirected to the login page
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => SkiiyaBet()));
+                  }).catchError((e) {
+                    if (mounted)
+                      setState(() {
+                        // hide the loading status of the button
+                        displayUpdateLoading = false;
+                        // if password reset failed
+                        showMessage(
+                            Colors.red.shade300, 'La mise à jour a échoué');
+                      });
+                  });
                 }).catchError((e) {
-                  // print('error : $e');
                   if (mounted)
                     setState(() {
                       // hide the loading status of the button
                       displayUpdateLoading = false;
                       // if password reset failed
-                      // print('update password error is: $e');
                       showMessage(
                           Colors.red.shade300, 'La mise à jour a échoué');
                     });
