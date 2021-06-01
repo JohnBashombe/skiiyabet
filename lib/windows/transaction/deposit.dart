@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:skiiyabet/components/price.dart';
 import 'package:skiiyabet/components/selection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:skiiyabet/methods/connexion.dart';
 import 'package:http/http.dart' as http;
+import 'package:skiiyabet/methods/methods.dart';
 
 double _depositAmount = 3000;
 
@@ -579,7 +581,7 @@ class _DepositState extends State<Deposit> {
     String _defaultNum = '0894093795';
     String _userPhone = '+243' + _defaultNum.substring(1, (_defaultNum.length));
     // print(_userPhone);
-    // print(_userPhone.length); 
+    // print(_userPhone.length);
     print(_defaultNum);
     // print(_userPhone.substring(1, (_userPhone.length)));
     print('Making a deposit with orange Money');
@@ -674,11 +676,111 @@ class _DepositState extends State<Deposit> {
         print('body response error is: $e');
       });
       print(responseBody);
+      // ON SUCCESSFULL DEPOSIT RESPONSE, ADD IT TO THE DEPOSIT COLLECTION
+      // ADD TO DEPOSIT COLLECTION
+      // addToDepositCollection(_depositAmount);
     } else {
       print('Could not reach the server properly due to an error');
     }
 
     // CLOSING THE CONNECTION
     client.close();
+  }
+
+  static String _getTime() {
+    // GET CURRENT TIME IN UTC FORMAT
+    var _datetime = new DateTime.now().toUtc();
+    // GET MINUTE IN A CUSTOM FORMAT
+    String _minute = _formatOf10(_datetime.minute);
+    // GET HOUR IN A CUSTOM FORMAT
+    String _hour = _formatOf10(_datetime.hour);
+    // GET SECOND IN A CUSTOM FORMAT
+    String _second = _formatOf10(_datetime.second);
+    // RETURN A STRING IN TIME FORMAT
+    return _hour + ':' + _minute + ':' + _second;
+  }
+
+  static String _getDate() {
+    // GET CURRENT TIME IN UTC FORMAT
+    var _datetime = new DateTime.now().toUtc();
+    // WE ADD OUR CUSTOM DATE FORMAT TO VARIABLES
+    // WE GET THE DAY
+    String _day = _formatOf10(_datetime.day);
+    // WE GET THE MONTH
+    String _month = _formatOf10(_datetime.month);
+    // WE GET THE YEAR
+    String _year = _datetime.year.toString();
+    // RETURN A STRING IN DATE FORMAT
+    return _day + '-' + _month + '-' + _year;
+  }
+
+  static String _formatOf10(int _newVal) {
+    // WE CREATE AN EMPTY VALUE
+    String _val = _newVal.toString();
+    // IF THE VALUE IS LESS THAN 10 ADD A ZERO BEFORE
+    // OTHERWISE DO NOT ADD ANYTHING BEFORE THE VALUE
+    if (_newVal < 10) _val = '0' + _newVal.toString();
+    // RETURN THE MODIFIED VALUE
+    return _val;
+  }
+
+  void addToDepositCollection(double _depositAmount) async {
+    // LET US GET THE USER ID
+    String _uid = Selection.user.uid;
+    // WE ADD OUR CUSTOM DATE FORMAT TO VARIABLES
+    String _date = _getDate();
+    // WE GET THE CUSTOM TIME HERE
+    var _time = _getTime();
+    // GET THE CURRENT DATE TIME IN UTC FORMAT
+    var _datetime = new DateTime.now().toUtc();
+    // STORE THE TIMESTAMP
+    int _timestamp = _datetime.toUtc().millisecondsSinceEpoch;
+
+    // ADD A NEW REQUEST
+    Method.addNewTransaction('Dépôt', _depositAmount, '+').then((_trans) {
+      // LET US GET THE TRANSACTION ID HERE
+      String _transID = _trans.documentID.toString();
+
+      Firestore.instance.collection('UserBalance').document(_uid).updateData(
+        {
+          'balance': FieldValue.increment(_depositAmount),
+          'transaction_id': '$_transID',
+        },
+      ).then((_) {
+        // ADD TO THE DEPOSIT COLLECTION
+        Firestore.instance.collection('deposit').add({
+          'uid': _uid,
+          'amount': _depositAmount,
+          'action_sign': '+',
+          'currency': Price.currency_symbol,
+          'admin_id': null,
+          'trans_id': _transID,
+          'status': 'pending',
+          'time': {
+            'time': '$_time',
+            'date': '$_date',
+            'date_time': '$_datetime',
+            'timestamp': _timestamp,
+            'timezone': 'UTC'
+          },
+        }).catchError((e) {
+          // ADD THE DEPOSIT COLLECTION
+          failMessage(context, 'Une erreur est survenue.');
+        });
+        // INCREASE THE USER BALANCE
+        if (mounted)
+          setState(() {
+            // UPDATE THE USER BALANCE AUTOMATICALLY
+            Selection.userBalance = Selection.userBalance + _depositAmount;
+          });
+        // addWithdrawRequest(withdrawAmount);
+      }).catchError((e) {
+        // BALANCE UPDATE ERROR
+        failMessage(context, 'Une erreur est survenue.');
+      });
+    }).catchError((e) {
+      // TRANSACTION UPDATE ERROR
+      failMessage(context, 'Une erreur est survenue.');
+    });
   }
 }
