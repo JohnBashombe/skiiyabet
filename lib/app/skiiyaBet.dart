@@ -1595,7 +1595,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                       ResponsiveWidget.isSmallScreen(context)
                                           ? 14.0
                                           : 16.0,
-                                  // decoration: TextDecoration.underline,
+                                  decoration: TextDecoration.underline,
                                 ),
                                 maxLines: 4,
                                 overflow: TextOverflow.clip,
