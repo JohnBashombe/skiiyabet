@@ -61,8 +61,8 @@ class _TransactionsState extends State<Transactions> {
                   Divider(color: Colors.grey, thickness: 0.4),
                   SizedBox(height: 5.0),
                   _transData.length > 0
-                      ? Container(
-                          height: MediaQuery.of(context).size.height - 240.0,
+                      ? Expanded(
+                          // height: MediaQuery.of(context).size.height - 240.0,
                           child: ListView.builder(
                             itemCount: _transData.length,
                             itemBuilder: (context, index) {

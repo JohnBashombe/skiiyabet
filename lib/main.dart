@@ -9,8 +9,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // THIS IS THE MAIN METHOD FOR SKIIYA BET
-    return MaterialApp(
-      title: 'SkiiYa Bet',
+    return MaterialApp( 
+      title: 'SKIIYA BET',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.white,

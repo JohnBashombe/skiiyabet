@@ -334,8 +334,8 @@ class _BetsState extends State<Bets> {
         SizedBox(height: 5.0),
         // DISPLAY ONLY IF WE HAVE DATA OR ACTIVE BETS
         _betData.length > 0
-            ? Container(
-                height: MediaQuery.of(context).size.height - 240.0,
+            ? Expanded(
+                // height: MediaQuery.of(context).size.height - 150.0,
                 child: ListView.builder(
                   // controller: _scrollController,
                   itemCount: _betData.length,
