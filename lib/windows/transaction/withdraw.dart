@@ -437,7 +437,7 @@ class _WithdrawState extends State<Withdraw> {
       'currency': Price.currency_symbol,
       'admin_id': null,
       'status': 'pending',
-      'phone': _userPhone
+      'phone': _userPhone,
       'time': {
         'time': '$_time',
         'date': '$_date',
