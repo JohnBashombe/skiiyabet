@@ -737,7 +737,7 @@ class _DepositState extends State<Deposit> {
     int _timestamp = _datetime.toUtc().millisecondsSinceEpoch;
 
     // ADD A NEW REQUEST
-    Method.addNewTransaction('Dépôt', _depositAmount, '+').then((_trans) {
+    Method.addNewTransaction('Dépôt', _depositAmount, '+', Selection.userTelephone).then((_trans) {
       // LET US GET THE TRANSACTION ID HERE
       String _transID = _trans.documentID.toString();
 

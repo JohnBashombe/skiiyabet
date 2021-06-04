@@ -337,7 +337,7 @@ class Method {
   }
 
   static Future addNewTransaction(
-      String _type, double _amount, String _actionSign) {
+      String _type, double _amount, String _actionSign, String _userPhone) {
     // WE GET THE USER ID
     String _uid = Selection.user.uid;
     // print('Transaction details');
@@ -361,6 +361,7 @@ class Method {
       'type': _type,
       'action_sign': _actionSign,
       'currency': Price.currency_symbol,
+      'phone': _userPhone,
       'time': {
         'time': '$_time',
         'date': '$_date',

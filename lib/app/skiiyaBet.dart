@@ -4436,7 +4436,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // WE START BY ADDING THE TRANSACTION
     double _stake = Price.stake;
     // TO THE TRANSACTION COLLECTION HERE
-    Method.addNewTransaction('Billet de pari', _stake, '-').then((_trans) {
+    Method.addNewTransaction('Billet de pari', _stake, '-', Selection.userTelephone).then((_trans) {
       // LET US GET THE TRANSACTION ID HERE
       String _transID = _trans.documentID.toString();
       // print('--------STAKE--------TRANS ID---------------');

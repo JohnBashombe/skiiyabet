@@ -340,7 +340,7 @@ class _WithdrawState extends State<Withdraw> {
         if (dailyMaxCash <= Price.maximumDailyWithdraw) {
           // SUBSTRACT THE AMOUNT TO BALANCE FIRST THEN
           // ADD A NEW REQUEST
-          Method.addNewTransaction('Retrait', withdrawAmount, '-')
+          Method.addNewTransaction('Retrait', withdrawAmount, '-', Selection.userTelephone)
               .then((_trans) {
             // LET US GET THE TRANSACTION ID HERE
             String _transID = _trans.documentID.toString();
