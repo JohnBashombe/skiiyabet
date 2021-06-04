@@ -353,6 +353,7 @@ class _WithdrawState extends State<Withdraw> {
                 'last_trans_id': '$_transID',
               },
             ).then((_) {
+              // ADD A NEW WITHDRAW REQUEST TO THE COLLECTION
               addWithdrawRequest(withdrawAmount);
             }).catchError((e) {
               // BALANCE UPDATE ERROR
@@ -414,6 +415,8 @@ class _WithdrawState extends State<Withdraw> {
   }
 
   addWithdrawRequest(double _amount) {
+    // GET THE PHONE NUMBER
+    String _userPhone = Selection.userTelephone;
     // WE GET THE USER ID
     String _uid = Selection.user.uid;
     // GET THE CURRENT DATE TIME IN UTC FORMAT
@@ -434,6 +437,7 @@ class _WithdrawState extends State<Withdraw> {
       'currency': Price.currency_symbol,
       'admin_id': null,
       'status': 'pending',
+      'phone': _userPhone
       'time': {
         'time': '$_time',
         'date': '$_date',
