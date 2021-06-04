@@ -148,6 +148,7 @@ class _HistoryState extends State<History> {
   Column gamesFromTicket(int _index) {
     // WE STORE DATA IN THE NEW ARRAY OF DATA
     var _histDetails = _histData[_detailIndex];
+    // print(_histDetails.data);
     // GET THE TIME
     var _time =
         _histDetails['matches']['dataTimes'][_index]['starting_at']['time'];
@@ -200,7 +201,11 @@ class _HistoryState extends State<History> {
 
     // GET THE GAME SCORE
     var _score = _histDetails['matches']['teamScores'][_index];
-    if (_score == null) _score = ' ?-?';
+    if (_score == null) {
+      _score = ' ?-?';
+    } else {
+      _score = _score['ft_score'].toString();
+    }
 
     return Column(
       children: [

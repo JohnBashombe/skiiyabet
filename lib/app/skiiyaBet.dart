@@ -88,255 +88,267 @@ class SkiiyaBet extends StatefulWidget {
 class _SkiiyaBetState extends State<SkiiyaBet> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: Colors.white,
-      // resizeToAvoidBottomPadding: true,
-      appBar: ResponsiveWidget.isSmallScreen(context)
-          ? AppBar(
-              elevation: 0,
-              excludeHeaderSemantics: true,
-              automaticallyImplyLeading: false,
-              title: _appTitle(context),
-              actions: [
-                Container(
-                  height: 50.0,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return WillPopScope(
+      // MAKE SURE THE NAVIGATION OF BACK BUTTON STAYS ON THIS PAGE
+      onWillPop: () async => true,
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: Colors.white,
+        // resizeToAvoidBottomPadding: true,
+        appBar: ResponsiveWidget.isSmallScreen(context)
+            ? AppBar(
+                elevation: 0,
+                excludeHeaderSemantics: true,
+                automaticallyImplyLeading: false,
+                title: _appTitle(context),
+                actions: [
+                  Container(
+                    height: 50.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          alignment: Alignment.centerRight,
+                          padding: new EdgeInsets.only(right: 10.0),
+                          width:
+                              (MediaQuery.of(context).size.width - 60.0) * 0.75,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              // display this phone number and amount if the user has logged in
+                              (Selection.user != null)
+                                  ? _displayUserData(context)
+                                  // APP BAR DISPLAY BUTTON
+                                  : _displayLoginButton(),
+
+                              SizedBox(width: 5.0),
+                              // display the counter in the app bar with A CLICKING ACTION
+                              // DISPLAY THE MATCHES COUNTER ON A BETSLIP
+                              counterWidget(context),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            : null,
+        body: GestureDetector(
+          onTap: () {
+            if (mounted)
+              setState(() {
+                // IT ENABLES US TO CLOSE THE INPUT WIDGET ON BODY CLICKED
+                FocusScope.of(context).requestFocus(new FocusNode());
+              });
+          },
+          child: SingleChildScrollView(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (!ResponsiveWidget.isSmallScreen(context))
+                  Column(
                     children: [
                       Container(
-                        alignment: Alignment.centerRight,
-                        padding: new EdgeInsets.only(right: 10.0),
-                        width:
-                            (MediaQuery.of(context).size.width - 60.0) * 0.75,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            // display this phone number and amount if the user has logged in
-                            (Selection.user != null)
-                                ? _displayUserData(context)
-                                // APP BAR DISPLAY BUTTON
-                                : _displayLoginButton(),
-
-                            SizedBox(width: 5.0),
-                            // display the counter in the app bar with A CLICKING ACTION
-                            // DISPLAY THE MATCHES COUNTER ON A BETSLIP
-                            counterWidget(context),
-                          ],
+                        width: 50.0,
+                        height: MediaQuery.of(context).size.height * 0.9,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border(
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 0.4,
+                            ),
+                          ),
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            )
-          : null,
-      body: GestureDetector(
-        onTap: () {
-          if (mounted)
-            setState(() {
-              // IT ENABLES US TO CLOSE THE INPUT WIDGET ON BODY CLICKED
-              FocusScope.of(context).requestFocus(new FocusNode());
-            });
-        },
-        child: SingleChildScrollView(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (!ResponsiveWidget.isSmallScreen(context))
-                Column(
-                  children: [
-                    Container(
-                      width: 50.0,
-                      height: MediaQuery.of(context).size.height * 0.9,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          right: BorderSide(
-                            color: Colors.grey,
-                            width: 0.4,
+                        child: ListView(
+                            // padding: EdgeInsets.only(left: 0.0),
+                            children: _sideMenuList
+                                .asMap()
+                                .entries
+                                .map((MapEntry map) => _sideMenuMethod(map.key))
+                                .toList()),
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.1,
+                        width: 50.0,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border(
+                            right: BorderSide(color: Colors.grey, width: 0.4),
+                          ),
+                        ),
+                        child: Center(
+                          child: ClipOval(
+                            child: (Selection.user == null)
+                                ? Container(
+                                    width: 40.0,
+                                    height: 40.0,
+                                    // padding: EdgeInsets.all(10.0),
+                                    decoration: BoxDecoration(
+                                      color: Colors.lightBlue,
+                                    ),
+                                    child: IconButton(
+                                      tooltip: 'CONNECTEZ-VOUS'.toUpperCase(),
+                                      icon: Icon(
+                                        FontAwesomeIcons.signInAlt,
+                                        size: 20.0,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        if (mounted)
+                                          setState(() {
+                                            Window.showWindow = 14;
+                                          });
+                                      },
+                                    ))
+                                : Container(
+                                    width: 40.0,
+                                    height: 40.0,
+                                    // padding: EdgeInsets.all(10.0),
+                                    decoration: BoxDecoration(
+                                      color: Colors.lightBlue,
+                                    ),
+                                    child: IconButton(
+                                      tooltip: 'Paramètres'.toUpperCase(),
+                                      icon: Icon(
+                                        Icons.settings,
+                                        size: 20,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        if (mounted)
+                                          setState(() {
+                                            // REDIRECT TO THE MORE LIST WIDGET
+                                            Window.showWindow = 21;
+                                          });
+                                      },
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
-                      child: ListView(
-                          // padding: EdgeInsets.only(left: 0.0),
-                          children: _sideMenuList
-                              .asMap()
-                              .entries
-                              .map((MapEntry map) => _sideMenuMethod(map.key))
-                              .toList()),
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * 0.1,
-                      width: 50.0,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        border: Border(
-                          right: BorderSide(color: Colors.grey, width: 0.4),
-                        ),
-                      ),
-                      child: Center(
-                        child: ClipOval(
-                          child: (Selection.user == null)
-                              ? Container(
-                                  width: 40.0,
-                                  height: 40.0,
-                                  // padding: EdgeInsets.all(10.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.lightGreen[400],
-                                  ),
-                                  child: IconButton(
-                                    tooltip: 'CONNECTEZ-VOUS'.toUpperCase(),
-                                    icon: Icon(
-                                      FontAwesomeIcons.signInAlt,
-                                      size: 18.0,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      if (mounted)
-                                        setState(() {
-                                          Window.showWindow = 14;
-                                        });
-                                    },
-                                  ))
-                              : Container(
-                                  width: 40.0,
-                                  height: 40.0,
-                                  // padding: EdgeInsets.all(10.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.lightGreen[400],
-                                  ),
-                                  child: IconButton(
-                                    tooltip: 'Paramètres'.toUpperCase(),
-                                    icon: Icon(
-                                      Icons.settings,
-                                      size: 15,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      if (mounted)
-                                        setState(() {
-                                          // show the update password and the log out button
-                                          Window.showWindow = 21;
-                                          // Navigator.push(
-                                          //     context,
-                                          //     MaterialPageRoute(
-                                          //         builder: (_) => SkiiyaBet()));
-                                        });
-                                    },
-                                  ),
-                                ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              topAppBar(context),
-            ],
+                    ],
+                  ),
+                topAppBar(context),
+              ],
+            ),
           ),
         ),
+        bottomNavigationBar: ResponsiveWidget.isSmallScreen(context)
+            ? CurvedNavigationBar(
+                // backgroundColor: Colors.white70,
+                height: 50.0,
+                color: Colors.lightGreen[400],
+                buttonBackgroundColor: Colors.white70,
+                backgroundColor: Colors.white,
+                onTap: (int value) {
+                  if (mounted)
+                    setState(() {
+                      Selection.bottomCurrentTab = value;
+                      if (value == 0) {
+                        // print('home');
+                        Window.showWindow = 0;
+                      } else if (value == 1) {
+                        // print('search');
+                        Window.showWindow = 4; // call search panel
+                      } else if (value == 2) {
+                        // print('deposit');
+                        Window.showWindow = 8; // call deposit panel
+                      } else if (value == 3) {
+                        // print('withdraw');
+                        Window.showWindow = 9; // call deposit panel
+                      } else if (value == 4) {
+                        // print('my bets');
+                        Window.showWindow = 11; // call bets panel
+                      } else if (value == 5) {
+                        // print('account');
+                        Window.showWindow = 21; // call account menu panel
+                      }
+                    });
+                },
+                items: [
+                  Icon(FontAwesomeIcons.home,
+                      size: Selection.bottomCurrentTab == 0 ? 30.0 : 20.0,
+                      color: Selection.bottomCurrentTab == 0
+                          ? Colors.black
+                          : Colors.white),
+                  Icon(FontAwesomeIcons.search,
+                      size: Selection.bottomCurrentTab == 1 ? 30.0 : 20.0,
+                      color: Selection.bottomCurrentTab == 1
+                          ? Colors.black
+                          : Colors.white),
+                  Icon(FontAwesomeIcons.moneyCheck,
+                      size: Selection.bottomCurrentTab == 2 ? 30.0 : 20.0,
+                      color: Selection.bottomCurrentTab == 2
+                          ? Colors.black
+                          : Colors.white),
+                  Icon(FontAwesomeIcons.moneyBill,
+                      size: Selection.bottomCurrentTab == 3 ? 30.0 : 20.0,
+                      color: Selection.bottomCurrentTab == 3
+                          ? Colors.black
+                          : Colors.white),
+                  Icon(FontAwesomeIcons.listAlt,
+                      size: Selection.bottomCurrentTab == 4 ? 30.0 : 20.0,
+                      color: Selection.bottomCurrentTab == 4
+                          ? Colors.black
+                          : Colors.white),
+                  Icon(FontAwesomeIcons.user,
+                      size: Selection.bottomCurrentTab == 5 ? 30.0 : 20.0,
+                      color: Selection.bottomCurrentTab == 5
+                          ? Colors.black
+                          : Colors.white),
+                ],
+              )
+            : null,
       ),
-      bottomNavigationBar: ResponsiveWidget.isSmallScreen(context)
-          ? CurvedNavigationBar(
-              // backgroundColor: Colors.white70,
-              height: 50.0,
-              color: Colors.lightGreen[400],
-              buttonBackgroundColor: Colors.white70,
-              backgroundColor: Colors.white,
-              onTap: (int value) {
-                if (mounted)
-                  setState(() {
-                    Selection.bottomCurrentTab = value;
-                    if (value == 0) {
-                      // print('home');
-                      Window.showWindow = 0;
-                    } else if (value == 1) {
-                      // print('search');
-                      Window.showWindow = 4; // call search panel
-                    } else if (value == 2) {
-                      // print('deposit');
-                      Window.showWindow = 8; // call deposit panel
-                    } else if (value == 3) {
-                      // print('withdraw');
-                      Window.showWindow = 9; // call deposit panel
-                    } else if (value == 4) {
-                      // print('my bets');
-                      Window.showWindow = 11; // call bets panel
-                    } else if (value == 5) {
-                      // print('account');
-                      Window.showWindow = 21; // call account menu panel
-                    }
-                  });
-              },
-              items: [
-                Icon(FontAwesomeIcons.home,
-                    size: Selection.bottomCurrentTab == 0 ? 30.0 : 20.0,
-                    color: Selection.bottomCurrentTab == 0
-                        ? Colors.black
-                        : Colors.white),
-                Icon(FontAwesomeIcons.search,
-                    size: Selection.bottomCurrentTab == 1 ? 30.0 : 20.0,
-                    color: Selection.bottomCurrentTab == 1
-                        ? Colors.black
-                        : Colors.white),
-                Icon(FontAwesomeIcons.moneyCheck,
-                    size: Selection.bottomCurrentTab == 2 ? 30.0 : 20.0,
-                    color: Selection.bottomCurrentTab == 2
-                        ? Colors.black
-                        : Colors.white),
-                Icon(FontAwesomeIcons.moneyBill,
-                    size: Selection.bottomCurrentTab == 3 ? 30.0 : 20.0,
-                    color: Selection.bottomCurrentTab == 3
-                        ? Colors.black
-                        : Colors.white),
-                Icon(FontAwesomeIcons.listAlt,
-                    size: Selection.bottomCurrentTab == 4 ? 30.0 : 20.0,
-                    color: Selection.bottomCurrentTab == 4
-                        ? Colors.black
-                        : Colors.white),
-                Icon(FontAwesomeIcons.user,
-                    size: Selection.bottomCurrentTab == 5 ? 30.0 : 20.0,
-                    color: Selection.bottomCurrentTab == 5
-                        ? Colors.black
-                        : Colors.white),
-              ],
-            )
-          : null,
     );
   }
 
-  Column _displayUserData(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        SizedBox(width: 2.0),
-        Text(
-          // '0972 977 512',
-          Selection.userTelephone.toString(),
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 12.0,
-            fontWeight: FontWeight.bold,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+  GestureDetector _displayUserData(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        if (mounted)
+          setState(() {
+            // REDIRECT TO LIST MENU WIDGET
+            Window.showWindow = 21;
+          });
+      },
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            SizedBox(width: 2.0),
+            Text(
+              // '0972 977 512',
+              Selection.userTelephone.toString(),
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 12.0,
+                fontWeight: FontWeight.bold,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            SizedBox(
+              height: 1.0,
+            ),
+            Text(
+              // Price.getWinningValues(Price.balance) +' Fc',
+              Price.getWinningValues(Selection.userBalance) + ' Fc',
+              style: TextStyle(
+                color: Colors.black87,
+                fontWeight: FontWeight.bold,
+                fontSize: ResponsiveWidget.isSmallScreen(context) ? 13.0 : 14.0,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
         ),
-        SizedBox(
-          height: 1.0,
-        ),
-        Text(
-          // Price.getWinningValues(Price.balance) +' Fc',
-          Price.getWinningValues(Selection.userBalance) + ' Fc',
-          style: TextStyle(
-            color: Colors.black87,
-            fontWeight: FontWeight.bold,
-            fontSize: ResponsiveWidget.isSmallScreen(context) ? 13.0 : 14.0,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+      ),
     );
   }
 
@@ -574,11 +586,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             children: [
               Container(
                   height: 35.0,
-                  // padding: new EdgeInsets.symmetric(
-                  //     horizontal: 5.0),
                   child: RawMaterialButton(
                     fillColor: Colors.lightGreen[400],
-                    // focusColor: Colors.lightGreen[100],
                     padding: new EdgeInsets.symmetric(horizontal: 10.0),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0)),
@@ -602,11 +611,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         ),
                       ],
                     ),
-                    // icon: FontAwesomeIcons.signInAlt,
-                    // icon: Icons.login,
-                    // buttonColor: Colors.lightGreen[400],
-                    // color: Colors.white,
-                    // title: ' Mon Compte',
                     onPressed: () {
                       if (mounted)
                         setState(() {
@@ -628,13 +632,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           setState(() {
             if (ResponsiveWidget.isMediumScreen(context) ||
                 ResponsiveWidget.isSmallScreen(context)) {
+              // SHOW THE BETSLIP PANEL ONLY OF MEDIUM AND SMALL SCREEN
               Window.showWindow = 20;
-              // print('small screen');
-              // print('display custom betslip panel');
             }
-            // else {
-            //   print('large screen and no special betslip panel to display');
-            // }
           });
       },
       child: Tooltip(
@@ -1940,7 +1940,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         _country,
                         _localTeam,
                         _visitorTeam,
-                        _dataTime),
+                        _dataTime,
+                        0),
                 ],
               ),
             // IF ODDS VALUES ARE GREATER THAN 3
@@ -1958,7 +1959,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         _country,
                         _localTeam,
                         _visitorTeam,
-                        _dataTime),
+                        _dataTime,
+                        1),
                     allOddsWidget(
                         oddArray,
                         _oddId,
@@ -1968,7 +1970,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         _country,
                         _localTeam,
                         _visitorTeam,
-                        _dataTime),
+                        _dataTime,
+                        1),
                   ],
                 ),
             // SizedBox(height: 10.0),
@@ -1990,7 +1993,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       String _country,
       String _localTeam,
       String _visitorTeam,
-      var _dataTime) {
+      var _dataTime,
+      int _separtor) {
     // data = ['bookmaker']['data'][0]['odds']['data']
     // INDEX OF GAME IN THE ARRAY OF ODDS
     // GETTING THE ID OF THE GAME
@@ -2029,7 +2033,15 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     return Expanded(
       child: Container(
         margin: new EdgeInsets.only(
-            right: (_oddIndex < data.length - 1) ? 8.0 : 0.0),
+            // IF IT IS EVEN, ADD A RIGHT MARGIN
+            right: _separtor == 0 // BLOCK OF 3 ODDS
+                ? (_oddIndex < data.length - 1)
+                    ? 8.0
+                    : 0.0
+                : (_oddIndex % 2 == 0) // BLOCK OF 4 AND MORE
+                    ? 8.0
+                    : 0.0),
+        // right: (_oddIndex < data.length - 1) ? 8.0 : 0.0),
         child: RawMaterialButton(
           onPressed: () {
             if (mounted)
@@ -4063,10 +4075,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         margin: new EdgeInsets.only(left: 10.0),
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: Colors.grey, width: 1.0),
-            bottom: BorderSide(color: Colors.grey, width: 1.0),
-            left: BorderSide(color: Colors.grey, width: 1.0),
-            right: BorderSide(color: Colors.grey, width: 1.0),
+            top: BorderSide(color: Colors.grey.shade300),
+            bottom: BorderSide(color: Colors.grey.shade300),
+            left: BorderSide(color: Colors.grey.shade300),
+            right: BorderSide(color: Colors.grey.shade300),
           ),
         ),
         child: ListView(
@@ -4088,27 +4100,37 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Historique',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.history,
+                            color: Colors.grey.shade300,
+                            size: 20.0,
+                          ),
+                          SizedBox(width: 10.0),
+                          Text(
+                            'Historique',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                       Icon(
-                        Icons.chevron_right,
-                        size: 22.0,
-                        color: Colors.black,
+                        FontAwesomeIcons.chevronRight,
+                        size: 20.0,
+                        color: Colors.grey.shade300,
                       ),
                     ],
                   ),
                 ),
               ),
-            if (Selection.user != null) SizedBox(height: 2.0),
+            if (Selection.user != null) SizedBox(height: 3.0),
             if (Selection.user != null)
-              Divider(color: Colors.grey, thickness: 1.0),
-            if (Selection.user != null) SizedBox(height: 2.0),
+              Divider(color: Colors.grey.shade300, thickness: 0.5),
+            if (Selection.user != null) SizedBox(height: 3.0),
 
             if (Selection.user != null)
               MouseRegion(
@@ -4126,27 +4148,37 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Transactions',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.exchangeAlt,
+                            color: Colors.grey.shade300,
+                            size: 20.0,
+                          ),
+                          SizedBox(width: 10.0),
+                          Text(
+                            'Transactions',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                       Icon(
-                        Icons.chevron_right,
-                        size: 22.0,
-                        color: Colors.black,
+                        FontAwesomeIcons.chevronRight,
+                        size: 20.0,
+                        color: Colors.grey.shade300,
                       ),
                     ],
                   ),
                 ),
               ),
-            if (Selection.user != null) SizedBox(height: 2.0),
+            if (Selection.user != null) SizedBox(height: 3.0),
             if (Selection.user != null)
-              Divider(color: Colors.grey, thickness: 1.0),
-            if (Selection.user != null) SizedBox(height: 2.0),
+              Divider(color: Colors.grey.shade300, thickness: 0.5),
+            if (Selection.user != null) SizedBox(height: 3.0),
             MouseRegion(
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
@@ -4162,26 +4194,36 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Nos Contacts',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        Icon(
+                          FontAwesomeIcons.phoneAlt,
+                          color: Colors.grey.shade300,
+                          size: 20.0,
+                        ),
+                        SizedBox(width: 10.0),
+                        Text(
+                          'Contacts',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                     Icon(
-                      Icons.chevron_right,
-                      size: 22.0,
-                      color: Colors.black,
+                      FontAwesomeIcons.chevronRight,
+                      size: 20.0,
+                      color: Colors.grey.shade300,
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 2.0),
-            Divider(color: Colors.grey, thickness: 1.0),
-            SizedBox(height: 2.0),
+            SizedBox(height: 3.0),
+            Divider(color: Colors.grey.shade300, thickness: 0.5),
+            SizedBox(height: 3.0),
             if (Selection.user != null)
               MouseRegion(
                 cursor: SystemMouseCursors.click,
@@ -4197,27 +4239,37 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Modifiez Mot de Passe',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.key,
+                            color: Colors.grey.shade300,
+                            size: 20.0,
+                          ),
+                          SizedBox(width: 10.0),
+                          Text(
+                            'Modifiez Mot de Passe',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                       Icon(
-                        Icons.chevron_right,
-                        size: 22.0,
-                        color: Colors.black,
+                        FontAwesomeIcons.chevronRight,
+                        size: 20.0,
+                        color: Colors.grey.shade300,
                       ),
                     ],
                   ),
                 ),
               ),
-            if (Selection.user != null) SizedBox(height: 2.0),
+            if (Selection.user != null) SizedBox(height: 3.0),
             if (Selection.user != null)
-              Divider(color: Colors.grey, thickness: 1.0),
-            if (Selection.user != null) SizedBox(height: 5.0),
+              Divider(color: Colors.grey.shade300, thickness: 0.5),
+            if (Selection.user != null) SizedBox(height: 3.0),
             if (Selection.user == null)
               MouseRegion(
                 cursor: SystemMouseCursors.click,
@@ -4234,18 +4286,28 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Connexion / Inscription',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.signInAlt,
+                            color: Colors.lightBlue.shade300,
+                            size: 20.0,
+                          ),
+                          SizedBox(width: 10.0),
+                          Text(
+                            'Connexion / Inscription',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                       Icon(
-                        Icons.chevron_right,
-                        size: 22.0,
-                        color: Colors.black,
+                        FontAwesomeIcons.chevronRight,
+                        size: 20.0,
+                        color: Colors.grey.shade300,
                       ),
                     ],
                   ),
@@ -4277,31 +4339,42 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Déconnexion',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          Icon(
+                            FontAwesomeIcons.signInAlt,
+                            color: Colors.red.shade300,
+                            size: 20.0,
+                          ),
+                          SizedBox(width: 10.0),
+                          Text(
+                            'Déconnexion',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                       Icon(
-                        Icons.power_settings_new,
-                        size: 25.0,
-                        color: Colors.red,
+                        FontAwesomeIcons.chevronRight,
+                        size: 20.0,
+                        color: Colors.grey.shade300,
                       ),
                     ],
                   ),
                 ),
               ),
             // SizedBox(height: 2.0),
-            if (Selection.user == null) SizedBox(height: 10.0),
-            if (Selection.user == null)
-              Divider(color: Colors.grey, thickness: 1.0),
-            if (Selection.user != null)
-              Divider(color: Colors.grey, thickness: 1.0),
+            // if (Selection.user == null)
+            SizedBox(height: 3.0),
+            // if (Selection.user == null)
+            Divider(color: Colors.grey.shade300, thickness: 0.5),
+            // if (Selection.user != null)
+            //   Divider(color: Colors.grey, thickness: 1.0),
             // Divider(color: Colors.grey, thickness: 1.0),
-            // SizedBox(height: 2.0),
+            SizedBox(height: 50.0),
           ],
         ),
       ),
@@ -4436,7 +4509,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // WE START BY ADDING THE TRANSACTION
     double _stake = Price.stake;
     // TO THE TRANSACTION COLLECTION HERE
-    Method.addNewTransaction('Billet de pari', _stake, '-', Selection.userTelephone).then((_trans) {
+    Method.addNewTransaction(
+            'Billet de pari', _stake, '-', Selection.userTelephone)
+        .then((_trans) {
       // LET US GET THE TRANSACTION ID HERE
       String _transID = _trans.documentID.toString();
       // print('--------STAKE--------TRANS ID---------------');

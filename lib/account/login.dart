@@ -1141,7 +1141,7 @@ class _LoginState extends State<Login> {
             Navigator.push(
                 context, MaterialPageRoute(builder: (_) => SkiiyaBet()));
           }).catchError((e) {
-            // print('loading user data error : $e');
+            print('LOADING BALANCE ERROR : $e');
             if (mounted)
               setState(() {
                 // show the action button and hide the loading button
@@ -1154,6 +1154,7 @@ class _LoginState extends State<Login> {
         }
       });
     }).catchError((e) {
+      print('THE RROR IS: $e');
       if (mounted)
         setState(() {
           // show the action button and hide the loading button

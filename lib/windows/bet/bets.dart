@@ -204,7 +204,11 @@ class _BetsState extends State<Bets> {
 
     // GET THE GAME SCORE
     var _score = _betDetails['matches']['teamScores'][_index];
-    if (_score == null) _score = ' ?-?';
+    if (_score == null) {
+      _score = ' ?-?';
+    } else {
+      _score = _score['ft_score'].toString();
+    }
 
     return Column(
       children: [
@@ -293,7 +297,7 @@ class _BetsState extends State<Bets> {
                     fontSize: 12.0,
                     fontWeight: FontWeight.bold,
                   ),
-                ), 
+                ),
                 SizedBox(height: 2.0),
                 // GET THE RIGHT ICON
                 Icon(
