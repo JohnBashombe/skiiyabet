@@ -296,6 +296,9 @@ class _DepositState extends State<Deposit> {
                           if (Selection.user == null) {
                             failMessage(
                                 context, 'Connecter votre compte d\'abord');
+                          } else if (Selection.isUserBlocked == true) {
+                            failMessage(
+                                context, 'Désolé! Ce compte est bloqué.');
                           } else {
                             if (_depositAmount < Price.minimumDeposit) {
                               failMessage(context,
@@ -529,12 +532,11 @@ class _DepositState extends State<Deposit> {
   }
 
   failMessage(BuildContext context, String message) {
-    // ignore: deprecated_member_use
-    return Scaffold.of(context).showSnackBar(
+    return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         elevation: 0,
         backgroundColor: Colors.red,
-        duration: Duration(seconds: 3),
+        duration: Duration(seconds: 4),
         content: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -553,12 +555,11 @@ class _DepositState extends State<Deposit> {
   }
 
   successMessage(BuildContext context, String message) {
-    // ignore: deprecated_member_use
-    return Scaffold.of(context).showSnackBar(
+    return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         elevation: 0,
         backgroundColor: Colors.lightGreen[400],
-        duration: Duration(seconds: 3),
+        duration: Duration(seconds: 4),
         content: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -737,7 +738,9 @@ class _DepositState extends State<Deposit> {
     int _timestamp = _datetime.toUtc().millisecondsSinceEpoch;
 
     // ADD A NEW REQUEST
-    Method.addNewTransaction('Dépôt', _depositAmount, '+', Selection.userTelephone).then((_trans) {
+    Method.addNewTransaction(
+            'Dépôt', _depositAmount, '+', Selection.userTelephone)
+        .then((_trans) {
       // LET US GET THE TRANSACTION ID HERE
       String _transID = _trans.documentID.toString();
 

@@ -1,5 +1,7 @@
+import 'package:flutter_session/flutter_session.dart';
 import 'package:skiiyabet/app/skiiyaBet.dart';
 import 'package:skiiyabet/components/selection.dart';
+import 'package:skiiyabet/encryption/encryption.dart';
 import 'package:skiiyabet/mywindow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,10 @@ String _phoneNumber = '';
 Firestore _auth = Firestore.instance;
 // show the loading status
 bool loadingPhoneReset = false;
+// GET THE CURRENT RESET VALUE
+int _getResetCode = 1;
+// GET THE CURRENT RESET DATE
+int _getResetTimestamp = 0;
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   @override
@@ -181,9 +187,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     onPressed: () {
                       if (mounted)
                         setState(() {
+                          // REDIRECTING TO LOGIN PAGE
                           Window.showWindow = 14;
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (_) => SkiiyaBet()));
+                          // REFRESHING THE MATERIAL PAGE ROUTE
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SkiiyaBet(),
+                            ),
+                          );
                         });
                     },
                     fillColor: Colors.lightBlue.shade300,
@@ -239,17 +251,39 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                     // show the loading status
                                     loadingPhoneReset = true;
                                     if (!checkNumber(_numberFilter)) {
-                                      resultMessage(context,
-                                          'Numéro non accepté', Colors.red, 3);
-                                      // return;
+                                      resultMessage(
+                                          context,
+                                          'Format non accepté',
+                                          Colors.red.shade300,
+                                          3);
                                       // hide the loading status
                                       loadingPhoneReset = false;
-                                    } else {
+                                    } else if (Selection.isUserBlocked ==
+                                        true) {
+                                      // SHOW A BLOCKING STATUS MESSAGE
+                                      resultMessage(
+                                          context,
+                                          'Désolé! Ce compte est bloqué.',
+                                          Colors.red.shade300,
+                                          10);
+                                    }
+                                    // else if (Selection.allowSMSReset ==
+                                    //     false) {
+                                    //   // SHOW A BLOCKING STATUS MESSAGE
+                                    //   resultMessage(
+                                    //       context,
+                                    //       'Vous avez demandé le code plusieurs fois.\nVeuillez réessayer plus tard',
+                                    //       Colors.red.shade300,
+                                    //       10);
+                                    // }
+                                    else {
+                                      // UPDATE THE LOCAL VARIABLE FOR A FUTURE QUICK CHECKING
+                                      Selection.isUserBlocked = false;
                                       resultMessage(
                                           context,
                                           'Vérification du numéro...',
                                           Colors.lightGreen[400],
-                                          2);
+                                          4);
                                       // set the number filter to phone
                                       _phoneNumber = _numberFilter;
                                       Selection.resetPhone = _phoneNumber;
@@ -267,9 +301,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                               child: Text(
                                 'Envoyer'.toUpperCase(),
                                 style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15.0),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15.0,
+                                ),
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -279,24 +314,29 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           onPressed: () {
                             if (mounted)
                               setState(() {
-                                // redirect to update password
+                                // REDIRECTING TO UPDATE PASSWORD
                                 Window.showWindow = 19;
+                                // RENDERING THE MAIN ROUTE
                                 Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => SkiiyaBet()));
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => SkiiyaBet(),
+                                  ),
+                                );
                               });
                           },
                           fillColor: Colors.lightGreen[400],
                           disabledElevation: 3.0,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0)),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                           child: Text(
                             'Terminer le processus',
                             style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15.0),
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15.0,
+                            ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -308,6 +348,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         ),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   void executeFunction(String phone) async {
@@ -322,7 +367,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         if (mounted)
           setState(() {
             // if the number has been not registered so far
-            resultMessage(context, 'Numéro non enregistré', Colors.red, 3);
+            resultMessage(
+                context, 'Numéro non enregistré', Colors.red.shade300, 3);
             // hide the loading status
             loadingPhoneReset = false;
             // set to empty the phone number reset
@@ -336,40 +382,80 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             .collection('UserInfo')
             .document(_userId)
             .get()
-            .then((thisResult) {
-          // generate the code then update the user reset field then send the code to the user number
-          // generating the user reset password
-          String generatedCode = thisResult['resetPassword'].toString();
-          // sending the code to the user number now
-          TwilioFlutter twilioFlutter = TwilioFlutter(
-              accountSid:
-                  'ACbb2ae40e19e030055d04a1787f2a325b', // replace *** with Account SID
-              authToken:
-                  'a21e567a1d705578a4acb6b652d95391', // replace xxx with Auth Token
-              twilioNumber: '+17172592892' // replace .... with Twilio Number
-              );
+            .then((thisResult) async {
+          // LET US GET THE USER BLOCKING STATUS TO SEE IF HE IS ELIGIBLE
+          // TO GET THE RESET PASSWORD CONFIRMATION CODE
+          bool _blockedStatus = thisResult['isBlocked'];
 
-          twilioFlutter
-              .sendSMS(
+          // INCREASE THE COUNT RESET SMS BY 1
+          await countResetRequest().then((_) {
+            // CONDITION FOR CODE SENDING
+            if (Selection.allowSMSReset == true) {
+              if (_blockedStatus == false) {
+                // print('SENDING THE SMS CODE');
+                // generate the code then update the user reset field then send the code to the user number
+                // generating the user reset password
+                String generatedCode = thisResult['resetPassword'].toString();
+                // sending the code to the user number now
+                // INITIALIZING THE TWILIO PACKAGE FOR MESSAGING
+                TwilioFlutter twilioFlutter = TwilioFlutter(
+                    accountSid:
+                        'ACbb2ae40e19e030055d04a1787f2a325b', // replace *** with Account SID
+                    authToken:
+                        'a21e567a1d705578a4acb6b652d95391', // replace xxx with Auth Token
+                    twilioNumber:
+                        '+17172592892' // replace .... with Twilio Number
+                    );
+                // SENDING A TWILIO REQUEST WITH TO THE SERVER WITH THIS PHONE NUMBER, CODE AND CONTENT
+                twilioFlutter
+                    .sendSMS(
                   toNumber: '+243' + phone,
                   messageBody:
                       'Le code de confirmation pour modifier votre mot de passe sur SKIIYA BET est: ' +
-                          generatedCode + '\nPlus d\'info sur https://www.skiiyabet.com')
-              .then((value) {
-            if (mounted)
-              setState(() {
-                // print('message sent successfully');
-                // redirect to update password
-                Selection.showResendSMSinForgot = false;
-                Window.showWindow = 19;
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (_) => SkiiyaBet()));
-                // hide the loading status
-                loadingPhoneReset = false;
-              });
-          }).catchError((e) {
-            resultMessage(context, 'SMS non envoyé', Colors.red, 3);
-            //   // print('The error while sending sms is: $e');
+                          generatedCode +
+                          '\nPlus d\'info sur https://www.skiiyabet.com',
+                )
+                    .then((value) {
+                  if (mounted)
+                    setState(() {
+                      // print('message sent successfully');
+                      // redirect to update password
+                      // REDIRECT TO ADD PHONE NUMBER
+                      Selection.showResendSMSinForgot = false;
+                      // REDIRECT TO UPDATE PASSWORD PANEL
+                      Window.showWindow = 19;
+                      // RENDERING OF THE MAIN CONTENT
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => SkiiyaBet()));
+                      // hide the loading status
+                      loadingPhoneReset = false;
+                    });
+                }).catchError((e) {
+                  // ERROR MESSAGE IF THE CODE WAS NOT SENT
+                  resultMessage(
+                    context,
+                    'SMS non envoyé',
+                    Colors.red.shade300,
+                    5,
+                  );
+                  //   // print('The error while sending sms is: $e');
+                });
+              } else {
+                // SHOW A BLOCKING STATUS MESSAGE
+                resultMessage(context, 'Désolé! Ce compte est bloqué.',
+                    Colors.red.shade300, 10);
+                // UPDATE THE LOCAL VARIABLE FOR A FUTURE QUICK CHECKING
+                Selection.isUserBlocked = true;
+              }
+            } else {
+              // IF THE ALLOW IS SET TO FALSE
+              // JUST SET THE LOADING ACTION TO FALSE
+              if (mounted)
+                setState(() {
+                  // hide the loading status
+                  loadingPhoneReset = false;
+                });
+            }
           });
         });
       }
@@ -378,16 +464,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         setState(() {
           // hide the loading status
           loadingPhoneReset = false;
-          // print('Error occured while fetching : $e');
-          // resultMessage(context, 'Error Detected', Colors.red, 3);
           // print('login error: $e');
           if (e.toString().compareTo(
                   'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
               0) {
-            resultMessage(context, 'Internet network error', Colors.red, 3);
+            resultMessage(
+                context, 'Internet network error', Colors.red.shade300, 3);
             // print('Internet Connection Error');
           } else {
-            resultMessage(context, 'Erreur inconnue', Colors.red, 3);
+            resultMessage(context, 'Erreur inconnue', Colors.red.shade300, 3);
           }
         });
     });
@@ -472,7 +557,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   }
 
   resultMessage(BuildContext context, String message, Color color, int sec) {
-    return Scaffold.of(context).showSnackBar(
+    return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         elevation: 0,
         backgroundColor: color,
@@ -484,13 +569,160 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             Text(
               message,
               style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14.0),
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 14.0,
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future countResetRequest() async {
+    // INITIALIZE THE SESSION
+    var session = FlutterSession();
+    // GET ALL VVALUES FROM LOCAL STORAGE
+    String _permission1 = await session.get('_permission_1_');
+    String _permission2 = await session.get('_permission_2_');
+    // GET ALL VVALUES OF DATES FROM LOCAL STORAGE
+    String _dateTime1 = await session.get('_duration_1_');
+    String _dateTime2 = await session.get('_duration_2_');
+    // CONDITIONS TO AVOID NON NULL VALUES
+    if ((_permission1.toString().compareTo('null') != 0 &&
+            _permission1.toString().compareTo('') != 0) &&
+        (_permission2.toString().compareTo('null') != 0 &&
+            _permission2.toString().compareTo('') != 0) &&
+        (_dateTime1.toString().compareTo('null') != 0 &&
+            _dateTime1.toString().compareTo('') != 0) &&
+        (_dateTime2.toString().compareTo('null') != 0 &&
+            _dateTime2.toString().compareTo('') != 0)) {
+      // GET THE PERMISSION FROM LOCAL STORAGE
+      String _getThisCode = Encryption.decryptAESCryptoJS(
+        (_permission1 + _permission2), // PASS ENCRYPT
+        '_permission_', // MODULE OF ENCRYPTION
+      );
+
+      _getResetCode = int.parse(_getThisCode);
+      // GET THE DATE
+      String _getThisdate = Encryption.decryptAESCryptoJS(
+        (_dateTime1 + _dateTime2), // PASS ENCRYPT
+        '_permission_', // MODULE OF ENCRYPTION
+      );
+
+      _getResetTimestamp = int.parse(_getThisdate);
+    }
+    // GET THE CURRENT TIMESTAMP
+    int _currentTimestamp = DateTime.now().millisecondsSinceEpoch;
+    // print('will execute this $_getResetCode  $_getResetTimestamp');
+    // GET COUNTER FOR VERIFICATION
+    if (_getResetCode <= 2) {
+      // SET THE ALLOW REQUEST TO TRUE
+      Selection.allowSMSReset = true;
+      // INCREASE THE RESET CODE BY 1
+      // print('The code will be sent TRYING: $_getResetCode');
+      _getResetCode++;
+      // print('access this here');
+      // ENCRYPTING THE COUNTER AND THE TIMESTAMP
+      await encyptAndStoreData(_getResetCode, _currentTimestamp);
+    } else {
+      // print('Code trying $_getResetCode');
+      // int _timeMaxReset = 300000;
+      // print('DIFF: ');
+      // print(_currentTimestamp - _getResetTimestamp);
+      // WE SUBSTRACT THE MINUTES BETWEEN THEM TO GET THE PENDING MINUTES
+      int _min = DateTime.fromMillisecondsSinceEpoch(_currentTimestamp)
+          .difference(DateTime.fromMillisecondsSinceEpoch(_getResetTimestamp))
+          .inMinutes;
+      // UPDATE THE VALUE IF IT IS GREATER THAN 5 MINUTES
+      // print('The minutes are : ON TOP: $_min');
+      if ((_min) >= 10) {
+        // print('allow to reset password again');
+        // SET THE ALLOW REQUEST TO TRUE
+        if (mounted)
+          setState(() {
+            // SET ALLOW CODE RESENT TO TRUE
+            Selection.allowSMSReset = true;
+            // print('The minutes are in allow: $_min');
+            // SET THE RESET CODE TO ITS INITIAL VALUE
+            _getResetCode = 1;
+            // INCREASE THE CODE COUNTER
+            _getResetCode++;
+          });
+        // ENCRYPTING THE DATA
+        // ENCRYPTING THE INITIAL COUNTER AND THE TIMESTAMP
+        await encyptAndStoreData(_getResetCode, _currentTimestamp);
+      } else {
+        // print('You have have reached your daily update reset limit');
+        // print('do not allow to reset password yet');
+        // SET THE ALLOW REQUEST TO FALSE
+        Selection.allowSMSReset = false;
+        // print(DateTime.fromMillisecondsSinceEpoch(_currentTimestamp).second);
+        // print(DateTime.fromMillisecondsSinceEpoch(_currentTimestamp).minute);
+        // print(DateTime.fromMillisecondsSinceEpoch(_currentTimestamp).hour);
+        // print('Separator');
+        // print(DateTime.fromMillisecondsSinceEpoch(_getResetTimestamp)
+        //     .millisecond);
+        // print(DateTime.fromMillisecondsSinceEpoch(_getResetTimestamp).second);
+        // print(DateTime.fromMillisecondsSinceEpoch(_getResetTimestamp).minute);
+        // print(DateTime.fromMillisecondsSinceEpoch(_getResetTimestamp).hour);
+        // print('OLD');
+
+        // print('The minutes are in deny: $_min');
+        // print('-=++++++++++++++++++++++++++++++++++++');
+        // print('The seconds are: $_sec');
+        // ONLY SHOW POSITIVE INTEGER VALUES
+        _min = 10 - _min;
+        if (_min < 1) _min = 1;
+        String _output = _min <= 1 ? '$_min Minute' : '$_min Minutes';
+        // LET US GET THE REMAINING SECONDS
+        // PRINT AN ERROR MESSAGE
+        if (mounted)
+          setState(() {
+            // SHOW A BLOCKING STATUS MESSAGE
+            resultMessage(
+              context,
+              'Vous avez demandé le code plusieurs fois.\nVeuillez réessayer dans $_output.',
+              Colors.red.shade300,
+              10,
+            );
+          });
+      }
+    }
+  }
+
+  Future encyptAndStoreData(int _getResetCode, int _currentTimestamp) async {
+    // INITIALIZE THE SESSION
+    var session = FlutterSession();
+    String _codeOrig = Encryption.encryptAESCryptoJS(
+      _getResetCode.toString(), // USER CODE RESET COUNTER
+      '_permission_', // STRING OF ENCRYPTION
+    );
+    String _dateOrig = Encryption.encryptAESCryptoJS(
+      _currentTimestamp.toString(), // USER CODE RESET TIMESTAMP
+      '_permission_', // STRING OF ENCRYPTION
+    );
+
+    // SHRINKING THE PART INTO TWO
+    int _pemissionPart = _codeOrig.length / 2 as int;
+    // GETTING THE FIRST PART OF THE PERMISSION
+    String _perm1 = _codeOrig.substring(0, (_pemissionPart));
+    // GETTING THE SECOND PART OF THE PERMISSION
+    String _perm2 = _codeOrig.substring(_pemissionPart, (_codeOrig.length));
+    // SETTING THE PERMISSION INTO LOCAL VARIABLES
+    await session.set("_permission_1_", _perm1.toString());
+    await session.set("_permission_2_", _perm2.toString());
+
+    // SHRINKING DATE-TIME THE PART INTO TWO
+    int _datePart = _dateOrig.length / 2 as int;
+    // GETTING THE FIRST PART OF THE PERMISSION
+    String _date1 = _dateOrig.substring(0, (_datePart));
+    // GETTING THE SECOND PART OF THE PERMISSION
+    String _date2 = _dateOrig.substring(_datePart, (_dateOrig.length));
+    // SET THE DATE VARIABLE INTO LOCAL STORAGE
+    await session.set("_duration_1_", _date1.toString());
+    await session.set("_duration_2_", _date2.toString());
+    // print('NEW DATA SAVED---------------------------------------------');
   }
 }

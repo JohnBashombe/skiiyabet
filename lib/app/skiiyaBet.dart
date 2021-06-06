@@ -77,6 +77,9 @@ int leagueIndex;
 // THIS WILL SHOW A LOADING BUTTON
 bool _buyingATicketLoader = false;
 
+// GET IF WE HAVE ACTIVE MATCHES OR NOT
+bool _noMatch = false; // NEED TO BE FULLY IMPLEMENTED ON MATCHES LOADING
+
 // SCROOL CONTROLLER
 ScrollController _scrollController;
 
@@ -322,7 +325,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           children: [
             SizedBox(width: 2.0),
             Text(
-              // '0972 977 512',
               Selection.userTelephone.toString(),
               style: TextStyle(
                 color: Colors.grey,
@@ -336,8 +338,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               height: 1.0,
             ),
             Text(
-              // Price.getWinningValues(Price.balance) +' Fc',
-              Price.getWinningValues(Selection.userBalance) + ' Fc',
+              Price.currency_symbol +
+                  ' ' +
+                  Price.getWinningValues(Selection.userBalance),
               style: TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.bold,
@@ -648,11 +651,13 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 height: 40.0,
                 padding: EdgeInsets.only(top: 10.0, bottom: 10.0, left: 5.0),
                 child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      border: Border(
-                          left: BorderSide(color: Colors.grey, width: 1.5))),
-                ),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            left: BorderSide(
+                      color: Colors.grey,
+                      width: 1.5,
+                    )))),
               ),
               Stack(
                 children: [
@@ -840,8 +845,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                             fontWeight: FontWeight.bold,
                                             // fontStyle: FontStyle.italic,
                                           ))
-                                      : SpinKitCubeGrid(
-                                          color: Colors.lightGreen[400],
+                                      : SpinKitCircle(
+                                          color: Colors.lightBlue,
                                           size: 20.0,
                                         ),
                                 ),
@@ -1081,7 +1086,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     //   return RegisterAcount();
     // }
     else if (val == 17) {
-      return ForgotPassword();
+      // IF WE HAVE A PENDING PROCESS THEN FINISH IT
+      if (Selection.resetPhone.compareTo('') != 0) {
+        return RecoverPassword();
+      } else {
+        return ForgotPassword();
+      }
     } else if (val == 18) {
       return UpdatePassword();
     } else if (val == 19) {
@@ -1211,6 +1221,19 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     _fetchMatch.fetchMatchDetails(Selection.loadLimit).then((_getData) {
       // print(value);
       // WE SET THE VALUE TO THE MATCHES ARRAY
+      if (_getData.length > 0) {
+        if (mounted)
+          setState(() {
+            // DO NOT DISPLAY NO MATCH DATA LABEL
+            _noMatch = false;
+          });
+      } else {
+        if (mounted)
+          setState(() {
+            // DISPLAY NO MATCH DATA LABEL
+            _noMatch = true;
+          });
+      }
       // LOOPS
       if (_matches.length > 0) {
         for (int i = 0; i < _getData.length; i++) {
@@ -1417,8 +1440,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             ),
                           )
                         //     )) // else do this
-                        : SpinKitCubeGrid(
-                            color: Colors.lightGreen[400],
+                        : SpinKitCircle(
+                            color: Colors.lightBlue,
                             size: 25.0,
                           ),
               ),
@@ -3338,8 +3361,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                           fontWeight: FontWeight.bold,
                           // fontStyle: FontStyle.italic,
                         ))
-                    : SpinKitCubeGrid(
-                        color: Colors.lightGreen[400],
+                    : SpinKitCircle(
+                        color: Colors.lightBlue,
                         size: 20.0,
                       ),
               ),
@@ -3385,6 +3408,19 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         .fetchMatchDetailsByLeague(_loadChampsLimit, _leagueID)
         .then((_getData) {
       // print(_getData);
+      if (_getData.length > 0) {
+        if (mounted)
+          setState(() {
+            // DO NOT DISPLAY NO MATCH DATA LABEL
+            _noMatch = false;
+          });
+      } else {
+        if (mounted)
+          setState(() {
+            // DISPLAY NO MATCH DATA LABEL
+            _noMatch = true;
+          });
+      }
       // LOOPS
       for (int i = 0; i < _getData.length; i++) {
         // VALIDATE A NEW MATCH
@@ -3982,19 +4018,33 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     String _phone2 = await session.get('_ph_2_');
     String _pass1 = await session.get('_p1_');
     String _pass2 = await session.get('_p2_');
+    // print(_phone1);
+    // print(_phone2);
+    // print(_pass1);
+    // print(_pass2);
+    // print('DATA OF THE USER');
     // RELOGGIN THE USER IF NO USER IS FOUND
     if (Selection.user == null) {
-      if (_phone1.compareTo('') != 0 &&
-          _phone2.compareTo('') != 0 &&
-          _pass1.compareTo('') != 0 &&
-          _pass2.compareTo('') != 0) {
+      if ((_phone1.toString().compareTo('') != 0 &&
+              _phone2.toString().compareTo('') != 0 &&
+              _pass1.toString().compareTo('') != 0 &&
+              _pass2.toString().compareTo('') != 0) &&
+          (_phone1.toString().compareTo('null') != 0 &&
+              _phone2.toString().compareTo('null') != 0 &&
+              _pass1.toString().compareTo('null') != 0 &&
+              _pass2.toString().compareTo('null') != 0)) {
+        // print('WE ARE LOGGING IN THE USER');
         // LOGIN THE USER
         doSessionUserLogin((_phone1 + _phone2), (_pass1 + _pass2));
       }
+      // else {
+      //   print('CANNOT LOGGED IN THE USER');
+      // }
     }
   }
 
   doSessionUserLogin(String _telephone, String _passCode) async {
+    // CHECK FOR INTERNET CONNECTION
     checkInternet();
     String congoCode = '243';
     // print('The telephone is: $telephone');

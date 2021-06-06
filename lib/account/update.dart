@@ -365,8 +365,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
   }
 
   showMessage(Color color, String message) {
-    // ignore: deprecated_member_use
-    return Scaffold.of(context).showSnackBar(
+    return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         elevation: 0,
         backgroundColor: color,
@@ -442,7 +441,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
             if (Selection.user == null) {
               // hide the loading status of the button
               displayUpdateLoading = false;
-              showMessage(Colors.red, 'Connecter votre compte d\'abord');
+              showMessage(Colors.red.shade300, 'Connecter votre compte d\'abord');
             } else {
               // REFORMAT THE PHONE NUMBER
               String phone = Selection.userTelephone.substring(1, 10);
@@ -512,7 +511,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                     displayUpdateLoading = false;
                     // display if the account was found or any other error
                     // print('the login error is: $e');
-                    showMessage(Colors.red, 'Ancien mot de passe incorrect');
+                    showMessage(Colors.red.shade300, 'Ancien mot de passe incorrect');
                   });
               });
             }

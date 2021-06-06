@@ -29,7 +29,7 @@ bool _showPasswordHiddenFormat = true;
 class _RecoverPasswordState extends State<RecoverPassword> {
   // initialize the time needed to resend the SMS Code to client
   // RESEND THE NEW CODE AFTER 60 SECONDS
-  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 60;
+  int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 120;
 
   @override
   Widget build(BuildContext context) {
@@ -318,7 +318,7 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                 Row(
                   children: [
                     Text(
-                      'Réessayer dans',
+                      'Réessayer dans ',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 13.0,
@@ -327,16 +327,18 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                     ),
                     CountdownTimer(
                       secSymbol: "s",
+                      minSymbol: "m:",
                       endTime: endTime,
                       // secSymbolTextStyle: TextStyle(
                       //   fontSize: 15.0,
                       //   fontWeight: FontWeight.bold,
                       //   color: Colors.lightBlue,
                       // ),
+
                       hoursTextStyle:
                           TextStyle(fontSize: 1.0, color: Colors.transparent),
-                      minTextStyle:
-                          TextStyle(fontSize: 1.0, color: Colors.transparent),
+                      // minTextStyle:
+                      //     TextStyle(fontSize: 1.0, color: Colors.transparent),
                       // secTextStyle: TextStyle(fontSize: 18, color: Colors.black),
                       textStyle: TextStyle(
                         color: Colors.lightBlue,
@@ -363,6 +365,8 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                         Selection.showResendSMSinForgot = true;
                         // redirect to reset phone
                         Window.showWindow = 17;
+                        // SET THE FIELD OF PHONE NUMBER TO EMPTY
+                        Selection.resetPhone = '';
                         // refresh the material page
                         Navigator.push(context,
                             MaterialPageRoute(builder: (_) => SkiiyaBet()));
@@ -465,6 +469,9 @@ class _RecoverPasswordState extends State<RecoverPassword> {
       }).then((value) {
         if (mounted)
           setState(() {
+            // SET THE RESET PHONE NUMBER TO EMPTY
+            // ON SUCCESSFULL PASSWORD UPDATE
+            Selection.resetPhone = '';
             // log the user out
             Login.doLogout();
             // redirect to login page for sign in
@@ -485,7 +492,7 @@ class _RecoverPasswordState extends State<RecoverPassword> {
           print('Update Password error: $e');
           // hide the loading status in update and check the code
           loadingButtonUpdate = false;
-          // resultMessage(context, 'Error Detected', Colors.red, 3);
+          // resultMessage(context, 'Error Detected', Colors.red.shade300, 3);
           if (e.toString().compareTo(
                   'FirebaseError: A network error (such as timeout, interrupted connection or unreachable host) has occurred. (auth/network-request-failed)') ==
               0) {
@@ -499,8 +506,7 @@ class _RecoverPasswordState extends State<RecoverPassword> {
   }
 
   resultMessage(BuildContext context, String message, Color color, int sec) {
-    // ignore: deprecated_member_use
-    return Scaffold.of(context).showSnackBar(
+    return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         elevation: 0,
         backgroundColor: color,

@@ -19,4 +19,8 @@ class Selection {
   static bool showResendSMS = false;
   // WILL SHOW ONLY IF WE HAVE A PENDING REQUEST
   static bool showResendSMSinForgot = true;
+  // CHECK IF THE USER IS BLOCKED
+  static bool isUserBlocked = false;
+  // WILL ALLOW THE USER TO RESET THE PASSWORD OR WAIT FOR FEW MINUTES
+  static bool allowSMSReset = true;
 }

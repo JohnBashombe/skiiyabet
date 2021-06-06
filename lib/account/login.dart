@@ -32,11 +32,16 @@ class Login extends StatefulWidget {
     Selection.user = null; // FIREBASE USER
     Selection.userBalance = 0.0; // USER BALANCE
     Selection.userTelephone = ''; // USER TELEPHONE
-    // SET ALL LOCAL VARIABLES TO NULL
+    // ON LOGGIN DATA PARTIAL CREDENTIALS
     await session.set("_ph_1_", '');
     await session.set("_ph_2_", '');
     await session.set("_p1_", '');
     await session.set("_p2_", '');
+    // PASSWORD RESET LOCAL STORAGE VALUES
+    await session.set('_permission_1_', '');
+    await session.set('_permission_2_', '');
+    await session.set('_duration_1_', '');
+    await session.set('_duration_2_', '');
   }
 }
 
@@ -1092,17 +1097,9 @@ class _LoginState extends State<Login> {
           .get()
           .then((_result) {
         // GET THE BLOCKING STATUS
-        // bool isBlocked = false;
-        // if (_result['isBlocked'] == null) {
-        //   // create the column if not there already
-        //   Firestore.instance
-        //       .collection('UserInfo')
-        //       .document(result.user.uid)
-        //       .updateData({'isBlocked': false});
-        //   // The column has been created
-        //   // print('This blocked status is now created');
-        // }
         if (_result['isBlocked'] == true) {
+          // SET THE USER BLOCKED STATUS TO TRUE
+          Selection.isUserBlocked = true;
           // logout the user if he is being blocked in the system
           Login.doLogout();
           // print('The user has been blocked');
@@ -1117,6 +1114,9 @@ class _LoginState extends State<Login> {
               // successMessage(context, 'Félicitations! \nconnexion réussie');
             });
         } else {
+          // SET THE USER BLOCKED STATUS TO FALSE
+          Selection.isUserBlocked = false;
+          // FETCH THE BALANCE
           Firestore.instance
               .collection('UserBalance')
               .document(result.user.uid)
@@ -1202,7 +1202,6 @@ class _LoginState extends State<Login> {
         for (int i = 0; i < 6; i++) {
           generatedCode = generatedCode + random.nextInt(10).toString();
         }
-
         // print('We did create a new account and id is: ${result.user.uid}');
         // add the balance section and the phone number section too
         // ADD USER BALANCE DETAILS HERE

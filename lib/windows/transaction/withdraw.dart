@@ -220,6 +220,9 @@ class _WithdrawState extends State<Withdraw> {
                                 if (Selection.user == null) {
                                   failMessage(context,
                                       'Connectez votre compte d\'Abord.');
+                                } else if (Selection.isUserBlocked == true) {
+                                  failMessage(
+                                      context, 'Désolé! Ce compte est bloqué.');
                                 } else {
                                   if (withdrawAmount < Price.minimumWithdraw) {
                                     failMessage(context,
@@ -340,7 +343,8 @@ class _WithdrawState extends State<Withdraw> {
         if (dailyMaxCash <= Price.maximumDailyWithdraw) {
           // SUBSTRACT THE AMOUNT TO BALANCE FIRST THEN
           // ADD A NEW REQUEST
-          Method.addNewTransaction('Retrait', withdrawAmount, '-', Selection.userTelephone)
+          Method.addNewTransaction(
+                  'Retrait', withdrawAmount, '-', Selection.userTelephone)
               .then((_trans) {
             // LET US GET THE TRANSACTION ID HERE
             String _transID = _trans.documentID.toString();
@@ -657,12 +661,11 @@ class _WithdrawState extends State<Withdraw> {
   }
 
   failMessage(BuildContext context, String message) {
-    // ignore: deprecated_member_use
-    return Scaffold.of(context).showSnackBar(
+    return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         elevation: 0,
         backgroundColor: Colors.red,
-        duration: Duration(seconds: 3),
+        duration: Duration(seconds: 4),
         content: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -681,12 +684,11 @@ class _WithdrawState extends State<Withdraw> {
   }
 
   successMessage(BuildContext context, String message) {
-    // ignore: deprecated_member_use
-    return Scaffold.of(context).showSnackBar(
+    return ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         elevation: 0,
         backgroundColor: Colors.lightGreen[400],
-        duration: Duration(seconds: 3),
+        duration: Duration(seconds: 4),
         content: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
