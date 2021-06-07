@@ -22,22 +22,21 @@ class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
 
-  // DO LOGOUT OF THE USER
+  // DO LOG OUT THE CURRENT USER
   static void doLogout() async {
     // SIGN THE USER OUT
     _auth.signOut();
-    // INITIALIZE THE SESSION
-    var session = FlutterSession();
-    // SET ALL TO DEFAULTS
+    var session = FlutterSession(); // INITIALIZE THE SESSION
+    // SET ALL VALUES TO DEFAULTS
     Selection.user = null; // FIREBASE USER
     Selection.userBalance = 0.0; // USER BALANCE
     Selection.userTelephone = ''; // USER TELEPHONE
-    // ON LOGGIN DATA PARTIAL CREDENTIALS
+    // CLEANING USER SESSION
     await session.set("_ph_1_", '');
     await session.set("_ph_2_", '');
     await session.set("_p1_", '');
     await session.set("_p2_", '');
-    // PASSWORD RESET LOCAL STORAGE VALUES
+    // CLEANING LOCAL STORAGE VALUES
     await session.set('_permission_1_', '');
     await session.set('_permission_2_', '');
     await session.set('_duration_1_', '');

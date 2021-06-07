@@ -66,8 +66,8 @@ Column notLoggedInYetHeader(String header) {
               fontSize: 16.0,
               fontWeight: FontWeight.bold)),
       SizedBox(height: 5.0),
-      Divider(thickness: 0.4, color: Colors.grey),
-      SizedBox(height: 5.0),
+      // Divider(thickness: 0.4, color: Colors.grey),
+      // SizedBox(height: 5.0),
       ConnexionRequired(),
     ],
   );

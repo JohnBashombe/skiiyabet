@@ -8,13 +8,13 @@ class Help extends StatelessWidget {
       child: Container(
         width: double.infinity,
         margin: new EdgeInsets.only(left: 10.0, top: 10.0),
-        padding: EdgeInsets.only(left: 10.0, top: 10.0),
+        padding: EdgeInsets.all(10.0),
         decoration: BoxDecoration(
           border: Border(
-            top: BorderSide(color: Colors.grey, width: 0.5),
-            bottom: BorderSide(color: Colors.grey, width: 0.5),
-            left: BorderSide(color: Colors.grey, width: 0.5),
-            right: BorderSide(color: Colors.grey, width: 0.5),
+            top: BorderSide(color: Colors.grey.shade300),
+            bottom: BorderSide(color: Colors.grey.shade300),
+            left: BorderSide(color: Colors.grey.shade300),
+            right: BorderSide(color: Colors.grey.shade300),
           ),
         ),
         child: ListView(
@@ -27,13 +27,13 @@ class Help extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
+                  fontSize: 18.0,
                 ),
               ),
             ),
-            SizedBox(height: 10.0),
-            Divider(color: Colors.grey, thickness: 0.5),
-            SizedBox(height: 10.0),
+            SizedBox(height: 5.0),
+            Divider(color: Colors.grey.shade300, thickness: 0.5),
+            SizedBox(height: 5.0),
             Text(
               'A Remarques générales',
               style: TextStyle(

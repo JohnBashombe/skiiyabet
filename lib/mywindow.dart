@@ -7,5 +7,5 @@ class Window {
   static int backToHistory = 0;
   // show the sidebar selected menu and help maintain the highligh on active
   // or history bets while checking for bet details
-  static int selectedMenu = 1;
+  static int selectedMenu = 1; 
 }
