@@ -2165,7 +2165,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                           Center(
                             child: Text('DETAILS DU BONUS',
                                 style: TextStyle(
-                                    fontSize: 18.0, 
+                                    fontSize: 18.0,
                                     fontWeight: FontWeight.bold)),
                           ),
                           Divider(color: Colors.grey.shade300, thickness: 0.4),
@@ -2188,9 +2188,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             ),
                           ),
                           SizedBox(height: 25.0),
-                          // Expanded(
-                          //   child: ListView(
-                          //     children: [
                           _displayBonusDataTable(' 04', Bonus.bonus1),
                           _displayBonusDataTable(' 05', Bonus.bonus2),
                           _displayBonusDataTable(' 06', Bonus.bonus3),
@@ -2208,9 +2205,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                           _displayBonusDataTable(' 18', Bonus.bonus15),
                           _displayBonusDataTable(' 19', Bonus.bonus16),
                           _displayBonusDataTable('+20', Bonus.bonus17),
-                          //     ],'
-                          //   ),
-                          // ),
                           SizedBox(height: 15.0),
                           Container(
                             width: double.infinity,
