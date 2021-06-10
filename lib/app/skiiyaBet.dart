@@ -4838,7 +4838,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           // LET US GET THE DIFF HERE
           int _diff = _realGameDate.millisecondsSinceEpoch -
               Selection.offlineTracker.millisecondsSinceEpoch;
-          // NOW WE CHECK IF THE GAME MATCH IS LESS OR EQUAL To 1.5 MINUTES
+          // NOW WE CHECK IF THE GAME MATCH TIMES DIFFERENCE IS LESS OR EQUAL To 1.5 MINUTES
           // IF SO REMOVE IT AFTER 90 SECONS = 90,000 MILLI SECONDS
           if (_diff <= 90000) {
             // THAT'S 90 SECONDS
