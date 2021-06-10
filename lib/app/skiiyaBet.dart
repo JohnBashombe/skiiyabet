@@ -1244,8 +1244,15 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       // WE LOOP THROUGH THE ARRAY AND ADD ONLY SELECTED GAMES
       for (var _game in oddsGameArray) {
         // CHECKING FOR SELECTED GAMES
-        if (_game.hasExpired == true) {
-          // SETTING THE UPDATE GAME TO FALSE
+        // WE WILL HIDE THE "ADD A NEW TICKET BUTTON"
+        // ONLY IF A MATCH HAS EXPIRED AND IT IS SELECTED MEANS IT IS ON THE TICKET TO PLACE
+        if (_game.hasExpired == true &&
+            _game.oddID != null &&
+            _game.oddName != null &&
+            _game.oddIndex != null &&
+            _game.oddLabel != null &&
+            _game.oddValue != null) {
+          // SETTING THE ADD NEW TICKET TO FALSE
           _shoulPlaceBet = false;
         }
       }
@@ -1285,38 +1292,65 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     loadMatchMethod();
     // LET US LOAD THE LEAGUES AND THE COUNTRIES
     loadLeagueAndCountry();
-    // this match check weither matches are still available or have expired
-    // checkMatchValidity();
-    // New methods loading...
-    // removedTheOldMatch();
-    // placed here because this widget execute only once
-    // this method helps us to detect if a certain user was already logged in
+    // THIS IS USED TO VERIFY THE VALIDITY OF MATCHES OFFLINE
+    removeOldMatch();
+
+    // TESTING......
+    // DateTime _date = DateTime.now().toUtc();
+    // Firestore.instance.collection('timer').document('timer').setData({
+    //   // 'time_zone': DateTime.now().toUtc().timeZoneName,
+    //   // DATE
+    //   // 'date': _date.day.toString().padLeft(2, '0') +
+    //   //     '-' +
+    //   //     _date.month.toString().padLeft(2, '0') +
+    //   //     '-' +
+    //   //     _date.year.toString(),
+    //   // // TIME
+    //   // 'time': _date.hour.toString().padLeft(2, '0') +
+    //   //     ':' +
+    //   //     _date.minute.toString().padLeft(2, '0') +
+    //   //     ':' +
+    //   //     _date.second.toString().padLeft(2, '0'),
+    //   // DATE_TIME
+    //   // 'date_time': _date.day.toString().padLeft(2, '0') +
+    //   //     '-' +
+    //   //     _date.month.toString().padLeft(2, '0') +
+    //   //     '-' +
+    //   //     _date.year.toString() +
+    //   //     ' ' +
+    //   //     _date.hour.toString().padLeft(2, '0') +
+    //   //     ':' +
+    //   //     _date.minute.toString().padLeft(2, '0') +
+    //   //     ':' +
+    //   //     _date.second.toString().padLeft(2, '0'),
+    //   // TIMESTAMP
+    //   // 'timestamp': DateTime.now().toUtc().millisecondsSinceEpoch,
+    //   // 'date_time': DateTime.now().toUtc(),
+    //   'timestamp': FieldValue.serverTimestamp()
+    // }).then((value) {
+    //   print('Timer successfully updated');
+    // }).catchError((e) {
+    //   print('Could not update the timer: Error: $e');
+    // });
+
     if (mounted)
       setState(() {
-        // reload from existing session and set new values
-        // logged the user in if existed before
-        reLoginUser(); // uncomment after coding
-        // keep loading user balance
+        // RE-LOGGED IN THE USER IF WE HAVE A VALID SESSION
+        reLoginUser();
+        // LOOP TO LOAD USER BALANCE AGAIN AND AGAIN
         loopUserBalanceRecord();
       });
-    // this loadingGames method load only once at first lunch
-    // loadingGames(fieldLoadMore);
-    // loadSideData();
     super.initState();
-    // _data = Selection.getPosts(0);
-    // print('Chargement code executed');
-    // _itemCount = Selection.getCountData();
-    // _countCountries = Selection.getCountCountryData();
-    //listen to body scrolling and execute itself
+    // SCROLLING EFFECTS FOR GAMES LOADING
+    // LOAD MORE GAMES ONCE THE BOTTOM -20 PIXELS HAS BEEN REACHED
     _scrollController = ScrollController()
       ..addListener(() {
         if (_scrollController.position.pixels ==
-            _scrollController.position.maxScrollExtent) {
+            (_scrollController.position.maxScrollExtent - 20)) {
           setState(() {
-            // add and load 15 more games on every bottom list reach
-            // load more data + condition to filter games already loaded
+            // LOAD MORE 15 GAMES ONCE THE BOTTOM IS REACHED
             Selection.loadLimit = Selection.loadLimit + 15;
-            // if (mounted)
+            // RELOAD THE MATCHES LOADER METHOD
             loadMatchMethod();
           });
         }
@@ -1619,6 +1653,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     ],
                   ),
                   Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Row(
@@ -1627,22 +1662,17 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             time.toString(),
                             style: TextStyle(
                               color: Colors.grey,
-                              fontSize: ResponsiveWidget.isSmallScreen(context)
-                                  ? 13.0
-                                  : 15.0,
+                              fontSize: 13.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
                       ),
                       Text(
-                        // thurs 17/09
                         date.toString(),
-                        // 'day' + ' ' + 'mydate' + '/' + 'month',
-                        // match.date[0] + ' : ' + match.date[1] + ' /' + match.date[3],
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 12.0,
+                          fontSize: 13.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -2140,33 +2170,36 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       // margin: EdgeInsets.all(10.0),
                       child: ListView(
                         children: [
-                          Align(
-                            alignment: Alignment.center,
-                            child: Tooltip(
-                              message: 'Fermer',
-                              child: MouseRegion(
-                                cursor: SystemMouseCursors.click,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if (mounted)
-                                      setState(() {
-                                        // HIDE THE DISPLAY BONUS DETAILS
-                                        _showBetslipBonusDetails = false;
-                                      });
-                                  },
-                                  child: Icon(FontAwesomeIcons.times,
-                                      color: Colors.red.shade300, size: 20),
-                                ),
-                              ),
-                            ),
-                          ),
+                          // Align(
+                          //   alignment: Alignment.centerLeft,
+                          //   child: Tooltip(
+                          //     message: 'Fermer',
+                          //     child: MouseRegion(
+                          //       cursor: SystemMouseCursors.click,
+                          //       child: GestureDetector(
+                          //         onTap: () {
+                          //           if (mounted)
+                          //             setState(() {
+                          //               // HIDE THE DISPLAY BONUS DETAILS
+                          //               _showBetslipBonusDetails = false;
+                          //             });
+                          //         },
+                          //         child: Icon(FontAwesomeIcons.times,
+                          //             color: Colors.red.shade300, size: 20),
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
                           SizedBox(height: 10.0),
                           // Text('Bonus details goe here'),
                           Center(
-                            child: Text('DETAILS DU BONUS',
-                                style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold)),
+                            child: Text(
+                              'DETAILS DU BONUS',
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                           Divider(color: Colors.grey.shade300, thickness: 0.4),
                           SizedBox(height: 10.0),
@@ -2174,8 +2207,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             child: Text(
                               'SKiiYa BET te permet de gagner beaucoup plus encore avec notre système incroyable de bonus.',
                               style: TextStyle(
-                                  fontSize: 13.0,
-                                  fontWeight: FontWeight.normal),
+                                fontSize: 13.0,
+                                fontWeight: FontWeight.normal,
+                              ),
                             ),
                           ),
                           SizedBox(height: 10.0),
@@ -2183,36 +2217,54 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             child: Text(
                               'Vous pouvez gagner jusqu\'à 100% de bonus sur un billet de pari de 20 Matches et plus',
                               style: TextStyle(
-                                  fontSize: 13.0,
-                                  fontWeight: FontWeight.normal),
+                                fontSize: 13.0,
+                                fontWeight: FontWeight.normal,
+                              ),
                             ),
                           ),
-                          SizedBox(height: 25.0),
+                          SizedBox(height: 15.0),
                           _displayBonusDataTable(' 04', Bonus.bonus1),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable(' 05', Bonus.bonus2),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable(' 06', Bonus.bonus3),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable(' 07', Bonus.bonus4),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable(' 08', Bonus.bonus5),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable(' 09', Bonus.bonus6),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable(' 10', Bonus.bonus7),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable(' 11', Bonus.bonus8),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable(' 12', Bonus.bonus9),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable(' 13', Bonus.bonus10),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable(' 14', Bonus.bonus11),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable(' 15', Bonus.bonus12),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable(' 16', Bonus.bonus13),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable(' 17', Bonus.bonus14),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable(' 18', Bonus.bonus15),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable(' 19', Bonus.bonus16),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           _displayBonusDataTable('+20', Bonus.bonus17),
+                          Divider(color: Colors.grey.shade300, thickness: 0.4),
                           SizedBox(height: 15.0),
                           Container(
                             width: double.infinity,
                             child: RawMaterialButton(
-                              // elevation: 3.0,
+                              elevation: 0.0,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8.0)),
-                              fillColor: Colors.lightGreen[400],
+                              fillColor: Colors.red.shade300,
                               onPressed: () {
                                 if (mounted)
                                   setState(() {
@@ -2224,7 +2276,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 15.0, vertical: 15.0),
                                 child: Text(
-                                  'Fermer'.toUpperCase(),
+                                  'Ok, j\'ai compris'.toUpperCase(),
                                   style: TextStyle(
                                     fontSize: 14.0,
                                     fontWeight: FontWeight.bold,
@@ -2807,122 +2859,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       ),
     );
   }
-
-  // Future show_dialog_bonus() {
-  //   return showDialog(
-  //       context: context,
-  //       builder: (context) {
-  //         return Dialog(
-  //           shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(8.0)),
-  //           elevation: 0,
-  //           backgroundColor: Colors.transparent,
-  //           child: Stack(
-  //             children: <Widget>[
-  //               Container(
-  //                 padding: new EdgeInsets.only(
-  //                     top: 100.0, bottom: 16.0, left: 16.0, right: 16.0),
-  //                 margin: new EdgeInsets.only(top: 16.0),
-  //                 decoration: BoxDecoration(
-  //                     color: Colors.white,
-  //                     shape: BoxShape.rectangle,
-  //                     borderRadius: BorderRadius.circular(17.0),
-  //                     boxShadow: [
-  //                       BoxShadow(
-  //                           color: Colors.black26,
-  //                           blurRadius: 10.0,
-  //                           offset: Offset(0.0, 10.0))
-  //                     ]),
-  //                 child: Column(
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   crossAxisAlignment: CrossAxisAlignment.center,
-  //                   mainAxisAlignment: MainAxisAlignment.center,
-  //                   children: <Widget>[
-  //                     Text('DETAILS DU BONUS',
-  //                         style: TextStyle(
-  //                             fontSize: 18.0, fontWeight: FontWeight.bold)),
-  //                     SizedBox(height: 20.0),
-  //                     Text(
-  //                       'SKiiYa BET te permet de gagner beaucoup plus encore avec notre système incroyable de bonus.',
-  //                       style: TextStyle(
-  //                           fontSize: 14.0, fontWeight: FontWeight.bold),
-  //                     ),
-  //                     SizedBox(height: 5.0),
-  //                     Text(
-  //                       'Vous pouvez gagner jusqu\'à 100% de bonus sur un billet de pari de 20 Matches et plus',
-  //                       style: TextStyle(
-  //                           fontSize: 14.0, fontWeight: FontWeight.bold),
-  //                     ),
-  //                     SizedBox(height: 25.0),
-  //                     Expanded(
-  //                       child: ListView(
-  //                         children: [
-  //                           _displayBonusDataTable(4, '', Bonus.bonus1),
-  //                           _displayBonusDataTable(5, '', Bonus.bonus2),
-  //                           _displayBonusDataTable(6, '', Bonus.bonus3),
-  //                           _displayBonusDataTable(7, '', Bonus.bonus4),
-  //                           _displayBonusDataTable(8, '', Bonus.bonus5),
-  //                           _displayBonusDataTable(9, '', Bonus.bonus6),
-  //                           _displayBonusDataTable(10, '', Bonus.bonus7),
-  //                           _displayBonusDataTable(11, '', Bonus.bonus8),
-  //                           _displayBonusDataTable(12, '', Bonus.bonus9),
-  //                           _displayBonusDataTable(13, '', Bonus.bonus10),
-  //                           _displayBonusDataTable(14, '', Bonus.bonus11),
-  //                           _displayBonusDataTable(15, '', Bonus.bonus12),
-  //                           _displayBonusDataTable(16, '', Bonus.bonus13),
-  //                           _displayBonusDataTable(17, '', Bonus.bonus14),
-  //                           _displayBonusDataTable(18, '', Bonus.bonus15),
-  //                           _displayBonusDataTable(19, '', Bonus.bonus16),
-  //                           _displayBonusDataTable(20, '+', Bonus.bonus17),
-  //                         ],
-  //                       ),
-  //                     ),
-  //                     Align(
-  //                       alignment: Alignment.bottomRight,
-  //                       child: RawMaterialButton(
-  //                         elevation: 0,
-  //                         shape: RoundedRectangleBorder(
-  //                             borderRadius: BorderRadius.circular(8.0)),
-  //                         // fillColor: Colors.grey.shade300,
-  //                         hoverColor: Colors.grey.shade100,
-  //                         onPressed: () {
-  //                           Navigator.pop(context);
-  //                         },
-  //                         child: Padding(
-  //                           padding: const EdgeInsets.symmetric(
-  //                               horizontal: 15.0, vertical: 5.0),
-  //                           child: Text(
-  //                             'ok and close'.toUpperCase(),
-  //                             style: TextStyle(
-  //                               fontSize: 14.0,
-  //                               fontWeight: FontWeight.bold,
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     )
-  //                   ],
-  //                 ),
-  //               ),
-  //               Positioned(
-  //                 top: 0.0,
-  //                 left: 16.0,
-  //                 right: 16.0,
-  //                 child: CircleAvatar(
-  //                   backgroundColor: Colors.white,
-  //                   radius: 60.0,
-  //                   child: Image.asset(
-  //                     'assets/images/info.png',
-  //                     color: Colors.lightBlue,
-  //                     fit: BoxFit.cover,
-  //                   ),
-  //                 ),
-  //               )
-  //             ],
-  //           ),
-  //         );
-  //       });
-  // }
 
   Future show_dialog_panel(
       BuildContext context, String title, String description, String imgUrl) {
@@ -4583,7 +4519,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         Row(
           children: [
             Text(
-              _bonus < 10 ? '0$_bonus' : ' $_bonus%',
+              _bonus < 10 ? '0$_bonus%' : ' $_bonus%',
               style: TextStyle(
                   color: Colors.black87,
                   fontWeight: FontWeight.bold,
@@ -4790,11 +4726,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               );
             });
         }).catchError((e) {
-          // print('e: $e');
+          print('balance reloading error: $e');
         });
       });
     }
   }
+
   // THIS METHOD WILL BE USED TO REMOVE OLD MATCHES FROM THE USER VIEW LIST
   // WE WILL LOADING AN AUTOMATIC TIMER FROM THE DATABASE COLLECTION OF TIME
   // AND THEN USE THAT TIMER TO REMOVE MATCHES ON THE USER SIDE
@@ -4802,57 +4739,166 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   // THEN WITH THAT VARIABLE, WE WILL START UPDATING THE MATCHES LIST AGAIN AND AGAIN
   // THIS VARIABLE WILL BE USED ON LOGGED IN USER AND NOT LOGGED IN USER
   //
-  // removedTheOldMatch() {
-  //   // LOOP THROUGH THE DATA ARRAY EVERY 1 SECOND TO REMOVE OLD MATCHES ONE BY ONE
-  //   Timer.periodic(new Duration(seconds: 30), (timer) {
-  //     // LET'S DO SOME CALCULATION
-  //     // print(data.length);
-  //     // loop through all displayed games on the screen to check if they are still valid
-  //     for (int j = 0; j < data.length; j++) {
-  //       // This is the timestamp for every single game
-  //       Timestamp realGameTime = Timestamp.fromDate(new DateTime(
-  //         int.parse(data[j]['date']['4']),
-  //         int.parse(data[j]['date']['3']),
-  //         int.parse(data[j]['date']['2']),
-  //         int.parse(data[j]['time']['1']),
-  //         int.parse(data[j]['time']['2']),
-  //       ));
-  //       //To TimeStamp
-  //       // We get the user current date and time
-  //       Timestamp currentUserTime = Timestamp.fromDate(new DateTime.now());
-  //       // Let's calcualate the difference of Seconds
-  //       int diff = realGameTime.seconds - currentUserTime.seconds;
-  //       // print('This match DIFF is: $diff secs.');
-  //       if (mounted)
-  //         setState(() {
-  //           // REMOVE THE GAME IF IT REMAINS ONLY TWO MINUTES AND HALF OR LESS
-  //           if (diff <= 150 || diff < 0) {
-  //             // check if the game has been selected before updating
-  //             if (BetSlipData.gameIds.contains(data[j].documentID)) {
-  //               // delete the game from selected games array
-  //               // TO BE UNCOMMENTED
-  //               // removeSingleMatch(data[j].documentID);
-  //               // print('Removing the selected match');
-  //             }
-  //             // print('Removing a current match from the list');
-  //             // if not remove it from the list
-  //             // Remove the game in the Game Array
-  //             // TO BE UNCOMMENTED
-  //             // data.removeAt(j);
-  //           }
-  //           // else {
-  //           //   // IF THE MATCH IS STILL VALID
-  //           // print('This match will remain actif=> DIFF is: $diff secs.');
-  //           // }
-  //           if (data.length <= 20) {
-  //             // load more games if available remains only 20 or less
-  //             // THIS WILL LOAD MORE GAMES
-  //             // TO BE UNCOMMENTED
-  //             // loadingGames(fieldLoadMore);
-  //           }
-  //         });
-  //       // THIS CONDITION LOADS MORE GAMES IF REMAINING ARE LESS THAN 10
-  //     }
-  //   });
-  // }
+
+  // TO BE CALLED
+  reloadTheRightTimerInterval() {
+    // GET THE INTERVAL IN MINUTES
+    int _timeInterval = 5; // IN MINUTES
+    // LOOP THROUGH THE DATA ARRAY EVERY 1 MINUTE TO REMOVE OLD MATCHES ONE BY ONE
+    Timer.periodic(new Duration(minutes: _timeInterval), (timer) {
+      // KEEP ON LOADING THE DATA TIME
+      offlineTimeLoader();
+      // print('Timer loaded again here');
+    });
+  }
+
+  Future offlineTimeLoader() async {
+    // WE GET A DATE AT THE TIME OF LOADING THEN KEEP ON INCREMENTING IT OFFLINE
+    // WHEN A USER LOADS GAMES, LOAD ALSO THE RIGHT TIME AND KEEP TRACK OF IT OFFLINE
+    // LOAD THE CURRENT TIME IN SERVER ON USER LOADING OF GAMES AND SAVE THE DATE OFFLINE
+    // WE FETCH THE CURRENT DATE_TIME FROM THE SERVER
+    await Firestore.instance
+        .collection('timer')
+        .document('timer')
+        .get()
+        .then((_thisTimer) {
+      // GET THE RIGHT TIMESTAMP FROM THE DB
+      Timestamp t = _thisTimer['timestamp'];
+      // CONDITIONS AND CHECKING
+      if (t.toDate().isUtc) {
+        // WE CONVERT IT TO DATE
+        Selection.offlineTracker = t.toDate();
+      } else {
+        // WE CONVERT IT TO UTC FORMAT
+        Selection.offlineTracker = t.toDate().toUtc();
+      }
+      // AFTER A SUCCESSFULL LOAD OF CURRENT SERVER TIME
+      // WE UPDATE THE GAMES LIST WITH ONLY ACTIVE GAMES
+      updateMatchStatusLogic(_timeInterval);
+    }).catchError((e) {
+      // print('Loading time error: $e');
+    });
+  }
+
+  // TIME INTERVAL OF MATCH VERIFICATION IN OFFLINE MODE IN SECONDS
+  int _timeInterval = 30;
+
+  removeOldMatch() {
+    // KEEP ON RELOADING THE TIMER AGAIN AND AGAIN
+    // // // reloadTheRightTimerInterval();  // TO BE UNCOMMENTED
+    // WE GET THE RIGHT CURRRENT DATE FROM THE SERVER
+    offlineTimeLoader().then((_) {
+      // EXECUTE THIS FUNCTION ON SUCCESSFULL LOADING OF THE DATE
+      // LOOP THROUGH THE DATA ARRAY EVERY 1 MINUTE TO REMOVE OLD MATCHES ONE BY ONE
+      Timer.periodic(
+        new Duration(seconds: _timeInterval),
+        (timer) {
+          // WE KEEP ON UPDATING THE STATUS OF MATCH
+          // WE IMPLEMENT THE LOGIC
+          if (mounted)
+            setState(() {
+              // WE UPDATE THE LOGIN ON THE MAIN PAGE
+              updateMatchStatusLogic(_timeInterval);
+            });
+        },
+      );
+    });
+  }
+
+  updateMatchStatusLogic(int _timeInterval) {
+    // AFTER WE HAVE A OFFLINE DATE TIME TRACKER
+    // WE WILL KEEP ON INCRESING IT EVERY SINGLE TIME SO THAT
+    // OUR GAME LIST WILL ALWAYS BE UP TO DATE
+    // print(Selection.offlineTracker);
+    if (Selection.offlineTracker != null) {
+      // GET CURRENT MILLISECONDS OF THE STORED DATE
+      int _dateMilli = Selection.offlineTracker.millisecondsSinceEpoch;
+      // SO TO ADD 10 SECONDS WE NEED TO MULTIPLY 10 BY 1000
+      Selection.offlineTracker = DateTime.fromMillisecondsSinceEpoch(
+        _dateMilli + (_timeInterval * 1000), // CONVERT TO SECONDS IN TIME
+      );
+      print('OFFLINE TIME IS: ${Selection.offlineTracker}');
+      // print('The value of date is null ${Selection.offlineTracker}');
+    }
+    // LET US PROCESS THE DATA HERE
+    // IT STORE THE GAME ID THAT WILL BE DELETED FROM MATCHES ARRAY
+    var _gamePos = [];
+    // WE LOOP THROUGH THE MATCHES ARRAY TO VERIFY FOR GAME VALIDITY
+    for (int j = 0; j < _matches.length; j++) {
+      if (mounted)
+        setState(() {
+          // WE GET THE RIGHT STARTING MATCH DATE_TIME
+          // IT WILL ALWAYS BE GREATER THAN THE LOCAL TIME IF NOT, THEN THE STATUS WILL BE UPDATED
+          String _dateFromDB = _matches[j].time['starting_at']['date_time'];
+          // WE CONVERT THE STRING DATE INTO DATE INSTANCE
+          DateTime _realGameDate = DateTime.parse(_dateFromDB);
+          // SHOULD BE GREATER ALWAYS OTHERWISE UPDATE THE STATUS
+          // print(_realGameDate.millisecondsSinceEpoch);
+          // print(Selection.offlineTracker.millisecondsSinceEpoch);
+          // LET US GET THE DIFF HERE
+          int _diff = _realGameDate.millisecondsSinceEpoch -
+              Selection.offlineTracker.millisecondsSinceEpoch;
+          // NOW WE CHECK IF THE GAME MATCH IS LESS OR EQUAL To 1.5 MINUTES
+          // IF SO REMOVE IT AFTER 90 SECONS = 90,000 MILLI SECONDS
+          if (_diff <= 90000) {
+            // THAT'S 90 SECONDS
+            // print(
+            //     'This game is no longer valid : ID : ${_matches[j].id}');
+            // LET US GET THE GAME ID
+            String _gameID = _matches[j].id.toString();
+            // UPDATE THE GAME STATUS FROM NS TO LIVE
+            // TO BE UNCOMMENTED BEFORE UPLOADING
+            // // Firestore.instance
+            // //     .collection('football')
+            // //     .document(_gameID)
+            // //     .updateData({'status': 'LIVE'}).catchError((e) {
+            // //   print('Error while updating the match: $e');
+            // // });
+            print('WILL UPDATE THE GAME STATUS IN THE DB');
+            // UPDATE THE GAME LOCAL VALUE HAS_EXPIRED TO TRUE
+            // LOOP THROUGH ODDS ARRAY TO UPDATE THE HAS_EXPIRED VALUE
+            for (var odd in oddsGameArray) {
+              // IF THE ID MATCHES
+              if (odd.gameID == _matches[j].id) {
+                // SET THE EXPIRIG STATE TO TRUE
+                odd.hasExpired = true;
+                // BREAK FOR A FASTER PROCESSING
+                break;
+              }
+            }
+            // DELETE THE GAME IN THE _MATCHES ARRAY
+            // WE ADD THEM IN A RESIDUAL ARRAY FOR A BETTER PROCESSING
+            _gamePos.add(_matches[j].id);
+            // OTHERWISE, UPDATE THE STATUS TO LIVE
+          }
+        });
+    }
+
+    // LET US DELETE ALL EXPIRING GAMES FROM THE MATCHES ARRAY
+    // WE LOOP THROUG THE IDS TO BE REMOVED AND LOOK FOR MATCHING
+    for (int _i = 0; _i < _gamePos.length; _i++) {
+      // LOOP THROUG MATCHES FOR UPDATE TOO
+      for (int _j = 0; _j < _matches.length; _j++) {
+        // CONDITIONS FOR MATCHING
+        if (_matches[_j].id == _gamePos[_i]) {
+          //  THIS MATCH OR THE GAME TO BE DELETED
+          _matches.removeAt(_j);
+          // WE BREAK THE LOOP FOR A FASTER PROCESSING
+          break;
+        }
+      }
+    }
+
+    // AFTER SUCCESSFULLY DELETED OLD GAMES,
+    // WE CLEAR THE ARRAY FOR SPACE MANAGEMENT
+    _gamePos.clear();
+
+    // WE CHECK IF WE HAVE LESS GAME ON THE USER PANEL WE LOAD MORE
+    if (_matches.length < Selection.minimumMatchesCount) {
+      // print('WE WILL LOAD AGAIN GAMES HERE');
+      // IF WE HAVE LESS MATCHES ON OUR LIST
+      // WE LOAD MORE GAMES AGAIN TO REFILL THE ARRAY LIST
+      loadMatchMethod();
+    }
+  }
 }

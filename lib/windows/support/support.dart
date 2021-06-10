@@ -26,21 +26,21 @@ class Contact extends StatelessWidget {
                 'Nos Contacts'.toUpperCase(),
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 25.0,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             SizedBox(height: 10.0),
-            Divider(color: Colors.grey, thickness: 0.5),
+            Divider(color: Colors.grey.shade300, thickness: 0.5),
             // SizedBox(height: 10.0),
-            SizedBox(height: 25.0),
+            SizedBox(height: 15.0),
             Text(
               'Service client'.toUpperCase(),
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
-                fontSize: 14.0,
+                fontSize: 13.0,
               ),
             ),
             SizedBox(height: 10.0),
@@ -51,7 +51,7 @@ class Contact extends StatelessWidget {
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
-                fontSize: 14.0,
+                fontSize: 13.0,
               ),
             ),
             SizedBox(height: 8.0),
@@ -59,7 +59,7 @@ class Contact extends StatelessWidget {
               'Nous sommes ouverts du lundi au vendredi de 8h:00 du matin à 17h:00 du soir',
               style: TextStyle(
                 color: Colors.grey,
-                fontSize: 14.0,
+                fontSize: 13.0,
               ),
             ),
             SizedBox(height: 2.0),
@@ -68,7 +68,7 @@ class Contact extends StatelessWidget {
               style: TextStyle(
                 color: Colors.grey,
                 // fontWeight: FontWeight.bold,
-                fontSize: 14.0,
+                fontSize: 13.0,
               ),
             ),
             SizedBox(height: 15.0),
@@ -80,7 +80,7 @@ class Contact extends StatelessWidget {
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
-                fontSize: 14.0,
+                fontSize: 13.0,
               ),
             ),
             SizedBox(height: 8.0),
@@ -89,7 +89,7 @@ class Contact extends StatelessWidget {
               style: TextStyle(
                 color: Colors.grey,
                 fontWeight: FontWeight.w300,
-                fontSize: 14.0,
+                fontSize: 13.0,
               ),
             ),
             SizedBox(height: 3.0),
@@ -98,7 +98,7 @@ class Contact extends StatelessWidget {
               style: TextStyle(
                 color: Colors.grey,
                 fontWeight: FontWeight.w300,
-                fontSize: 14.0,
+                fontSize: 13.0,
               ),
             ),
             SizedBox(height: 15.0),
@@ -110,7 +110,7 @@ class Contact extends StatelessWidget {
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
-                fontSize: 14.0,
+                fontSize: 13.0,
               ),
             ),
             SizedBox(height: 8.0),
@@ -119,15 +119,15 @@ class Contact extends StatelessWidget {
               style: TextStyle(
                 color: Colors.grey,
                 fontWeight: FontWeight.w300,
-                fontSize: 14.0,
+                fontSize: 13.0,
               ),
             ),
             Text(
-              'BUKAVU - SUD-KIVU \nREPUBLIQUE DEMOCRATIQUE DU CONGO',
+              'Bukavu - Sud-Kivu \nRépublique Démocratique du Congo',
               style: TextStyle(
                 color: Colors.grey,
                 fontWeight: FontWeight.w300,
-                fontSize: 14.0,
+                fontSize: 13.0,
               ),
             ),
             SizedBox(height: 40.0),

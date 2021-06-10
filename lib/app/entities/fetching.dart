@@ -2,25 +2,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:skiiyabet/app/entities/match.dart';
 
 class FetchMatch {
-  Future fetchMatchDetails(int limit) async {
-    // ignore: deprecated_member_use
-    var matches = List<Match>(); // Match Instance
-    // SELECT MATCH DETAILS AND PENDING MATCH ONLY
+  Future fetchMatchDetails(int _limit) async {
+    var matches = []; // Match Instance
+    // var matches = List<Match>(); // Match Instance
+    // // SELECT MATCH DETAILS AND PENDING MATCH ONLY
     // await Firestore.instance
     //     .collection('football')
     //     .where('status', isEqualTo: 'NS')
     //     .orderBy('time.starting_at.date_time', descending: false)
-    //     .limit(limit)
+    //     .limit(_limit)
     //     .getDocuments()
-    //     .then((_matchResult) {
+    //     .then((_matchResult) { 
     //   // LOOP THROUGH THE DATA TO ADD MATCH INSTANCES
     //   for (int _data = 0; _data < _matchResult.documents.length; _data++) {
     //     // CONVERTING FETCHED DATA AND STORE THEM IN THE ARRAY
     //     matches.add(Match.fromDatabase(_matchResult.documents[_data]));
     //   }
     // });
-    return matches;
-  }
+    return matches; 
+  } 
 
   Future fetchMatchDetailsByLeague(int limit, int leagueID) async {
     // ignore: deprecated_member_use
