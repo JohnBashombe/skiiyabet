@@ -239,7 +239,7 @@ class _TransactionsState extends State<Transactions> {
             width: double.infinity,
             child: RawMaterialButton(
               padding: new EdgeInsets.all(10.0),
-              fillColor: Colors.lightGreen[300],
+              fillColor: Colors.black54,
               elevation: 0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8.0)),

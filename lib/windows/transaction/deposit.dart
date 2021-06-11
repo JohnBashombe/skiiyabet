@@ -325,7 +325,7 @@ class _DepositState extends State<Deposit> {
                           }
                         });
                     },
-                    fillColor: Colors.lightGreen[400],
+                    fillColor: Colors.black87,
                     disabledElevation: 3.0,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0)),

@@ -198,7 +198,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           );
                         });
                     },
-                    fillColor: Colors.lightBlue.shade300,
+                    fillColor: Colors.black54,
                     disabledElevation: 1.0,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0)),
@@ -215,13 +215,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 Expanded(
                   // width: double.infinity,
                   // check if there is some unfinished restting process
+                  // check if there is a loding status or not
                   child: Selection.showResendSMSinForgot
-                      ? // check if there is a loding status or not
-                      loadingPhoneReset
+                      ? loadingPhoneReset
                           ? RawMaterialButton(
                               padding: new EdgeInsets.symmetric(vertical: 15.0),
                               onPressed: null,
-                              fillColor: Colors.lightGreen[200],
+                              fillColor: Colors.black54,
                               disabledElevation: 1.0,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8.0)),
@@ -294,7 +294,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                     }
                                   });
                               },
-                              fillColor: Colors.lightGreen[400],
+                              fillColor: Colors.black87,
                               disabledElevation: 3.0,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8.0)),
@@ -325,7 +325,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                 );
                               });
                           },
-                          fillColor: Colors.lightGreen[400],
+                          fillColor: Colors.black87,
                           disabledElevation: 3.0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),

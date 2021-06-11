@@ -70,11 +70,15 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                     if (mounted)
                       setState(() {
                         Window.showWindow = 17;
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => SkiiyaBet()));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SkiiyaBet(),
+                          ),
+                        );
                       });
                   },
-                  fillColor: Colors.lightGreen[400],
+                  fillColor: Colors.black87,
                   disabledElevation: 3.0,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0)),
@@ -394,7 +398,7 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                     ? RawMaterialButton(
                         padding: new EdgeInsets.symmetric(vertical: 15.0),
                         onPressed: null,
-                        fillColor: Colors.lightGreen[200],
+                        fillColor: Colors.black54,
                         disabledElevation: 1.0,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0)),
@@ -425,7 +429,7 @@ class _RecoverPasswordState extends State<RecoverPassword> {
                               updatePasswordMethod();
                             });
                         },
-                        fillColor: Colors.lightGreen[400],
+                        fillColor: Colors.black87,
                         disabledElevation: 3.0,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0)),

@@ -299,7 +299,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                         ? RawMaterialButton(
                             padding: new EdgeInsets.symmetric(vertical: 15.0),
                             onPressed: null,
-                            fillColor: Colors.lightGreen[200],
+                            fillColor: Colors.black54,
                             disabledElevation: 1.0,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8.0)),
@@ -330,7 +330,7 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                                   updatepasswordMethod();
                                 });
                             },
-                            fillColor: Colors.lightGreen[400],
+                            fillColor: Colors.black87,
                             disabledElevation: 3.0,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8.0)),

@@ -231,7 +231,7 @@ class _LoginState extends State<Login> {
                     });
                   // print('Creer un compte ici');
                 },
-                fillColor: Colors.lightBlue.shade300,
+                fillColor: Colors.black45,
                 disabledElevation: 1.0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0)),
@@ -251,7 +251,7 @@ class _LoginState extends State<Login> {
                         ? RawMaterialButton(
                             padding: new EdgeInsets.symmetric(vertical: 15.0),
                             onPressed: null,
-                            fillColor: Colors.lightGreen[200],
+                            fillColor: Colors.black54,
                             disabledElevation: 1.0,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8.0)),
@@ -285,14 +285,23 @@ class _LoginState extends State<Login> {
                                   // Window.showWindow = 0;
                                   // print(_numberFilter.length);
                                   // print(_numberFilter);
-                                  if (_numberFilter.length != 9) {
+                                  if (_numberFilter.length == 0) {
+                                    _displayPhoneError = true;
+                                    _displayPhoneSuccess = false;
+                                    // _validNumber = false;
+                                    _phoneMessage = 'Veuillez entrer un numéro';
+                                    // show the action button and hide the loading button
+                                    loadingLoginButton = false;
+                                  }
+                                  else if (_numberFilter.length != 9) {
                                     _displayPhoneError = true;
                                     _displayPhoneSuccess = false;
                                     // _validNumber = false;
                                     _phoneMessage = 'Numéro non accepté';
                                     // show the action button and hide the loading button
                                     loadingLoginButton = false;
-                                  } else if (_passwordFilter.length < 6 ||
+                                  }
+                                   else if (_passwordFilter.length < 6 ||
                                       _passwordFilter.length > 15) {
                                     _displayPasswordError = true;
                                     _displayPasswordSuccess = false;
@@ -332,7 +341,7 @@ class _LoginState extends State<Login> {
                                   }
                                 });
                             },
-                            fillColor: Colors.lightGreen[400],
+                            fillColor: Colors.black87,
                             disabledElevation: 5.0,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8.0)),
@@ -350,7 +359,7 @@ class _LoginState extends State<Login> {
                         ? RawMaterialButton(
                             padding: new EdgeInsets.symmetric(vertical: 15.0),
                             onPressed: null,
-                            fillColor: Colors.lightGreen[200],
+                            fillColor: Colors.black54,
                             disabledElevation: 1.0,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8.0)),
@@ -381,14 +390,23 @@ class _LoginState extends State<Login> {
                                   // Window.showWindow = 0;
                                   // print(_numberFilter.length);
                                   // print(_numberFilter);
-                                  if (_numberFilter.length != 9) {
+                                  if (_numberFilter.length == 0) {
+                                    _displayPhoneError = true;
+                                    _displayPhoneSuccess = false;
+                                    // _validNumber = false;
+                                    _phoneMessage = 'Veuillez entrer un numéro';
+                                    // show th register again because of an error
+                                    loadingRegisterButton = false;
+                                  }
+                                  else if (_numberFilter.length != 9) {
                                     _displayPhoneError = true;
                                     _displayPhoneSuccess = false;
                                     // _validNumber = false;
                                     _phoneMessage = 'Numéro invalide';
                                     // show th register again because of an error
                                     loadingRegisterButton = false;
-                                  } else if (_passwordFilter.length < 6 ||
+                                  }
+                                   else if (_passwordFilter.length < 6 ||
                                       _passwordFilter.length > 15) {
                                     _displayPasswordError = true;
                                     _displayPasswordSuccess = false;
@@ -443,7 +461,7 @@ class _LoginState extends State<Login> {
                                   }
                                 });
                             },
-                            fillColor: Colors.lightGreen[400],
+                            fillColor: Colors.black87,
                             disabledElevation: 5.0,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8.0)),

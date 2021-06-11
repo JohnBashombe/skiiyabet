@@ -34,7 +34,7 @@ class ConnexionRequired extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 5.0),
                 child: SpinKitCircle(
-                  color: Colors.lightBlue,
+                  color: Colors.black87,
                   size: 20.0,
                 ),
               ),

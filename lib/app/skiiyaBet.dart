@@ -15,6 +15,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:skiiyabet/Responsive/responsive_widget.dart';
 import 'package:skiiyabet/components/price.dart';
 import 'package:skiiyabet/components/selection.dart';
+import 'package:skiiyabet/jackpot/jackpot.dart';
 import 'package:skiiyabet/mywindow.dart';
 import 'package:skiiyabet/methods/methods.dart';
 import 'package:skiiyabet/account/forgot.dart';
@@ -246,10 +247,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         ),
         bottomNavigationBar: ResponsiveWidget.isSmallScreen(context)
             ? CurvedNavigationBar(
-                // backgroundColor: Colors.white70,
                 height: 50.0,
-                color: Colors.lightGreen[400],
-                buttonBackgroundColor: Colors.white70,
+                color: Colors.black87,
+                buttonBackgroundColor: Colors.white,
                 backgroundColor: Colors.white,
                 onTap: (int value) {
                   if (mounted)
@@ -375,7 +375,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   List<String> _sideMenuToolTip = [
     'Recherchez Ici',
     'Accueil',
-    // 'Matches Populaires',
     'Dépôt d\'argent',
     'Retrait d\'argent',
     'Mes Transactions',
@@ -388,72 +387,92 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GestureDetector(
-          onTap: () {
-            if (mounted)
-              setState(() {
-                // SET THE CHAMPIONSHIP HIGHLIGHT ICON TO NULL IN DESKTOP MODE
-                // WE GIVE IT A VALUE OF -1 SO THAT NO CHAMPIONSHIP WILL BE SELECTED
-                // _indexChampionSelection = -1;
-                Window.selectedMenu = index;
-                // print(Window.selectedMenu);
-                if (Window.selectedMenu == 0) {
-                  // matchMoreOdds = new DocumentSnapshot();
-                  Window.showWindow = 4; // call search panel
-                } else if (Window.selectedMenu == 1) {
-                  Window.showWindow = 0; // HOME PAGE
-                  Window.showJackpotIndex = 0; // SHOW TOP MENU AT INDEX 0
-                  // call home panel
-                  // set all loading to all popular matches to be found
-                  // clear list games before adding more
-                  // data.clear();
-                  // set the field type to filter
-                  // fieldLoadMore = 0;
-                  // load all games bases on their timestamp
-                  // filter games by most popular ones
-                  // loadingGames(fieldLoadMore);
-                  // loadingGames(1);
-                } else if (Window.selectedMenu == 2) {
-                  Window.showWindow = 8; // call deposit panel
-                } else if (Window.selectedMenu == 3) {
-                  Window.showWindow = 9; // call withdraw panel
-                } else if (Window.selectedMenu == 4) {
-                  Window.showWindow = 10; // call transactions panel
-                } else if (Window.selectedMenu == 5) {
-                  Window.showWindow = 11; // call My Active Bets panel
-                } else if (Window.selectedMenu == 6) {
-                  Window.showWindow = 12; // call Bets History panel
-                } else if (Window.selectedMenu == 7) {
-                  Window.showWindow = 13; // call contact Us panel
-                }
-              });
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border(
-                left: Window.selectedMenu == index
-                    ? BorderSide(color: Colors.lightGreen[400], width: 5.0)
-                    : BorderSide.none,
+        Stack(
+          children: [
+            GestureDetector(
+              onTap: () {
+                if (mounted)
+                  setState(() {
+                    // SET THE CHAMPIONSHIP HIGHLIGHT ICON TO NULL IN DESKTOP MODE
+                    // WE GIVE IT A VALUE OF -1 SO THAT NO CHAMPIONSHIP WILL BE SELECTED
+                    // _indexChampionSelection = -1;
+                    Window.selectedMenu = index;
+                    // print(Window.selectedMenu);
+                    if (Window.selectedMenu == 0) {
+                      // matchMoreOdds = new DocumentSnapshot();
+                      Window.showWindow = 4; // call search panel
+                    } else if (Window.selectedMenu == 1) {
+                      Window.showWindow = 0; // HOME PAGE
+                      Window.showJackpotIndex = 0; // SHOW TOP MENU AT INDEX 0
+                      // call home panel
+                      // set all loading to all popular matches to be found
+                      // clear list games before adding more
+                      // data.clear();
+                      // set the field type to filter
+                      // fieldLoadMore = 0;
+                      // load all games bases on their timestamp
+                      // filter games by most popular ones
+                      // loadingGames(fieldLoadMore);
+                      // loadingGames(1);
+                    } else if (Window.selectedMenu == 2) {
+                      Window.showWindow = 8; // call deposit panel
+                    } else if (Window.selectedMenu == 3) {
+                      Window.showWindow = 9; // call withdraw panel
+                    } else if (Window.selectedMenu == 4) {
+                      Window.showWindow = 10; // call transactions panel
+                    } else if (Window.selectedMenu == 5) {
+                      Window.showWindow = 11; // call My Active Bets panel
+                    } else if (Window.selectedMenu == 6) {
+                      Window.showWindow = 12; // call Bets History panel
+                    } else if (Window.selectedMenu == 7) {
+                      Window.showWindow = 13; // call contact Us panel
+                    }
+                  });
+              },
+              child: Container(
+                child: IconButton(
+                  tooltip: _sideMenuToolTip[index],
+                  icon: Icon(_sideMenuList[index],
+                      color: Window.selectedMenu == index
+                          ? Colors.black87
+                          : Colors.grey,
+                      size: Window.selectedMenu == index ? 22.0 : 20.0),
+                  onPressed: null,
+                ),
               ),
             ),
-            child: IconButton(
-              tooltip: _sideMenuToolTip[index],
-              icon: Icon(_sideMenuList[index],
-                  color: Window.selectedMenu == index
-                      ? Colors.lightGreen[400]
-                      : Colors.grey,
-                  size: Window.selectedMenu == index ? 22.0 : 20.0),
-              onPressed: null,
-            ),
-          ),
+            // DISPLAY THIS ONLY OF SELECTED SIDE MENU TAB
+            if (Window.selectedMenu == index)
+              Positioned(
+                top: 0.0,
+                left: -10.0,
+                right: 35.0,
+                bottom: 0.0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black87,
+                    borderRadius: BorderRadius.circular(100.0),
+                    border: Border(
+                      bottom: BorderSide(color: Colors.black87),
+                      top: BorderSide(color: Colors.black87),
+                      left: BorderSide(color: Colors.black87),
+                      right: BorderSide(color: Colors.black87),
+                    ),
+                  ),
+                ),
+              )
+          ], 
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Divider(
-            color: Colors.grey,
-            thickness: 0.3,
-          ),
-        )
+        // DO NOT ADD A LINE AT THE LAST INDEX TAB
+        if (index < (_sideMenuToolTip.length - 1))     
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Divider(
+              color: Colors.grey.shade300,
+              thickness: 0.5, 
+              height: 2.0,
+            ),
+          )
       ],
     );
   }
@@ -597,7 +616,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   height: 35.0,
                   child: RawMaterialButton(
                     elevation: 0.0,
-                    fillColor: Colors.lightGreen[400],
+                    fillColor: Colors.black87,
                     padding: new EdgeInsets.symmetric(horizontal: 10.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
@@ -709,8 +728,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
 
   List<String> _topMenu = [
     'Football',
-    // 'Jackpot',
-    'Mes Paris',
+    'Jackpot',
+    // 'Mes Paris',
     'Besoin d\'Aide?',
   ];
 
@@ -730,11 +749,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 // home Page
                 Window.showWindow = 0;
               }
-              // THIS IS CURRENTLY WORK AS A BETS VIEW BUT SHOULD BE FOR JACKPOT
+              // THIS IS JACKPOT
               if (Window.showJackpotIndex == 1) {
-                // call bets panel
-                Window.showWindow = 11;
-                // Window.showWindow = 2; // show jackpot panel
+                Window.showWindow = 2; // show jackpot panel
               }
               if (Window.showJackpotIndex == 2) {
                 // SHOW HELP PANEL ON CHOICE 3
@@ -742,30 +759,54 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               }
             });
         },
-        child: Container(
-          padding: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-          alignment: Alignment.centerLeft,
-          decoration: BoxDecoration(
-            border: Border(
-                // SHOW ONLY ON SMALL SCREENS
-                // DO NOT DISPLAY ON SMALL SCREEN
-                bottom: Window.showJackpotIndex == index
-                    ? BorderSide(
-                        color: Colors.lightGreen[400],
-                        width: 3.0,
-                      )
-                    : BorderSide.none),
-          ),
-          child: Text(
-            _topMenu[index],
-            style: TextStyle(
-              color:
-                  Window.showJackpotIndex == index ? Colors.black : Colors.grey,
-              fontSize: Window.showJackpotIndex == index ? 16.0 : 13.0,
-              fontWeight: Window.showJackpotIndex == index
-                  ? FontWeight.bold
-                  : FontWeight.w300,
-            ),
+        child: Stack(
+          children: [
+            Container(
+              padding:
+                  new EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                _topMenu[index],
+                style: TextStyle(
+                  color: Window.showJackpotIndex == index
+                      ? Colors.black
+                      : Colors.grey,
+                  fontSize: Window.showJackpotIndex == index ? 14.0 : 12.0,
+                  fontWeight: Window.showJackpotIndex == index
+                      ? FontWeight.bold
+                      : FontWeight.w300,
+                ),
+              ),
+            ), 
+            // IF WE HAVE A SELECTED TEXT, THEN SHOW THIS BOTTOM CONTAINER
+            if (!ResponsiveWidget.isSmallScreen(context))
+              if (Window.showJackpotIndex == index)
+                menuBottomLine(54, -10, 0, 0),
+            if (ResponsiveWidget.isSmallScreen(context))
+              if (Window.showJackpotIndex == index)
+                menuBottomLine(35, -10, 0, 0),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Positioned menuBottomLine(
+      double _top, double _bottom, double _left, double _right) {
+    return Positioned(
+      top: _top,
+      left: _left,
+      right: _right,
+      bottom: _bottom,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.black87,
+          borderRadius: BorderRadius.circular(100.0),
+          border: Border(
+            bottom: BorderSide(color: Colors.black87),
+            top: BorderSide(color: Colors.black87),
+            left: BorderSide(color: Colors.black87),
+            right: BorderSide(color: Colors.black87),
           ),
         ),
       ),
@@ -995,9 +1036,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       return singleGame();
     } else if (val == 2) {
       // show jackpot panel
-      // Will be added later on
-      // return Jackpot();
-      return games();
+      return Jackpot();
     } else if (val == 3) {
       // show help panel
       return Help();
@@ -1769,8 +1808,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   // CUSTOM COLORS
   customColors() {
     // COLOR OF SELECTION
-    _buttonColor = Colors.lightGreen[400];
-    _labelColor = Colors.white70;
+    _buttonColor = Colors.black87;
+    _labelColor = Colors.white;
   }
 
   // UPDATE THE COLORS OF THE BUTTONS AND GET THE GAME INDEX IN THE ODDS ARRAY
@@ -1879,7 +1918,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               });
           },
           fillColor: _buttonColor,
-          padding: new EdgeInsets.symmetric(horizontal: 5.0),
+          padding: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -2083,7 +2125,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               });
           },
           fillColor: _buttonColor,
-          padding: new EdgeInsets.symmetric(horizontal: 5.0),
+          padding: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 12.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -2665,7 +2710,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(8.0)),
-                                        fillColor: Colors.lightGreen[300],
+                                        fillColor: Colors.black54,
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -2801,7 +2846,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                                   }
                                                 });
                                             },
-                                            fillColor: Colors.lightGreen[400],
+                                            fillColor: Colors.black87,
                                             disabledElevation: 5.0,
                                             shape: RoundedRectangleBorder(
                                                 borderRadius:
@@ -4226,7 +4271,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       Icon(
                         FontAwesomeIcons.chevronRight,
                         size: 20.0,
-                        color: Colors.grey.shade300,
+                        color: Colors.black87,
                       ),
                     ],
                   ),
@@ -4274,7 +4319,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       Icon(
                         FontAwesomeIcons.chevronRight,
                         size: 20.0,
-                        color: Colors.grey.shade300,
+                        color: Colors.black87,
                       ),
                     ],
                   ),
@@ -4320,7 +4365,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     Icon(
                       FontAwesomeIcons.chevronRight,
                       size: 20.0,
-                      color: Colors.grey.shade300,
+                      color: Colors.black87,
                     ),
                   ],
                 ),
@@ -4365,7 +4410,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       Icon(
                         FontAwesomeIcons.chevronRight,
                         size: 20.0,
-                        color: Colors.grey.shade300,
+                        color: Colors.black87,
                       ),
                     ],
                   ),
@@ -4412,7 +4457,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       Icon(
                         FontAwesomeIcons.chevronRight,
                         size: 20.0,
-                        color: Colors.grey.shade300,
+                        color: Colors.black87,
                       ),
                     ],
                   ),
@@ -4465,20 +4510,14 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       Icon(
                         FontAwesomeIcons.chevronRight,
                         size: 20.0,
-                        color: Colors.grey.shade300,
+                        color: Colors.black87,
                       ),
                     ],
                   ),
                 ),
               ),
-            // SizedBox(height: 2.0),
-            // if (Selection.user == null)
             SizedBox(height: 3.0),
-            // if (Selection.user == null)
             Divider(color: Colors.grey.shade300, thickness: 0.5),
-            // if (Selection.user != null)
-            //   Divider(color: Colors.grey, thickness: 1.0),
-            // Divider(color: Colors.grey, thickness: 1.0),
             SizedBox(height: 50.0),
           ],
         ),
@@ -4817,7 +4856,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       Selection.offlineTracker = DateTime.fromMillisecondsSinceEpoch(
         _dateMilli + (_timeInterval * 1000), // CONVERT TO SECONDS IN TIME
       );
-      print('OFFLINE TIME IS: ${Selection.offlineTracker}');
+      // print('OFFLINE TIME IS: ${Selection.offlineTracker}');
       // print('The value of date is null ${Selection.offlineTracker}');
     }
     // LET US PROCESS THE DATA HERE
@@ -4854,7 +4893,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             // //     .updateData({'status': 'LIVE'}).catchError((e) {
             // //   print('Error while updating the match: $e');
             // // });
-            print('WILL UPDATE THE GAME STATUS IN THE DB');
+            // print('WILL UPDATE THE GAME STATUS IN THE DB');
             // UPDATE THE GAME LOCAL VALUE HAS_EXPIRED TO TRUE
             // LOOP THROUGH ODDS ARRAY TO UPDATE THE HAS_EXPIRED VALUE
             for (var odd in oddsGameArray) {

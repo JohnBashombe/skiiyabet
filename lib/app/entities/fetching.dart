@@ -5,7 +5,7 @@ class FetchMatch {
   Future fetchMatchDetails(int _limit) async {
     var matches = []; // Match Instance
     // var matches = List<Match>(); // Match Instance
-    // // SELECT MATCH DETAILS AND PENDING MATCH ONLY
+    // SELECT MATCH DETAILS AND PENDING MATCH ONLY
     // await Firestore.instance
     //     .collection('football')
     //     .where('status', isEqualTo: 'NS')
