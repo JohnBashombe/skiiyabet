@@ -1,13 +1,8 @@
 import 'package:skiiyabet/components/price.dart';
 
 class JackPots {
-  var data = {
-    'rewards': {
-      'total_matches': 2,
-      'minimum_price:': Price.jackpotMinimumBet,
-      'payout': Price.jackpotWinningAmount,
-      'currency': Price.currency_symbol,
-    },
+  static var data = {
+    'jackpot_id': '1',
     'time': {
       'time': '12:00:00',
       'date': '15-04-2021',
@@ -22,14 +17,16 @@ class JackPots {
       'status': 'pending',
     },
     'matches': {
-      'team': [
+      'data': [
         {
-          'team1': 'Liverpool',
-          'team2': 'Chelsea',
+          'id': '1',
+          'localTeam': 'Liverpool',
+          'visitorTeam': 'Chelsea',
         },
         {
-          'team1': 'Man City',
-          'team2': 'Leicester',
+          'id': '2',
+          'localTeam': 'Man City',
+          'visitorTeam': 'Leicester',
         },
       ],
       'time': [
@@ -62,15 +59,13 @@ class JackPots {
       ],
       'choices': [
         {
-          'game_id': 1,
           '1': false,
-          'x': true,
+          'x': false,
           '2': false,
         },
         {
-          'game_id': 2,
           '1': false,
-          'x': true,
+          'x': false,
           '2': false,
         },
       ]
