@@ -6,7 +6,7 @@ class JackPot {
     'jackpot_id': 'jackpot_id',
     'rewards': {
       'total_matches': 2,
-      'minimum_price:': Price.jackpotMinimumBet,
+      'minimum_price:': Price.jackpotStake,
       'total_ticket': 1,
       'stake': 100,
       'payout': Price.jackpotWinningAmount,

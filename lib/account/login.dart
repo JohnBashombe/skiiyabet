@@ -292,16 +292,14 @@ class _LoginState extends State<Login> {
                                     _phoneMessage = 'Veuillez entrer un numéro';
                                     // show the action button and hide the loading button
                                     loadingLoginButton = false;
-                                  }
-                                  else if (_numberFilter.length != 9) {
+                                  } else if (_numberFilter.length != 9) {
                                     _displayPhoneError = true;
                                     _displayPhoneSuccess = false;
                                     // _validNumber = false;
                                     _phoneMessage = 'Numéro non accepté';
                                     // show the action button and hide the loading button
                                     loadingLoginButton = false;
-                                  }
-                                   else if (_passwordFilter.length < 6 ||
+                                  } else if (_passwordFilter.length < 6 ||
                                       _passwordFilter.length > 15) {
                                     _displayPasswordError = true;
                                     _displayPasswordSuccess = false;
@@ -397,16 +395,14 @@ class _LoginState extends State<Login> {
                                     _phoneMessage = 'Veuillez entrer un numéro';
                                     // show th register again because of an error
                                     loadingRegisterButton = false;
-                                  }
-                                  else if (_numberFilter.length != 9) {
+                                  } else if (_numberFilter.length != 9) {
                                     _displayPhoneError = true;
                                     _displayPhoneSuccess = false;
                                     // _validNumber = false;
                                     _phoneMessage = 'Numéro invalide';
                                     // show th register again because of an error
                                     loadingRegisterButton = false;
-                                  }
-                                   else if (_passwordFilter.length < 6 ||
+                                  } else if (_passwordFilter.length < 6 ||
                                       _passwordFilter.length > 15) {
                                     _displayPasswordError = true;
                                     _displayPasswordSuccess = false;
@@ -813,19 +809,33 @@ class _LoginState extends State<Login> {
                 });
             },
             child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: Text(
-                _showPasswordHiddenFormat
-                    ? 'afficher le mot de passe'
-                    : 'masquer le mot de passe',
-                style: TextStyle(
-                  color: Colors.black87,
-                  fontSize: 13.0,
-                  // fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-            ),
+                cursor: SystemMouseCursors.click,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      _showPasswordHiddenFormat ? 'Afficher' : 'Masquer',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 13.0,
+                        // fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                    SizedBox(width: 5.0),
+                    _showPasswordHiddenFormat
+                        ? Icon(
+                            Icons.visibility,
+                            size: 18.0,
+                            color: Colors.lightBlue,
+                          )
+                        : Icon(
+                            Icons.visibility_off_rounded,
+                            size: 18.0,
+                            color: Colors.lightBlue,
+                          ),
+                  ],
+                )),
           ),
           SizedBox(height: 5.0),
           Row(

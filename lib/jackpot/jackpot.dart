@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:skiiyabet/components/price.dart';
@@ -10,6 +12,8 @@ class Jackpot extends StatefulWidget {
 
 // STORES ALL JACKPOTS DETAILS
 var _jackpotGame;
+// LET US GET THE TICKET PRICE BASED ON SELECTION
+double _ticketPrice = 0.0;
 
 class _JackpotState extends State<Jackpot> {
   @override
@@ -28,6 +32,57 @@ class _JackpotState extends State<Jackpot> {
       margin: EdgeInsets.only(left: 10.0),
       child: ListView(
         children: [
+          SizedBox(height: 5.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Text(
+                'Jackpot',
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.lightBlue,
+                ),
+              ),
+              SizedBox(width: 8.0),
+              Text(
+                'Résultats',
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(width: 8.0),
+              Text(
+                'Mon Compte',
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(width: 8.0),
+              Text(
+                'Règles',
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 5.0),
+          Divider(
+            color: Colors.grey.shade300,
+            thickness: 0.5,
+          ),
+          SizedBox(height: 5.0),
           Container(
             padding: new EdgeInsets.all(10.0),
             decoration: BoxDecoration(
@@ -73,7 +128,16 @@ class _JackpotState extends State<Jackpot> {
                         ),
                         SizedBox(height: 5.0),
                         Text(
-                          '12-06-2021 Choisir 17 - 1x2',
+                          _jackpotGame != null
+                              ? _jackpotGame['time']['date'].toString() +
+                                  ' ' +
+                                  _jackpotGame['description']['name']
+                                      .toString() +
+                                  ' - ' +
+                                  _jackpotGame['description']['bet_type']
+                                      .toString()
+                                      .toUpperCase()
+                              : 'chargement...',
                           style: TextStyle(
                             color: Colors.black87,
                             fontSize: 13.0,
@@ -87,7 +151,9 @@ class _JackpotState extends State<Jackpot> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          '14:00:00',
+                          _jackpotGame != null
+                              ? _jackpotGame['time']['time'].toString()
+                              : 'chargement...',
                           style: TextStyle(
                             color: Colors.black87,
                             fontSize: 13.0,
@@ -95,7 +161,9 @@ class _JackpotState extends State<Jackpot> {
                           ),
                         ),
                         Text(
-                          '12-06-2021',
+                          _jackpotGame != null
+                              ? _jackpotGame['time']['date'].toString()
+                              : 'chargement...',
                           style: TextStyle(
                             color: Colors.black87,
                             fontSize: 13.0,
@@ -115,7 +183,10 @@ class _JackpotState extends State<Jackpot> {
                         mouseCursor: SystemMouseCursors.click,
                         padding: new EdgeInsets.symmetric(
                             vertical: 10.0, horizontal: 20.0),
-                        onPressed: null,
+                        onPressed: () {
+                          // PICK A RANDOM SELECTION FOR FASTER BETTING
+                          randomPick();
+                        },
                         disabledElevation: 5.0,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
@@ -135,7 +206,9 @@ class _JackpotState extends State<Jackpot> {
                 SizedBox(height: 10.0),
                 Center(
                   child: Text(
-                    'Choisir 17 équipes gagnantes',
+                    _jackpotGame != null
+                        ? _jackpotGame['description']['description'].toString()
+                        : 'chargement...',
                     style: TextStyle(
                       color: Colors.black87,
                       fontSize: 13.0,
@@ -183,12 +256,13 @@ class _JackpotState extends State<Jackpot> {
               color: Colors.lightBlue,
               size: 20.0,
             )),
-          // SizedBox(height: 5.0),
+          SizedBox(height: 15.0),
           MouseRegion(
             cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: () {
-                print('Cleaning the jackpot betslip');
+                unselect_all_games();
+                // print('Cleaning the jackpot betslip');
               },
               child: Container(
                 alignment: Alignment.centerRight,
@@ -221,10 +295,10 @@ class _JackpotState extends State<Jackpot> {
               Text(
                 Price.currency_symbol +
                     ' ' +
-                    Price.getWinningValues(Price.jackpotMinimumBet),
+                    Price.getWinningValues(Price.jackpotStake),
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 15.0,
+                  fontSize: 14.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -243,7 +317,7 @@ class _JackpotState extends State<Jackpot> {
                 ),
               ),
               Text(
-                '2',
+                _ticketCounter().toString(),
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 15.0,
@@ -253,15 +327,15 @@ class _JackpotState extends State<Jackpot> {
             ],
           ),
           SizedBox(height: 5.0),
-          Divider(color: Colors.grey.shade300, thickness: 0.5),
-          SizedBox(height: 5.0),
+          // Divider(color: Colors.grey.shade300, thickness: 0.5),
+          // SizedBox(height: 5.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Paiement Total'.toUpperCase(),
+                'Prix Total',
                 style: TextStyle(
-                  color: Colors.black,
+                  color: Colors.black87,
                   fontSize: 14.0,
                   fontWeight: FontWeight.w500,
                 ),
@@ -269,10 +343,10 @@ class _JackpotState extends State<Jackpot> {
               Text(
                 Price.currency_symbol +
                     ' ' +
-                    Price.getWinningValues(Price.jackpotWinningAmount),
+                    Price.getWinningValues(_ticketPrice),
                 style: TextStyle(
                   color: Colors.black87,
-                  fontSize: 15.0,
+                  fontSize: 14.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -282,29 +356,30 @@ class _JackpotState extends State<Jackpot> {
           Divider(color: Colors.grey.shade300, thickness: 0.5),
           SizedBox(height: 15.0),
           Container(
-            width: double.infinity,
-            child: RawMaterialButton(
-              mouseCursor: SystemMouseCursors.click,
-              padding: new EdgeInsets.symmetric(
-                vertical: 15.0,
-                horizontal: 15.0,
-              ),
-              onPressed: null,
-              disabledElevation: 5.0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              fillColor: Colors.black87,
-              child: Text(
-                'Acheter le billet'.toUpperCase(),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15.0,
+              width: double.infinity,
+              child: RawMaterialButton(
+                mouseCursor: SystemMouseCursors.click,
+                padding: new EdgeInsets.symmetric(
+                  vertical: 15.0,
+                  horizontal: 15.0,
                 ),
-              ),
-            ),
-          ),
+                onPressed: () {
+                  print('Buying the ticket');
+                },
+                disabledElevation: 5.0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                fillColor: Colors.black87,
+                child: Text(
+                  'Acheter le billet'.toUpperCase(),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15.0,
+                  ),
+                ),
+              )),
           SizedBox(height: 50.0),
         ],
       ),
@@ -325,7 +400,7 @@ class _JackpotState extends State<Jackpot> {
     // LET US GET THE TOTAL LENGTH OF DATA
     int _len = _jackpotGame['matches']['data'].length;
     // var gameDetails = _jackpotGame[_index];
-    var _gameID = _jackpotGame['matches']['data'][_index]['id'];
+    // var _gameID = _jackpotGame['matches']['data'][_index]['id'];
     // LOCAL TEAM GAME
     var _localTeam = _jackpotGame['matches']['data'][_index]['localTeam'];
     // VISTOR TEAM OF GAME
@@ -380,7 +455,7 @@ class _JackpotState extends State<Jackpot> {
                         ' - ' +
                         _country.toString() +
                         ' - ' +
-                        _championship,
+                        _championship.toString(),
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 12.0,
@@ -400,7 +475,19 @@ class _JackpotState extends State<Jackpot> {
               child: RawMaterialButton(
                 mouseCursor: SystemMouseCursors.click,
                 onPressed: () {
-                  print('Clicking on choice 1 : $_gameID');
+                  // print('Clicking on choice 1 : $_gameID');
+                  if (mounted)
+                    setState(() {
+                      // IF THIS BUTTON IS ACTIVATED
+                      if (_jackpotGame['matches']['choices'][_index]['1'] ==
+                          true) {
+                        // DE-ACTIVATE IT
+                        _jackpotGame['matches']['choices'][_index]['1'] = false;
+                      } else {
+                        // OTHERWISE ACTIVATE IT
+                        _jackpotGame['matches']['choices'][_index]['1'] = true;
+                      }
+                    });
                 },
                 fillColor: _colorButton1,
                 disabledElevation: 3.0,
@@ -427,7 +514,19 @@ class _JackpotState extends State<Jackpot> {
               child: RawMaterialButton(
                 mouseCursor: SystemMouseCursors.click,
                 onPressed: () {
-                  print('Clicking on choice X : $_gameID');
+                  // print('Clicking on choice X : $_gameID');
+                  if (mounted)
+                    setState(() {
+                      // IF THIS BUTTON IS ACTIVATED
+                      if (_jackpotGame['matches']['choices'][_index]['x'] ==
+                          true) {
+                        // DE-ACTIVATE IT
+                        _jackpotGame['matches']['choices'][_index]['x'] = false;
+                      } else {
+                        // OTHERWISE ACTIVATE IT
+                        _jackpotGame['matches']['choices'][_index]['x'] = true;
+                      }
+                    });
                 },
                 fillColor: _colorButtonX,
                 disabledElevation: 3.0,
@@ -453,7 +552,19 @@ class _JackpotState extends State<Jackpot> {
               child: RawMaterialButton(
                 mouseCursor: SystemMouseCursors.click,
                 onPressed: () {
-                  print('Clicking on choice 2 : $_gameID');
+                  // print('Clicking on choice 2 : $_gameID');
+                  if (mounted)
+                    setState(() {
+                      // IF THIS BUTTON IS ACTIVATED
+                      if (_jackpotGame['matches']['choices'][_index]['2'] ==
+                          true) {
+                        // DE-ACTIVATE IT
+                        _jackpotGame['matches']['choices'][_index]['2'] = false;
+                      } else {
+                        // OTHERWISE ACTIVATE IT
+                        _jackpotGame['matches']['choices'][_index]['2'] = true;
+                      }
+                    });
                 },
                 fillColor: _colorButton2,
                 disabledElevation: 3.0,
@@ -488,5 +599,99 @@ class _JackpotState extends State<Jackpot> {
           ),
       ],
     );
+  }
+
+  int _ticketCounter() {
+    // COUNT THE NUMBER OF TICKETS
+    int _thisCounter = 0;
+    // INCREASER OF THE NUMBER OF TICKETS
+    int _increaser = 0;
+    // CHECK IF WE HAVE ALL GAMES SELECTED BEFORE ADDING THE NUMBER OF TICKETS
+    if (all_games_selected()) {
+      // SET THE COUNTER TO ONE IF ALL GAMES ARE SELECTED
+      _thisCounter = 1;
+      // INCREASE THE NUMBER OF TICKETS OF NEW SELECTIONS
+      int _thisLenght = _jackpotGame['matches']['data'].length;
+      // LOOP THROUGH ALL JACKPOT DATA
+      for (int i = 0; i < _thisLenght; i++) {
+        // INCREASE THE INCREASER
+        if (_jackpotGame['matches']['choices'][i]['1'] == true) _increaser++;
+        if (_jackpotGame['matches']['choices'][i]['x'] == true) _increaser++;
+        if (_jackpotGame['matches']['choices'][i]['2'] == true) _increaser++;
+      }
+      // WE REDUCE THE NUMBER OF THE LENGHT OF AVALAIBLE GAMES BEFORE SUMMING UP
+      _increaser = _increaser - _thisLenght;
+    }
+    // UPDATE THE COUNTER VARIABLE
+    _thisCounter = _thisCounter + _increaser;
+    // CONDITIONS
+    if (_increaser > 0) {
+      // INCREASE THE PRICE TIMES THE VALUE
+      _ticketPrice = (Price.jackpotStake * pow(2, _increaser));
+    } else {
+      // GET THE NORMAL PRICE BASED ON THE COUNTER
+      _ticketPrice = Price.jackpotStake * _thisCounter;
+    }
+
+    // RETURN THE SUM OF CURRENT SELCTION OR MORE IF ANY
+    return _thisCounter;
+  }
+
+  // WILL CHECK IF ALL GAMES HAVE BEEN SELECTED BEFORE BUYING THE TICKET
+  bool all_games_selected() {
+    // GET THE NUMBER OF GAMES SELECTED
+    bool _getSelected = true;
+    // SETTING ALL VARIABLES TO FALSE TO UNSELECT THEM
+    int _thisLenght = _jackpotGame['matches']['data'].length;
+    // LOOP THROUGH ALL JACKPOT DATA
+    for (int i = 0; i < _thisLenght; i++) {
+      // CONDITION
+      if (_jackpotGame['matches']['choices'][i]['1'] == false &&
+          _jackpotGame['matches']['choices'][i]['x'] == false &&
+          _jackpotGame['matches']['choices'][i]['2'] == false) {
+        // SET THE FULL COMPLETION TO FALSE
+        _getSelected = false;
+        // BREAKE THE LOOP HERE
+        break;
+      }
+    }
+    return _getSelected;
+  }
+
+  void unselect_all_games() {
+    if (mounted)
+      setState(() {
+        // SETTING ALL VARIABLES TO FALSE TO UNSELECT THEM
+        int _thisLenght = _jackpotGame['matches']['data'].length;
+        // LOOP THROUGH ALL JACKPOT DATA
+        for (int i = 0; i < _thisLenght; i++) {
+          // SET ALL THREE DATA INPUT TO FALSE
+          _jackpotGame['matches']['choices'][i]['1'] = false;
+          _jackpotGame['matches']['choices'][i]['x'] = false;
+          _jackpotGame['matches']['choices'][i]['2'] = false;
+        }
+      });
+  }
+
+  void randomPick() {
+    if (mounted)
+      setState(() {
+        // PICK A RANDOM SELECTION
+        unselect_all_games();
+        int _thisLenght = _jackpotGame['matches']['data'].length;
+        // LOOP THROUGH ALL JACKPOT DATA
+        for (int i = 0; i < _thisLenght; i++) {
+          Random r = new Random();
+          // GET ARANDOM INDEX HERE
+          int _indexPicked = r.nextInt(3);
+          // INCREASE THE INCREASER
+          if (_indexPicked == 0)
+            _jackpotGame['matches']['choices'][i]['1'] = true;
+          if (_indexPicked == 1)
+            _jackpotGame['matches']['choices'][i]['x'] = true;
+          if (_indexPicked == 2)
+            _jackpotGame['matches']['choices'][i]['2'] = true;
+        }
+      });
   }
 }

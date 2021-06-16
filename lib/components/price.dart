@@ -1,16 +1,16 @@
 class Price {
   static double minimumBetPrice = 100;
-  static double stake = 200; // minimum betting stake
-  static double maxStake = 1000000; // maximum betting stake
-  static double maxWinning = 15000000; // maximum winning amount
+  static double stake = 100; // minimum betting stake
+  static double maxStake = 100000; // maximum betting stake
+  static double maxWinning = 5000000; // maximum winning amount
   // static double balance = 50000;
-  static double jackpotMinimumBet = 100;
-  static double jackpotWinningAmount = 10000000;
+  static double jackpotStake = 100;
+  static double jackpotWinningAmount = 1000000;
   static double minimumWithdraw = 2500;
   static double maximumWithdraw = 1000000;
   static double maximumDailyWithdraw = 2000000;
-  static double minimumDeposit = 1500;
-  static double maximumDeposit = 2500000;
+  static double minimumDeposit = 2000;
+  static double maximumDeposit = 1000000;
   // that's the maximum games a user can place
   static int maxGames = 20;
   // THE CURRENCY SYMBOL

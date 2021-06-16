@@ -81,16 +81,33 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                       },
                       child: MouseRegion(
                         cursor: SystemMouseCursors.click,
-                        child: Text(
-                          _showPasswordHiddenFormat
-                              ? 'afficher le mot de passe'
-                              : 'masquer le mot de passe',
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 13.0,
-                            // fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline,
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              _showPasswordHiddenFormat
+                                  ? 'Afficher'
+                                  : 'Masquer',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 13.0,
+                                // fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                            SizedBox(width: 5.0),
+                            _showPasswordHiddenFormat
+                                ? Icon(
+                                    Icons.visibility,
+                                    size: 18.0,
+                                    color: Colors.lightBlue,
+                                  )
+                                : Icon(
+                                    Icons.visibility_off_rounded,
+                                    size: 18.0,
+                                    color: Colors.lightBlue,
+                                  ),
+                          ],
                         ),
                       ),
                     ),
@@ -441,7 +458,8 @@ class _UpdatePasswordState extends State<UpdatePassword> {
             if (Selection.user == null) {
               // hide the loading status of the button
               displayUpdateLoading = false;
-              showMessage(Colors.red.shade300, 'Connecter votre compte d\'abord');
+              showMessage(
+                  Colors.red.shade300, 'Connecter votre compte d\'abord');
             } else {
               // REFORMAT THE PHONE NUMBER
               String phone = Selection.userTelephone.substring(1, 10);
@@ -511,7 +529,8 @@ class _UpdatePasswordState extends State<UpdatePassword> {
                     displayUpdateLoading = false;
                     // display if the account was found or any other error
                     // print('the login error is: $e');
-                    showMessage(Colors.red.shade300, 'Ancien mot de passe incorrect');
+                    showMessage(
+                        Colors.red.shade300, 'Ancien mot de passe incorrect');
                   });
               });
             }

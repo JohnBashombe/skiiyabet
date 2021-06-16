@@ -461,15 +461,15 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   ),
                 ),
               )
-          ], 
+          ],
         ),
         // DO NOT ADD A LINE AT THE LAST INDEX TAB
-        if (index < (_sideMenuToolTip.length - 1))     
+        if (index < (_sideMenuToolTip.length - 1))
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Divider(
               color: Colors.grey.shade300,
-              thickness: 0.5, 
+              thickness: 0.5,
               height: 2.0,
             ),
           )
@@ -777,7 +777,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       : FontWeight.w300,
                 ),
               ),
-            ), 
+            ),
             // IF WE HAVE A SELECTED TEXT, THEN SHOW THIS BOTTOM CONTAINER
             if (!ResponsiveWidget.isSmallScreen(context))
               if (Window.showJackpotIndex == index)
@@ -2162,7 +2162,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
 
   Widget betSlip(BuildContext _context) {
     return Container(
-      // padding: new EdgeInsets.only(top: 0.0),
       margin: ResponsiveWidget.isBigScreen(context)
           ? null // ADD MARGIN TO BIG SCREEN
           : EdgeInsets.only(left: 10.0), // ADD LEFT MARGIN TO TABLET AND PHONES
@@ -2182,7 +2181,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             alignment: Alignment.centerLeft,
             height: 20.0,
             padding: EdgeInsets.only(bottom: 5.0, right: 10.0),
-            // margin: EdgeInsets.only( bottom: 10.0),
             child: Text(
               'Mon billet de pari',
               style: TextStyle(
@@ -2309,7 +2307,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                               elevation: 0.0,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8.0)),
-                              fillColor: Colors.red.shade300,
+                              fillColor: Colors.black87,
                               onPressed: () {
                                 if (mounted)
                                   setState(() {
@@ -2862,6 +2860,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                         : RawMaterialButton(
                                             padding: new EdgeInsets.all(15.0),
                                             onPressed: null,
+                                            mouseCursor:
+                                                SystemMouseCursors.disappearing,
                                             fillColor: Colors.red.shade300,
                                             disabledElevation: 1.0,
                                             shape: RoundedRectangleBorder(
@@ -2950,8 +2950,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0)),
-                          // fillColor: Colors.grey.shade300,
-                          hoverColor: Colors.grey.shade100,
+                          fillColor: Colors.black87,
                           onPressed: () {
                             Navigator.pop(context);
                           },
@@ -2959,10 +2958,11 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 15.0, vertical: 5.0),
                             child: Text(
-                              'ok and close'.toUpperCase(),
+                              'Ok, j\'ai compris'.toUpperCase(),
                               style: TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.bold,
+                                color: Colors.white,
                               ),
                             ),
                           ),

@@ -3,6 +3,7 @@ import 'package:skiiyabet/components/price.dart';
 class JackPots {
   static var data = {
     'jackpot_id': '1',
+    'status': 'pending',
     'time': {
       'time': '12:00:00',
       'date': '15-04-2021',
@@ -13,7 +14,7 @@ class JackPots {
     'description': {
       'name': 'Pick 17',
       'bet_type': '1x2',
-      'description': 'Pick 17 winners',
+      'description': 'Choisir 17 équipes gagnantes',
       'status': 'pending',
     },
     'matches': {
