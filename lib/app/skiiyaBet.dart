@@ -560,7 +560,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   margin: EdgeInsets.symmetric(horizontal: 15.0),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: _topMenu
                         .asMap()
                         .entries
@@ -628,7 +628,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         Icon(
                           FontAwesomeIcons.signInAlt,
                           color: Colors.white,
-                          size: 16.0,
+                          size: 14.0,
                         ),
                         SizedBox(width: 5.0),
                         Text(
@@ -636,7 +636,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 14.0,
+                            fontSize: 12.0,
                           ),
                         ),
                       ],
@@ -728,7 +728,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
 
   List<String> _topMenu = [
     'Football',
-    'Jackpot',
+    // 'JackPot',
     // 'Mes Paris',
     'Besoin d\'Aide?',
   ];
@@ -750,10 +750,11 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 Window.showWindow = 0;
               }
               // THIS IS JACKPOT
+              // if (Window.showJackpotIndex == 1) {
+              //   Window.showWindow = 2; // show jackpot panel
+              // }
+              // if (Window.showJackpotIndex == 2) {
               if (Window.showJackpotIndex == 1) {
-                Window.showWindow = 2; // show jackpot panel
-              }
-              if (Window.showJackpotIndex == 2) {
                 // SHOW HELP PANEL ON CHOICE 3
                 Window.showWindow = 3;
               }
@@ -771,7 +772,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   color: Window.showJackpotIndex == index
                       ? Colors.black
                       : Colors.grey,
-                  fontSize: Window.showJackpotIndex == index ? 14.0 : 12.0,
+                  fontSize: Window.showJackpotIndex == index ? 13.0 : 12.0,
                   fontWeight: Window.showJackpotIndex == index
                       ? FontWeight.bold
                       : FontWeight.w300,
@@ -849,7 +850,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 child: Column(
                   children: [
                     if (!ResponsiveWidget.isLargeScreen(context))
-                      if (Window.showWindow == 0)
+                      if ((Window.showWindow == 0) &&
+                          (!switchToMoreMatchOddsWindow))
                         Container(
                           // HEIGHT OF LEAGUES ON MOBILE
                           height: 40.0,
@@ -884,7 +886,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                             ),
                                 ),
                         ),
-                    if (Window.showWindow == 0)
+                    // ONLY FOR HOME PAGE VIEW
+                    if ((Window.showWindow == 0) &&
+                        (!switchToMoreMatchOddsWindow))
                       Container(
                         width: double.infinity,
                         padding: EdgeInsets.all(0.0),
@@ -941,10 +945,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 3.0),
             decoration: BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: Colors.grey.shade300, width: 2.0),
-                  bottom: BorderSide(color: Colors.grey.shade300, width: 2.0),
-                  left: BorderSide(color: Colors.grey.shade300, width: 2.0),
-                  right: BorderSide(color: Colors.grey.shade300, width: 2.0),
+                  top: BorderSide(color: Colors.grey.shade300),
+                  bottom: BorderSide(color: Colors.grey.shade300),
+                  left: BorderSide(color: Colors.grey.shade300),
+                  right: BorderSide(color: Colors.grey.shade300),
                 ),
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10.0)),
@@ -958,9 +962,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     Text(
                       _league.toString(),
                       style: TextStyle(
-                          color: Colors.black,
+                          color: Colors.black87,
                           fontWeight: FontWeight.bold,
-                          fontSize: 14.0),
+                          fontSize: 13.0),
                     ),
                     SizedBox(width: 4.0),
                     // Icon(Icons.more_horiz, color: Colors.lightGreen, size: 12.0),
@@ -982,15 +986,15 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     // SHOW A DIFFERENT ICON IF A CHAMPIONSHIP IS SELECTED
                     Icons.arrow_forward_ios,
                     // SHOW A DIFFERENT COLOR WHEN A CHAMPIONSHIP IS SELECTED
-                    color: Colors.grey,
-                    size: 20.0,
+                    color: Colors.grey.shade300,
+                    size: 17.0,
                   ),
                 // CHECK THE SELECTION CHOICE
                 if (_currentPick == 1)
                   // IF REQUEST IS LOADING
                   // WE WANT TO LOAD ONLY A SPECIFIC LEAGUE
                   if (_currentLeagueID == _leagueID)
-                    SpinKitCircle(color: Colors.lightBlue, size: 18.0),
+                    SpinKitCircle(color: Colors.lightBlue, size: 15.0),
 
                 // IF WE HAVE GAMES HERE
                 // WE WANT TO LOAD ONLY A SPECIFIC LEAGUE
@@ -1035,8 +1039,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       // show a game full details
       return singleGame();
     } else if (val == 2) {
+      // TEMPORARILY RETURN
+      return games();
       // show jackpot panel
-      return Jackpot();
+      // return Jackpot();
     } else if (val == 3) {
       // show help panel
       return Help();
@@ -1333,44 +1339,6 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     loadLeagueAndCountry();
     // THIS IS USED TO VERIFY THE VALIDITY OF MATCHES OFFLINE
     removeOldMatch();
-
-    // TESTING......
-    // DateTime _date = DateTime.now().toUtc();
-    // Firestore.instance.collection('timer').document('timer').setData({
-    //   // 'time_zone': DateTime.now().toUtc().timeZoneName,
-    //   // DATE
-    //   // 'date': _date.day.toString().padLeft(2, '0') +
-    //   //     '-' +
-    //   //     _date.month.toString().padLeft(2, '0') +
-    //   //     '-' +
-    //   //     _date.year.toString(),
-    //   // // TIME
-    //   // 'time': _date.hour.toString().padLeft(2, '0') +
-    //   //     ':' +
-    //   //     _date.minute.toString().padLeft(2, '0') +
-    //   //     ':' +
-    //   //     _date.second.toString().padLeft(2, '0'),
-    //   // DATE_TIME
-    //   // 'date_time': _date.day.toString().padLeft(2, '0') +
-    //   //     '-' +
-    //   //     _date.month.toString().padLeft(2, '0') +
-    //   //     '-' +
-    //   //     _date.year.toString() +
-    //   //     ' ' +
-    //   //     _date.hour.toString().padLeft(2, '0') +
-    //   //     ':' +
-    //   //     _date.minute.toString().padLeft(2, '0') +
-    //   //     ':' +
-    //   //     _date.second.toString().padLeft(2, '0'),
-    //   // TIMESTAMP
-    //   // 'timestamp': DateTime.now().toUtc().millisecondsSinceEpoch,
-    //   // 'date_time': DateTime.now().toUtc(),
-    //   'timestamp': FieldValue.serverTimestamp()
-    // }).then((value) {
-    //   print('Timer successfully updated');
-    // }).catchError((e) {
-    //   print('Could not update the timer: Error: $e');
-    // });
 
     if (mounted)
       setState(() {
@@ -2235,13 +2203,11 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                           // ),
                           SizedBox(height: 10.0),
                           // Text('Bonus details goe here'),
-                          Center(
-                            child: Text(
-                              'DETAILS DU BONUS',
-                              style: TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          Text(
+                            'DETAILS DU BONUS',
+                            style: TextStyle(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           Divider(color: Colors.grey.shade300, thickness: 0.4),
@@ -2265,41 +2231,42 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 15.0),
+                          SizedBox(height: 10.0), 
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 04', Bonus.bonus1),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 05', Bonus.bonus2),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 06', Bonus.bonus3),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 07', Bonus.bonus4),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 08', Bonus.bonus5),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 09', Bonus.bonus6),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 10', Bonus.bonus7),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 11', Bonus.bonus8),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 12', Bonus.bonus9),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 13', Bonus.bonus10),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 14', Bonus.bonus11),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 15', Bonus.bonus12),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 16', Bonus.bonus13),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 17', Bonus.bonus14),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 18', Bonus.bonus15),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 19', Bonus.bonus16),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable('+20', Bonus.bonus17),
-                          Divider(color: Colors.grey.shade300, thickness: 0.4),
+                          Divider(color: Colors.grey, thickness: 0.4),
                           SizedBox(height: 15.0),
                           Container(
                             width: double.infinity,
@@ -2321,7 +2288,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                 child: Text(
                                   'Ok, j\'ai compris'.toUpperCase(),
                                   style: TextStyle(
-                                    fontSize: 14.0,
+                                    fontSize: 12.0,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
@@ -2357,7 +2324,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                 Method.displayUserBonus(),
                                 style: TextStyle(
                                   color: Colors.black87,
-                                  fontSize: 13.0,
+                                  fontSize: 12.0,
                                   fontWeight: FontWeight.bold,
                                 ),
                                 // maxLines: 1,
@@ -2385,7 +2352,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                       'Apprendre plus...',
                                       style: TextStyle(
                                         color: Colors.lightBlue,
-                                        fontSize: 14.0,
+                                        fontSize: 13.0,
                                         fontWeight: FontWeight.w500,
                                         decoration: TextDecoration.underline,
                                       ),
@@ -2422,7 +2389,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                               'Ton billet de pari est vide'.toUpperCase(),
                               style: TextStyle(
                                   color: Colors.black87,
-                                  fontSize: 13.0,
+                                  fontSize: 12.0,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -2603,7 +2570,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                   Text('Somme de points',
                                       style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 14.0,
+                                        fontSize: 13.0,
                                       )),
                                   Text(
                                     Method.totalRate()
@@ -2611,7 +2578,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                         .toString(),
                                     style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 14.0,
+                                      fontSize: 13.0,
                                       // fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -2625,7 +2592,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                   Text('Gain Total',
                                       style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 14.0,
+                                        fontSize: 13.0,
                                       )),
                                   Text(
                                     // possibleWinning().toStringAsFixed(2),
@@ -2635,7 +2602,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                             Method.possibleWinning()),
                                     style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 14.0,
+                                      fontSize: 13.0,
                                       // fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -2652,7 +2619,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                       // Text(pourcentageRate.toString() + '% win Bonus',
                                       style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 14.0,
+                                        fontSize: 13.0,
                                       )),
                                   Text(
                                     Price.currency_symbol +
@@ -2661,7 +2628,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                             Method.bonusAmount()),
                                     style: TextStyle(
                                       color: Colors.black,
-                                      fontSize: 14.0,
+                                      fontSize: 13.0,
                                       // fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -2677,7 +2644,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                   Text('Paiement Total'.toUpperCase(),
                                       style: TextStyle(
                                         color: Colors.black,
-                                        fontSize: 14.0,
+                                        fontSize: 13.0,
                                         fontWeight: FontWeight.w500,
                                       )),
                                   Text(
@@ -2687,7 +2654,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                             Method.totalPayout()),
                                     style: TextStyle(
                                       color: Colors.black87,
-                                      fontSize: 15.0,
+                                      fontSize: 13.0,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -2854,7 +2821,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                               style: TextStyle(
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 14.0),
+                                                  fontSize: 12.0),
                                             ),
                                           )
                                         : RawMaterialButton(
@@ -2873,7 +2840,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 14.0,
+                                                fontSize: 12.0,
                                               ),
                                             ),
                                           ),
@@ -2936,12 +2903,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     children: <Widget>[
                       Text(title,
                           style: TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.w700)),
+                              fontSize: 15.0, fontWeight: FontWeight.bold)),
                       SizedBox(height: 20.0),
                       Text(
                         description,
                         style: TextStyle(
-                            fontSize: 14.0, fontWeight: FontWeight.bold),
+                            fontSize: 12.0, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 25.0),
                       Align(
@@ -2960,7 +2927,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                             child: Text(
                               'Ok, j\'ai compris'.toUpperCase(),
                               style: TextStyle(
-                                fontSize: 14.0,
+                                fontSize: 12.0,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
                               ),
@@ -2977,7 +2944,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                   right: 16.0,
                   child: CircleAvatar(
                     backgroundColor: Colors.white,
-                    radius: 60.0,
+                    radius: 50.0,
                     child: Image.asset(
                       imgUrl,
                       // color: Colors.lightGreen[400],
@@ -3224,8 +3191,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         _hasExpired
             ? Container(
                 margin: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 8.0),
+                alignment: Alignment.centerLeft,
                 child: Text(
-                  'Le match a déjà commencé',
+                  'Ce Match a Déjà Commencé',
                   style: TextStyle(
                       color: Colors.red.shade300,
                       fontSize: 12.0,
@@ -3269,8 +3237,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                     alignment: Alignment.centerLeft,
                     icon: Icon(
                       Icons.arrow_back_ios,
-                      size: 20.0,
-                      color: Colors.grey,
+                      size: 25.0,
+                      color: Colors.black87,
                     ),
                     onPressed: () {
                       if (mounted)
@@ -4747,6 +4715,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   loopUserBalanceRecord() {
     // keep loading user balance every 60 seconds
     if (Selection.user != null) {
+      // GET THE USER ID
       String _uid = Selection.user.uid;
       // IF THE USER HAS LOGGED IN KEEP ON RELOADING FEATURES EVERY 60 SECONDS
       Timer.periodic(new Duration(seconds: 60), (timer) {
@@ -4760,9 +4729,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           if (mounted)
             setState(() {
               // UPDATE THE USER BALANCE HERE
-              Selection.userBalance = double.parse(
-                _balanceResult['balance'].toString(),
-              );
+              Selection.userBalance =
+                  double.parse(_balanceResult['balance'].toString());
             });
         }).catchError((e) {
           print('balance reloading error: $e');
@@ -4777,17 +4745,17 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   // WE WILL BE FECTHING THAT VALUE WHEN THE APP STARTS AND SAVE IT INTO A LOCAL VARIABLE
   // THEN WITH THAT VARIABLE, WE WILL START UPDATING THE MATCHES LIST AGAIN AND AGAIN
   // THIS VARIABLE WILL BE USED ON LOGGED IN USER AND NOT LOGGED IN USER
-  //
 
   // TO BE CALLED
   reloadTheRightTimerInterval() {
     // GET THE INTERVAL IN MINUTES
-    int _timeInterval = 5; // IN MINUTES
+    int _timeInterval = 2; // IN MINUTES
     // LOOP THROUGH THE DATA ARRAY EVERY 1 MINUTE TO REMOVE OLD MATCHES ONE BY ONE
     Timer.periodic(new Duration(minutes: _timeInterval), (timer) {
       // KEEP ON LOADING THE DATA TIME
-      offlineTimeLoader();
-      // print('Timer loaded again here');
+      offlineTimeLoader().then((value) {
+        // print('reloading Timer again...');
+      });
     });
   }
 
@@ -4811,6 +4779,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         // WE CONVERT IT TO UTC FORMAT
         Selection.offlineTracker = t.toDate().toUtc();
       }
+      // print("The newly fetched time is: ${Selection.offlineTracker}");
       // AFTER A SUCCESSFULL LOAD OF CURRENT SERVER TIME
       // WE UPDATE THE GAMES LIST WITH ONLY ACTIVE GAMES
       updateMatchStatusLogic(_timeInterval);
@@ -4823,8 +4792,9 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   int _timeInterval = 30;
 
   removeOldMatch() {
-    // KEEP ON RELOADING THE TIMER AGAIN AND AGAIN
-    // // // reloadTheRightTimerInterval();  // TO BE UNCOMMENTED
+    // KEEP ON RELOADING THE EXACT DB TIMER AGAIN AND AGAIN
+    // TO BE UNCOMMENTED
+    reloadTheRightTimerInterval();
     // WE GET THE RIGHT CURRRENT DATE FROM THE SERVER
     offlineTimeLoader().then((_) {
       // EXECUTE THIS FUNCTION ON SUCCESSFULL LOADING OF THE DATE
@@ -4881,8 +4851,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           // IF SO REMOVE IT AFTER 90 SECONS = 90,000 MILLI SECONDS
           if (_diff <= 90000) {
             // THAT'S 90 SECONDS
-            // print(
-            //     'This game is no longer valid : ID : ${_matches[j].id}');
+            // print('This game is no longer valid : ID : ${_matches[j].id}');
             // LET US GET THE GAME ID
             String _gameID = _matches[j].id.toString();
             // UPDATE THE GAME STATUS FROM NS TO LIVE
@@ -4915,23 +4884,23 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
 
     // LET US DELETE ALL EXPIRING GAMES FROM THE MATCHES ARRAY
     // WE LOOP THROUG THE IDS TO BE REMOVED AND LOOK FOR MATCHING
-    for (int _i = 0; _i < _gamePos.length; _i++) {
-      // LOOP THROUG MATCHES FOR UPDATE TOO
-      for (int _j = 0; _j < _matches.length; _j++) {
-        // CONDITIONS FOR MATCHING
-        if (_matches[_j].id == _gamePos[_i]) {
-          //  THIS MATCH OR THE GAME TO BE DELETED
-          _matches.removeAt(_j);
-          // WE BREAK THE LOOP FOR A FASTER PROCESSING
-          break;
-        }
-      }
-    }
+    ////////////////////////////////////////////////
+    // for (int _i = 0; _i < _gamePos.length; _i++) {
+    //   // LOOP THROUG MATCHES FOR UPDATE TOO
+    //   for (int _j = 0; _j < _matches.length; _j++) {
+    //     // CONDITIONS FOR MATCHING
+    //     if (_matches[_j].id == _gamePos[_i]) {
+    //       //  THIS MATCH OR THE GAME TO BE DELETED
+    //       _matches.removeAt(_j);
+    //       // WE BREAK THE LOOP FOR A FASTER PROCESSING
+    //       break;
+    //     }
+    //   }
+    // }
 
     // AFTER SUCCESSFULLY DELETED OLD GAMES,
     // WE CLEAR THE ARRAY FOR SPACE MANAGEMENT
     _gamePos.clear();
-
     // WE CHECK IF WE HAVE LESS GAME ON THE USER PANEL WE LOAD MORE
     if (_matches.length < Selection.minimumMatchesCount) {
       // print('WE WILL LOAD AGAIN GAMES HERE');

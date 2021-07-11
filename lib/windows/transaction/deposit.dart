@@ -9,7 +9,7 @@ import 'package:skiiyabet/methods/connexion.dart';
 import 'package:http/http.dart' as http;
 import 'package:skiiyabet/methods/methods.dart';
 
-double _depositAmount = 3000;
+double _depositAmount = 2000;
 
 // CHECKING OPERATORS
 bool _isOrangeMoney = false;
@@ -51,10 +51,7 @@ class _DepositState extends State<Deposit> {
               ),
             ),
             SizedBox(height: 8.0),
-            Divider(
-              color: Colors.grey.shade300,
-              thickness: 0.4,
-            ),
+            Divider(color: Colors.grey.shade300, thickness: 0.4),
             SizedBox(height: 8.0),
             if (Selection.user == null) ConnexionRequired(),
             // SizedBox(height: 5.0),
@@ -90,34 +87,71 @@ class _DepositState extends State<Deposit> {
             ),
             SizedBox(height: 10.0),
             Text(
-              (!_isAirtelMoney && !_isOrangeMoney && !_isMPesa)
-                  ? 'Systèmes de dépôt disponible'
-                  : 'Ton système de dépôt disponible',
+              'Dépôt minimum: ' +
+                  Price.currency_symbol +
+                  ' ' +
+                  Price.getWinningValues(Price.minimumDeposit),
               style: TextStyle(
-                color: Colors.black,
+                color: Colors.black87,
                 fontSize: 12.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 5.0),
-            Divider(
-              color: Colors.grey.shade300,
-              thickness: 0.4,
+            SizedBox(height: 3.0),
+            Text(
+              'Dépôt maximum: ' +
+                  Price.currency_symbol +
+                  ' ' +
+                  Price.getWinningValues(Price.maximumDeposit),
+              style: TextStyle(
+                color: Colors.black87,
+                fontSize: 12.0,
+                fontWeight: FontWeight.bold,
+              ),
             ),
+            // SizedBox(height: 10.0),
+            // Text(
+            //   (!_isAirtelMoney && !_isOrangeMoney && !_isMPesa)
+            //       ? 'Systèmes de dépôt disponible'
+            //       : 'Ton système de dépôt disponible',
+            //   style: TextStyle(
+            //     color: Colors.black,
+            //     fontSize: 12.0,
+            //     fontWeight: FontWeight.bold,
+            //   ),
+            // ),
+            // SizedBox(height: 5.0),
+            // Divider(
+            //   color: Colors.grey.shade300,
+            //   thickness: 0.4,
+            // ),
             SizedBox(height: 10.0),
             // IF ONE OF THE NETWORK OPERATOR IS DETECTED
+            if (!_isAirtelMoney && !_isOrangeMoney && !_isMPesa)
+              paymentOption('Airtel Money | Orange Money | Vodacom M-Pesa'),
+            if (_isAirtelMoney) paymentOption('Airtel Money'),
+            if (_isOrangeMoney) paymentOption('Orange Money'),
+            if (_isMPesa) paymentOption('Vodacom M-Pesa'),
+
+            SizedBox(height: 10.0),
+
             if (_isAirtelMoney || _isOrangeMoney || _isMPesa)
               Center(
-                child: Container(
-                  height: 70.0,
-                  child: Image.asset(
-                    _isAirtelMoney
-                        ? 'images/airtel-money.png'
-                        : _isOrangeMoney
-                            ? 'images/orange-money.png'
-                            : 'images/m-pesa.jpeg',
-                    // color: Colors.lightBlue,
-                    fit: BoxFit.cover,
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 50.0,
+                  child: Container(
+                    height: 70.0,
+                    width: 100.0,
+                    child: Image.asset(
+                      _isAirtelMoney
+                          ? 'assets/images/airtel-money.png'
+                          : _isOrangeMoney
+                              ? 'assets/images/orange-money.png'
+                              : 'assets/images/m-pesa.jpeg',
+                      // color: Colors.lightBlue,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                 ),
               ),
@@ -127,36 +161,11 @@ class _DepositState extends State<Deposit> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
-                      child: Container(
-                        height: 50.0,
-                        width: 60.0,
-                        child: Image.asset(
-                          'images/airtel-money.png',
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
+                    imgDisplay('assets/images/airtel-money.png'),
                     SizedBox(width: 5.0),
-                    Expanded(
-                      child: Container(
-                        height: 50.0,
-                        width: 60.0,
-                        child: Image.asset('images/orange-money.png',
-                            fit: BoxFit.contain),
-                      ),
-                    ),
+                    imgDisplay('assets/images/orange-money.png'),
                     SizedBox(width: 5.0),
-                    Expanded(
-                      child: Container(
-                        height: 50.0,
-                        width: 60.0,
-                        child: Image.asset(
-                          'images/m-pesa.jpeg',
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
+                    imgDisplay('assets/images/m-pesa.jpeg'),
                   ],
                 ),
               ),
@@ -208,30 +217,7 @@ class _DepositState extends State<Deposit> {
             //   ],
             // ),
             SizedBox(height: 10.0),
-            Text(
-              'Dépôt minimum: ' +
-                  Price.currency_symbol +
-                  ' ' +
-                  Price.getWinningValues(Price.minimumDeposit),
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 12.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 3.0),
-            Text(
-              'Dépôt maximum: ' +
-                  Price.currency_symbol +
-                  ' ' +
-                  Price.getWinningValues(Price.maximumDeposit),
-              style: TextStyle(
-                color: Colors.black87,
-                fontSize: 12.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 10.0),
+
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -267,7 +253,7 @@ class _DepositState extends State<Deposit> {
                     },
                     cursorColor: Colors.lightBlue,
                     maxLines: 1,
-                    initialValue: '3000',
+                    initialValue: _depositAmount.toString(),
                     keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.digitsOnly
@@ -293,6 +279,7 @@ class _DepositState extends State<Deposit> {
                     onPressed: () {
                       if (mounted)
                         setState(() {
+                          print(_depositAmount);
                           if (Selection.user == null) {
                             failMessage(
                                 context, 'Connecter votre compte d\'abord');
@@ -308,19 +295,21 @@ class _DepositState extends State<Deposit> {
                                   'Le dépôt minimum est: ${Price.currency_symbol} ${Price.getWinningValues(Price.maximumDeposit)}');
                             } else {
                               // do deposit logic here
-                              print('Mix with the deposit API here');
+                              // print('Mix with the deposit API here');
                               if (_isAirtelMoney) {
-                                print('The deposit is with airtel Money');
+                                // print('The deposit is with airtel Money');
                               }
                               if (_isOrangeMoney) {
-                                print('the Desposit is with Orange Money');
-                                makeOrangeMoneyDeposit(_depositAmount);
+                                // print('the Desposit is with Orange Money');
+                                // makeOrangeMoneyDeposit(_depositAmount);
                               }
                               if (_isMPesa) {
-                                print('The Deposit is with Vodacom MPesa');
+                                // print('The Deposit is with Vodacom MPesa');
                               }
                               successMessage(
-                                  context, 'Demande de dépôt en cours...');
+                                  context, 'En cours de developement...');
+                              // successMessage(
+                              //     context, 'Demande de dépôt en cours...');
                             }
                           }
                         });
@@ -363,13 +352,35 @@ class _DepositState extends State<Deposit> {
             // SizedBox(height: 8.0),
             skiiyaWidget(),
             // airtelMoneyWidget(),
-            orangeMoneyWidget(),
+            // orangeMoneyWidget(),
             // mPesaWidget(),
             SizedBox(height: 50.0),
           ],
         ),
       ),
     );
+  }
+
+  Expanded imgDisplay(String url) {
+    return Expanded(
+      child: Container(
+        height: 70.0,
+        width: 90.0,
+        child: Image.asset(
+          url,
+          fit: BoxFit.contain,
+        ),
+      ),
+    );
+  }
+
+  Text paymentOption(String option) {
+    return Text(option,
+        style: TextStyle(
+          color: Colors.black87,
+          fontSize: 13.0,
+          fontWeight: FontWeight.bold,
+        ));
   }
 
   @override
@@ -387,8 +398,8 @@ class _DepositState extends State<Deposit> {
     // GET THE USER PHONE NUMBER
     // WE WILL CHANGE THE DEFAULT NUMBER TO AN ORANGE NUMBER FOR
     // DEVELOPMENT PURPOSES
-    // String _phone = Selection.userTelephone;
-    String _phone = '0894093795';
+    String _phone = Selection.userTelephone;
+    // String _phone = '0894093795';
     // print('THE PHONE: $_phone');
     if (_phone.compareTo('') != 0) {
       // LET US GET THE AIRTEL NUMBER
@@ -578,8 +589,8 @@ class _DepositState extends State<Deposit> {
   }
 
   void makeOrangeMoneyDeposit(double _depositAmount) async {
-    // String _userPhone = Selection.userTelephone;
-    String _defaultNum = '0894093795';
+    String _defaultNum = Selection.userTelephone;
+    // String _defaultNum = '0894093795';
     String _userPhone = '+243' + _defaultNum.substring(1, (_defaultNum.length));
     // print(_userPhone);
     // print(_userPhone.length);

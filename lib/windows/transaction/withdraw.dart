@@ -104,20 +104,28 @@ class _WithdrawState extends State<Withdraw> {
                     // fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 15.0),
+                SizedBox(height: 10.0),
+                // IF ONE OF THE NETWORK OPERATOR IS DETECTED
+                if (!_isAirtelMoney && !_isOrangeMoney && !_isMPesa)
+                  paymentOption('Airtel Money | Orange Money | Vodacom M-Pesa'),
+                if (_isAirtelMoney) paymentOption('Airtel Money'),
+                if (_isOrangeMoney) paymentOption('Orange Money'),
+                if (_isMPesa) paymentOption('Vodacom M-Pesa'),
+                SizedBox(height: 10.0),
                 // IF ONE OF THE NETWORK OPERATOR IS DETECTED
                 if (_isAirtelMoney || _isOrangeMoney || _isMPesa)
                   Center(
                     child: Container(
                       height: 70.0,
+                      width: 100.0,
                       child: Image.asset(
                         _isAirtelMoney
-                            ? 'images/airtel-money.png'
+                            ? 'assets/images/airtel-money.png'
                             : _isOrangeMoney
-                                ? 'images/orange-money.png'
-                                : 'images/m-pesa.jpeg',
+                                ? 'assets/images/orange-money.png'
+                                : 'assets/images/m-pesa.jpeg',
                         // color: Colors.lightBlue,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
@@ -127,36 +135,11 @@ class _WithdrawState extends State<Withdraw> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
-                          child: Container(
-                            height: 50.0,
-                            width: 60.0,
-                            child: Image.asset(
-                              'images/airtel-money.png',
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                        ),
+                        imgDisplay('assets/images/airtel-money.png'),
                         SizedBox(width: 5.0),
-                        Expanded(
-                          child: Container(
-                            height: 50.0,
-                            width: 60.0,
-                            child: Image.asset('images/orange-money.png',
-                                fit: BoxFit.contain),
-                          ),
-                        ),
+                        imgDisplay('assets/images/orange-money.png'),
                         SizedBox(width: 5.0),
-                        Expanded(
-                          child: Container(
-                            height: 50.0,
-                            width: 60.0,
-                            child: Image.asset(
-                              'images/m-pesa.jpeg',
-                              fit: BoxFit.contain,
-                            ),
-                          ),
-                        ),
+                        imgDisplay('assets/images/m-pesa.jpeg'),
                       ],
                     ),
                   ),
@@ -236,7 +219,9 @@ class _WithdrawState extends State<Withdraw> {
                                     failMessage(context,
                                         'Votre solde est insuffisant.');
                                   } else {
-                                    mainRequest();
+                                    successMessage(
+                                        context, 'En cours de developement...');
+                                    // mainRequest();
                                   }
                                 }
                               });
@@ -263,6 +248,28 @@ class _WithdrawState extends State<Withdraw> {
         ),
       ),
     );
+  }
+
+  Expanded imgDisplay(String url) {
+    return Expanded(
+      child: Container(
+        height: 70.0,
+        width: 90.0,
+        child: Image.asset(
+          url,
+          fit: BoxFit.contain,
+        ),
+      ),
+    );
+  }
+
+  Text paymentOption(String option) {
+    return Text(option,
+        style: TextStyle(
+          color: Colors.black87,
+          fontSize: 13.0,
+          fontWeight: FontWeight.bold,
+        ));
   }
 
   getNetworkOperator() {
