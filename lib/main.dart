@@ -9,6 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // THIS IS THE MAIN METHOD FOR SKIIYA BET
+    // FIREBASE INIT - FLUTTER BUILD WEB - FIREBASE SERVE - FIREBASE DEPLOY 
     return MaterialApp( 
       title: 'SkiiYa Bet',
       debugShowCheckedModeBanner: false,

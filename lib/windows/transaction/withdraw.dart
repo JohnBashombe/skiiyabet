@@ -106,14 +106,19 @@ class _WithdrawState extends State<Withdraw> {
                 ),
                 SizedBox(height: 10.0),
                 // IF ONE OF THE NETWORK OPERATOR IS DETECTED
-                if (!_isAirtelMoney && !_isOrangeMoney && !_isMPesa)
+                if ((!_isAirtelMoney && !_isOrangeMoney && !_isMPesa) ||
+                    Selection.user == null)
                   paymentOption('Airtel Money | Orange Money | Vodacom M-Pesa'),
-                if (_isAirtelMoney) paymentOption('Airtel Money'),
-                if (_isOrangeMoney) paymentOption('Orange Money'),
-                if (_isMPesa) paymentOption('Vodacom M-Pesa'),
+                if (_isAirtelMoney && Selection.user != null)
+                  paymentOption('Airtel Money'),
+                if (_isOrangeMoney && Selection.user != null)
+                  paymentOption('Orange Money'),
+                if (_isMPesa && Selection.user != null)
+                  paymentOption('Vodacom M-Pesa'),
                 SizedBox(height: 10.0),
                 // IF ONE OF THE NETWORK OPERATOR IS DETECTED
-                if (_isAirtelMoney || _isOrangeMoney || _isMPesa)
+                if ((_isAirtelMoney || _isOrangeMoney || _isMPesa) &&
+                    Selection.user != null)
                   Center(
                     child: Container(
                       height: 70.0,
@@ -129,7 +134,8 @@ class _WithdrawState extends State<Withdraw> {
                       ),
                     ),
                   ),
-                if (!_isAirtelMoney && !_isOrangeMoney && !_isMPesa)
+                if ((!_isAirtelMoney && !_isOrangeMoney && !_isMPesa) ||
+                    Selection.user == null)
                   Container(
                     padding: new EdgeInsets.only(bottom: 10.0),
                     child: Row(
@@ -143,13 +149,24 @@ class _WithdrawState extends State<Withdraw> {
                       ],
                     ),
                   ),
-                if (_isAirtelMoney || _isOrangeMoney || _isMPesa)
-                  SizedBox(height: 10.0),
+                // if (_isAirtelMoney || _isOrangeMoney || _isMPesa)
+                // SizedBox(height: 10.0),
 
                 // SHOW THIS IF WE HAVE ANY PENDING REQUEST
-                if (!_isRequestPending)
+                if (!_isRequestPending || Selection.user == null)
                   Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      Text(
+                        'Entrer le montant:',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12.0,
+                        ),
+                      ),
+                      SizedBox(height: 5.0),
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 10.0),
                         decoration: BoxDecoration(

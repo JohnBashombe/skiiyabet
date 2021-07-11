@@ -9,7 +9,7 @@ import 'package:skiiyabet/methods/connexion.dart';
 import 'package:http/http.dart' as http;
 import 'package:skiiyabet/methods/methods.dart';
 
-double _depositAmount = 2000;
+double _depositAmount = 0;
 
 // CHECKING OPERATORS
 bool _isOrangeMoney = false;
@@ -50,8 +50,9 @@ class _DepositState extends State<Deposit> {
                 ),
               ),
             ),
-            SizedBox(height: 8.0),
-            Divider(color: Colors.grey.shade300, thickness: 0.4),
+            if (Selection.user != null) SizedBox(height: 8.0),
+            if (Selection.user != null)
+              Divider(color: Colors.grey.shade300, thickness: 0.4),
             SizedBox(height: 8.0),
             if (Selection.user == null) ConnexionRequired(),
             // SizedBox(height: 5.0),
@@ -127,15 +128,20 @@ class _DepositState extends State<Deposit> {
             // ),
             SizedBox(height: 10.0),
             // IF ONE OF THE NETWORK OPERATOR IS DETECTED
-            if (!_isAirtelMoney && !_isOrangeMoney && !_isMPesa)
+            if ((!_isAirtelMoney && !_isOrangeMoney && !_isMPesa) ||
+                Selection.user == null)
               paymentOption('Airtel Money | Orange Money | Vodacom M-Pesa'),
-            if (_isAirtelMoney) paymentOption('Airtel Money'),
-            if (_isOrangeMoney) paymentOption('Orange Money'),
-            if (_isMPesa) paymentOption('Vodacom M-Pesa'),
+            if (_isAirtelMoney && Selection.user != null)
+              paymentOption('Airtel Money'),
+            if (_isOrangeMoney && Selection.user != null)
+              paymentOption('Orange Money'),
+            if (_isMPesa && Selection.user != null)
+              paymentOption('Vodacom M-Pesa'),
 
             SizedBox(height: 10.0),
 
-            if (_isAirtelMoney || _isOrangeMoney || _isMPesa)
+            if ((_isAirtelMoney || _isOrangeMoney || _isMPesa) &&
+                Selection.user != null)
               Center(
                 child: CircleAvatar(
                   backgroundColor: Colors.white,
@@ -155,7 +161,8 @@ class _DepositState extends State<Deposit> {
                   ),
                 ),
               ),
-            if (!_isAirtelMoney && !_isOrangeMoney && !_isMPesa)
+            if ((!_isAirtelMoney && !_isOrangeMoney && !_isMPesa) ||
+                Selection.user == null)
               Container(
                 padding: new EdgeInsets.only(bottom: 10.0),
                 child: Row(
@@ -169,55 +176,7 @@ class _DepositState extends State<Deposit> {
                   ],
                 ),
               ),
-            if (_isAirtelMoney || _isOrangeMoney || _isMPesa)
-              SizedBox(height: 10.0),
-            // Container(
-            //   width: double.infinity,
-            //   child: RawMaterialButton(
-            //     padding: new EdgeInsets.all(15.0),
-            //     onPressed: () {
-            //       if (mounted)
-            //         setState(() {
-            //           // do deposit logic here
-            //           successMessage(context, 'En cours de developement!');
-            //         });
-            //     },
-            //     fillColor: Colors.lightGreen[400],
-            //     disabledElevation: 3.0,
-            //     child: Text(
-            //       'Vérifier'.toUpperCase(),
-            //       style: TextStyle(
-            //           color: Colors.white,
-            //           fontWeight: FontWeight.bold,
-            //           fontSize: 15.0),
-            //     ),
-            //   ),
-            // ),
             // SizedBox(height: 10.0),
-            // Column(
-            //   crossAxisAlignment: CrossAxisAlignment.start,
-            //   children: [
-            //     Text(
-            //       'Dépôt à partir du site',
-            //       style: TextStyle(
-            //         color: Colors.black,
-            //         fontWeight: FontWeight.w300,
-            //         fontSize: 14.0,
-            //       ),
-            //     ),
-            //     SizedBox(height: 5.0),
-            //     Text(
-            //       '(conseillé)',
-            //       style: TextStyle(
-            //         color: Colors.black,
-            //         fontWeight: FontWeight.bold,
-            //         fontSize: 12.0,
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            SizedBox(height: 10.0),
-
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -253,7 +212,7 @@ class _DepositState extends State<Deposit> {
                     },
                     cursorColor: Colors.lightBlue,
                     maxLines: 1,
-                    initialValue: _depositAmount.toString(),
+                    // initialValue: _depositAmount.toString(),
                     keyboardType: TextInputType.number,
                     inputFormatters: <TextInputFormatter>[
                       FilteringTextInputFormatter.digitsOnly
@@ -279,7 +238,7 @@ class _DepositState extends State<Deposit> {
                     onPressed: () {
                       if (mounted)
                         setState(() {
-                          print(_depositAmount);
+                          // print(_depositAmount);
                           if (Selection.user == null) {
                             failMessage(
                                 context, 'Connecter votre compte d\'abord');
