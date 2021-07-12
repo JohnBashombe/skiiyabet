@@ -478,7 +478,8 @@ class _LoginState extends State<Login> {
             onTap: () {
               if (mounted)
                 setState(() {
-                  Window.showJackpotIndex = 2;
+                  // CURRENTY IT SHOULD BE SET TO 1 BECAUSE THERE IS NOT JACKPOT INDEX
+                  Window.showJackpotIndex = 1;
                   // show help and how to play page
                   Window.showWindow = 3;
                   // this is here because of login is outside of the main app but will be set inside
@@ -486,7 +487,7 @@ class _LoginState extends State<Login> {
                       context, MaterialPageRoute(builder: (_) => SkiiyaBet()));
                 });
             },
-            child: Row(
+            child: Row( 
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(

@@ -1225,6 +1225,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           setState(() {
             // DISPLAY NO MATCH DATA LABEL
             _noDataMatch = true;
+            // DISPLAY THE DIALOG BOX ON EMPTY DATA DETECTED
+            showEmptyMatchDialog(context);
           });
       }
       // LOOPS
@@ -1331,12 +1333,17 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     });
   }
 
-  @override
-  void initState() {
-    // THIS LOADS ALL MACTHES
+  mainDataFunctions() {
+// THIS LOADS ALL MACTHES
     loadMatchMethod();
     // LET US LOAD THE LEAGUES AND THE COUNTRIES
     loadLeagueAndCountry();
+  }
+
+  @override
+  void initState() {
+    // LOADING BETTING DATA
+    mainDataFunctions();
     // THIS IS USED TO VERIFY THE VALIDITY OF MATCHES OFFLINE
     removeOldMatch();
 
@@ -1402,9 +1409,41 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                 child: isNoInternetNetwork
                     ? noInternetWidget()
                     : _noDataMatch
-                        ? SpinKitCircle(
-                            color: Colors.red.shade300,
-                            size: 25.0,
+                        ? GestureDetector(
+                            onTap: () {
+                              if (mounted)
+                                setState(() {
+                                  // WE HIDE THE LOADING PANEL
+                                  _noDataMatch = false;
+                                  // LOADING BETTING DATA
+                                  mainDataFunctions();
+                                  // RELOAD GAMES HERE
+                                  // print('Reloading games');
+                                });
+                            },
+                            child: MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.refresh,
+                                    size: 18.0,
+                                    color: Colors.black87,
+                                  ),
+                                  SizedBox(width: 3.0),
+                                  Text(
+                                    'Aucun Match Disponible',
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 12.0,
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           )
                         : SpinKitCircle(
                             color: Colors.lightBlue,
@@ -1424,10 +1463,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             isNoInternetNetwork = false;
             // WE TRY TO RELOAD THE COUNTRIES AND THE LEAGUES AND THE MATCHES
             // THIS WILL RECHECK FOR INTERNET CONNECTIVITY
-            // THIS LOADS ALL MACTHES
-            loadMatchMethod();
-            // LET US LOAD THE LEAGUES AND THE COUNTRIES
-            loadLeagueAndCountry();
+            // LOADING BETTING DATA
+            mainDataFunctions();
           });
       },
       child: MouseRegion(
@@ -2231,7 +2268,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 10.0), 
+                          SizedBox(height: 10.0),
                           Divider(color: Colors.grey, thickness: 0.4),
                           _displayBonusDataTable(' 04', Bonus.bonus1),
                           Divider(color: Colors.grey, thickness: 0.4),
@@ -2870,6 +2907,111 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         fontWeight: FontWeight.bold,
       ),
     );
+  }
+
+  // bool dialogBoxLoader = false;
+  showEmptyMatchDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0)),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            child: Container(
+              padding: new EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 15.0,
+              ),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.circular(17.0),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10.0,
+                        offset: Offset(0.0, 10.0))
+                  ]),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(height: 10.0),
+                  Text('Pas de Jeu Disponible Pour le Moment!',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.bold,
+                      )),
+                  Text('Veuillez Réessayer Plus Tard.',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.bold,
+                      )),
+                  SizedBox(height: 10.0),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: RawMaterialButton(
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0)),
+                      fillColor: Colors.black87,
+                      onPressed: () {
+                        if (mounted)
+                          setState(() {
+                            // WE CLOSE THE POP UP
+                            Navigator.pop(context);
+                          });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15.0, vertical: 5.0),
+                        child: Text(
+                          'Ok, j\'ai compris'.toUpperCase(),
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10.0),
+                  GestureDetector(
+                      onTap: () {
+                        if (mounted)
+                          setState(() {
+                            // CLOSING THE POP UP TO PREVENT THE MULTI SHADDOW
+                            Navigator.pop(context);
+                            // RELOAD THE GAMES BECAUSE THE LIST IS EMPTY
+                            // THIS LOADS ALL MACTHES
+                            // LOADING BETTING DATA
+                            mainDataFunctions();
+                          });
+                      },
+                      child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: Text(
+                          'Réessayer Maintenant',
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.0,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      )),
+                  SizedBox(height: 10.0),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   Future show_dialog_panel(
@@ -3733,7 +3875,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                     children: [
                                       SizedBox(height: 8.0),
                                       Text(
-                                        'Aucun match trouvé',
+                                        'Aucun Match Trouvé',
                                         style: TextStyle(
                                           color: Colors.red.shade300,
                                           fontSize: 12.0,
@@ -3781,7 +3923,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                                     children: [
                                       SizedBox(height: 8.0),
                                       Text(
-                                        'Aucun match trouvé',
+                                        'Aucun Match Trouvé',
                                         style: TextStyle(
                                           color: Colors.red.shade300,
                                           fontSize: 12.0,
@@ -4771,15 +4913,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
         .then((_thisTimer) {
       // GET THE RIGHT TIMESTAMP FROM THE DB
       Timestamp t = _thisTimer['timestamp'];
-      // CONDITIONS AND CHECKING
-      if (t.toDate().isUtc) {
-        // WE CONVERT IT TO DATE
-        Selection.offlineTracker = t.toDate();
-      } else {
-        // WE CONVERT IT TO UTC FORMAT
-        Selection.offlineTracker = t.toDate().toUtc();
-      }
-      // print("The newly fetched time is: ${Selection.offlineTracker}");
+      // SET THE LOCAL VALUE TO NULL
+      Selection.offlineTracker = null;
+      // WE CONVERT IT TO UTC FORMAT
+      Selection.offlineTracker = t.toDate().toUtc();
+
+      // print("NEW TIME: ${Selection.offlineTracker}");
       // AFTER A SUCCESSFULL LOAD OF CURRENT SERVER TIME
       // WE UPDATE THE GAMES LIST WITH ONLY ACTIVE GAMES
       updateMatchStatusLogic(_timeInterval);
@@ -4825,8 +4964,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       // SO TO ADD 10 SECONDS WE NEED TO MULTIPLY 10 BY 1000
       Selection.offlineTracker = DateTime.fromMillisecondsSinceEpoch(
         _dateMilli + (_timeInterval * 1000), // CONVERT TO SECONDS IN TIME
-      );
-      // print('OFFLINE TIME IS: ${Selection.offlineTracker}');
+      ); 
+      // print('OFFLINE TIME: ${Selection.offlineTracker}');
       // print('The value of date is null ${Selection.offlineTracker}');
     }
     // LET US PROCESS THE DATA HERE
@@ -4883,8 +5022,8 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     }
 
     // LET US DELETE ALL EXPIRING GAMES FROM THE MATCHES ARRAY
-    // WE LOOP THROUG THE IDS TO BE REMOVED AND LOOK FOR MATCHING
-    ////////////////////////////////////////////////
+    // WE LOOP THROUGH THE IDS TO BE REMOVED AND LOOK FOR MATCHING
+    ////////////////////////////////////////////////////
     // for (int _i = 0; _i < _gamePos.length; _i++) {
     //   // LOOP THROUG MATCHES FOR UPDATE TOO
     //   for (int _j = 0; _j < _matches.length; _j++) {
@@ -4902,11 +5041,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // WE CLEAR THE ARRAY FOR SPACE MANAGEMENT
     _gamePos.clear();
     // WE CHECK IF WE HAVE LESS GAME ON THE USER PANEL WE LOAD MORE
-    if (_matches.length < Selection.minimumMatchesCount) {
-      // print('WE WILL LOAD AGAIN GAMES HERE');
-      // IF WE HAVE LESS MATCHES ON OUR LIST
-      // WE LOAD MORE GAMES AGAIN TO REFILL THE ARRAY LIST
-      loadMatchMethod();
-    }
+    //////////////////////////////////////////////////////////
+    // if (_matches.length < Selection.minimumMatchesCount) {
+    //   // print('WE WILL LOAD AGAIN GAMES HERE');
+    //   // IF WE HAVE LESS MATCHES ON OUR LIST
+    //   // WE LOAD MORE GAMES AGAIN TO REFILL THE ARRAY LIST
+    //   loadMatchMethod();
+    // }
   }
 }
