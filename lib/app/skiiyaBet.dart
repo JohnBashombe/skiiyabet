@@ -1080,7 +1080,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // }
     else if (val == 17) {
       // IF WE HAVE A PENDING PROCESS THEN FINISH IT
-      if (Selection.resetPhone.compareTo('') != 0) {
+      // GO TO UPDATE PHONE ONLY IF WE HAVE A PHONE TO SEND A MESSAGE TO AND
+      // IF THE USER HAS BEEN ALLOWED TO GO TO THE NEXT STAGE OF PASSWORD RESET PROCESS
+      if ((Selection.resetPhone.compareTo('') != 0) &&
+          (Selection.showResendSMSinForgot == false)) {
         return RecoverPassword();
       } else {
         return ForgotPassword();
@@ -1225,8 +1228,11 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           setState(() {
             // DISPLAY NO MATCH DATA LABEL
             _noDataMatch = true;
-            // DISPLAY THE DIALOG BOX ON EMPTY DATA DETECTED
-            showEmptyMatchDialog(context);
+            // SHOW THIS MESSAGE ONLY IF WE ARE ON THE MAIN PAGE OR HOME
+            if (Window.showWindow == 0) {
+              // DISPLAY THE DIALOG BOX ON EMPTY DATA DETECTED
+              showEmptyMatchDialog(context);
+            }
           });
       }
       // LOOPS
@@ -1542,9 +1548,18 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     var _visitorTeam = _thisMatch.visitorTeam['data']['name'];
     // var team2 = match['team2'];
     // GET THE TIME OF THE MATCH
-    var time = _thisMatch.time['starting_at']['time'];
-    // GET THE DATE OF THE GAME
-    var date = _thisMatch.time['starting_at']['date'];
+    // var time = _thisMatch.time['starting_at']['time'];
+    // // GET THE DATE OF THE GAME
+    // var date = _thisMatch.time['starting_at']['date'];
+    // ADDING THE DATE TO A STRING
+    // String _gameDate = ;
+    // GETTING AND SETTING OUR DATE TIME
+    String _ourDate =
+        Method.getLocalDate(_thisMatch.time['starting_at']['date_time'])
+            .toString();
+    String _ourTime =
+        Method.getLocalTime(_thisMatch.time['starting_at']['date_time'])
+            .toString();
     // var championship = match['championship'];
     // var country = match['country'];
     // // load time details
@@ -1703,7 +1718,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       Row(
                         children: [
                           Text(
-                            time.toString(),
+                            _ourTime.toString(),
                             style: TextStyle(
                               color: Colors.grey,
                               fontSize: 13.0,
@@ -1713,7 +1728,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                         ],
                       ),
                       Text(
-                        date.toString(),
+                        _ourDate.toString(),
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 13.0,
@@ -3439,9 +3454,16 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
     // GET TEAM 2 NAME
     var team2 = moreOddsMatch.visitorTeam['data']['name'];
     // GET THE TIME OF THE MATCH
-    var time = moreOddsMatch.time['starting_at']['time'];
-    // GET THE DATE OF THE GAME
-    var date = moreOddsMatch.time['starting_at']['date'];
+    // var time = moreOddsMatch.time['starting_at']['time'];
+    // // GET THE DATE OF THE GAME
+    // var date = moreOddsMatch.time['starting_at']['date'];
+    // GETTING AND SETTING OUR DATE TIME
+    String _ourDate =
+        Method.getLocalDate(moreOddsMatch.time['starting_at']['date_time'])
+            .toString();
+    String _ourTime =
+        Method.getLocalTime(moreOddsMatch.time['starting_at']['date_time'])
+            .toString();
     // GET THE CHAMPIONSHIP
     var championship = _championship;
     // GET THE COUNTRY
@@ -3454,7 +3476,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              date.toString(),
+              _ourDate.toString(),
               style: TextStyle(
                 color: Colors.grey,
                 fontSize: 12.0,
@@ -3463,7 +3485,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
             ),
             SizedBox(width: 5.0),
             Text(
-              time.toString(),
+              _ourTime.toString(),
               style: TextStyle(
                   color: Colors.grey,
                   fontSize: 12.0,
@@ -3947,6 +3969,12 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   }
 
   thisResult(var result) {
+    // ADDING THE DATE TO A STRING
+    String _gameDate = result['time']['starting_at']['date_time'];
+    // GETTING AND SETTING OUR DATE TIME
+    String _ourDate = Method.getLocalDate(_gameDate).toString();
+    String _ourTime = Method.getLocalTime(_gameDate).toString();
+
     return Container(
       child: GestureDetector(
         onTap: () {
@@ -4069,7 +4097,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
                       ),
                       SizedBox(height: 3.0),
                       Text(
-                        result['time']['starting_at']['date_time'].toString(),
+                        _ourDate + ' ' + _ourTime,
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: 12.0,
@@ -4799,7 +4827,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
               unselect_all_at_once();
               // HIDE THE LOADING BUTTON
               hideLoadingButton();
-              Price.stake = 200;
+              Price.stake = Price.minimumBetPrice;
             });
           // SHOW A DIALOG BOX
           show_dialog_panel(
@@ -4889,17 +4917,35 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   // THIS VARIABLE WILL BE USED ON LOGGED IN USER AND NOT LOGGED IN USER
 
   // TO BE CALLED
-  reloadTheRightTimerInterval() {
-    // GET THE INTERVAL IN MINUTES
-    int _timeInterval = 2; // IN MINUTES
-    // LOOP THROUGH THE DATA ARRAY EVERY 1 MINUTE TO REMOVE OLD MATCHES ONE BY ONE
-    Timer.periodic(new Duration(minutes: _timeInterval), (timer) {
-      // KEEP ON LOADING THE DATA TIME
-      offlineTimeLoader().then((value) {
-        // print('reloading Timer again...');
-      });
-    });
-  }
+  // reloadTheRightTimerInterval() {
+  //   // GET THE INTERVAL IN MINUTES
+  //   int _timeInterval = 2; // IN MINUTES
+  //   // LOOP THROUGH THE DATA ARRAY EVERY 1 MINUTE TO REMOVE OLD MATCHES ONE BY ONE
+  //   Timer.periodic(new Duration(minutes: _timeInterval), (timer) async {
+  //     // KEEP ON LOADING THE DATA TIME
+  //     // offlineTimeLoader().then((value) {
+  //     //   // print('reloading Timer again...');
+  //     // });
+  //     await Firestore.instance
+  //         .collection('timer')
+  //         .document('timer')
+  //         .get()
+  //         .then((_thisTimer) {
+  //       // GET THE RIGHT TIMESTAMP FROM THE DB
+  //       Timestamp t = _thisTimer['timestamp'];
+  //       // SET THE LOCAL VALUE TO NULL
+  //       // Selection.offlineTracker = null;
+  //       // // WE CONVERT IT TO UTC FORMAT
+  //       // Selection.offlineTracker = t.toDate().toUtc();
+  //       print("NEW TIME___1: ${t.toDate().toUtc()}");
+  //       // AFTER A SUCCESSFULL LOAD OF CURRENT SERVER TIME
+  //       // WE UPDATE THE GAMES LIST WITH ONLY ACTIVE GAMES
+  //       // updateMatchStatusLogic(_timeInterval, 0);
+  //     }).catchError((e) {
+  //       // print('Loading time error: $e');
+  //     });
+  //   });
+  // }
 
   Future offlineTimeLoader() async {
     // WE GET A DATE AT THE TIME OF LOADING THEN KEEP ON INCREMENTING IT OFFLINE
@@ -4918,10 +4964,10 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
       // WE CONVERT IT TO UTC FORMAT
       Selection.offlineTracker = t.toDate().toUtc();
 
-      // print("NEW TIME: ${Selection.offlineTracker}");
+      // print("NEW TIME___: ${Selection.offlineTracker}");
       // AFTER A SUCCESSFULL LOAD OF CURRENT SERVER TIME
       // WE UPDATE THE GAMES LIST WITH ONLY ACTIVE GAMES
-      updateMatchStatusLogic(_timeInterval);
+      updateMatchStatusLogic(_timeInterval, 0);
     }).catchError((e) {
       // print('Loading time error: $e');
     });
@@ -4933,7 +4979,7 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
   removeOldMatch() {
     // KEEP ON RELOADING THE EXACT DB TIMER AGAIN AND AGAIN
     // TO BE UNCOMMENTED
-    reloadTheRightTimerInterval();
+    // reloadTheRightTimerInterval();
     // WE GET THE RIGHT CURRRENT DATE FROM THE SERVER
     offlineTimeLoader().then((_) {
       // EXECUTE THIS FUNCTION ON SUCCESSFULL LOADING OF THE DATE
@@ -4946,107 +4992,113 @@ class _SkiiyaBetState extends State<SkiiyaBet> {
           if (mounted)
             setState(() {
               // WE UPDATE THE LOGIN ON THE MAIN PAGE
-              updateMatchStatusLogic(_timeInterval);
+              updateMatchStatusLogic(_timeInterval, 1);
             });
         },
       );
     });
   }
 
-  updateMatchStatusLogic(int _timeInterval) {
+  updateMatchStatusLogic(int _timeInterval, int _reloadAllow) {
     // AFTER WE HAVE A OFFLINE DATE TIME TRACKER
     // WE WILL KEEP ON INCRESING IT EVERY SINGLE TIME SO THAT
     // OUR GAME LIST WILL ALWAYS BE UP TO DATE
     // print(Selection.offlineTracker);
-    if (Selection.offlineTracker != null) {
+    if ((Selection.offlineTracker != null)) {
       // GET CURRENT MILLISECONDS OF THE STORED DATE
-      int _dateMilli = Selection.offlineTracker.millisecondsSinceEpoch;
-      // SO TO ADD 10 SECONDS WE NEED TO MULTIPLY 10 BY 1000
-      Selection.offlineTracker = DateTime.fromMillisecondsSinceEpoch(
-        _dateMilli + (_timeInterval * 1000), // CONVERT TO SECONDS IN TIME
-      ); 
-      // print('OFFLINE TIME: ${Selection.offlineTracker}');
-      // print('The value of date is null ${Selection.offlineTracker}');
-    }
-    // LET US PROCESS THE DATA HERE
-    // IT STORE THE GAME ID THAT WILL BE DELETED FROM MATCHES ARRAY
-    var _gamePos = [];
-    // WE LOOP THROUGH THE MATCHES ARRAY TO VERIFY FOR GAME VALIDITY
-    for (int j = 0; j < _matches.length; j++) {
-      if (mounted)
-        setState(() {
-          // WE GET THE RIGHT STARTING MATCH DATE_TIME
-          // IT WILL ALWAYS BE GREATER THAN THE LOCAL TIME IF NOT, THEN THE STATUS WILL BE UPDATED
-          String _dateFromDB = _matches[j].time['starting_at']['date_time'];
-          // WE CONVERT THE STRING DATE INTO DATE INSTANCE
-          DateTime _realGameDate = DateTime.parse(_dateFromDB);
-          // SHOULD BE GREATER ALWAYS OTHERWISE UPDATE THE STATUS
-          // print(_realGameDate.millisecondsSinceEpoch);
-          // print(Selection.offlineTracker.millisecondsSinceEpoch);
-          // LET US GET THE DIFF HERE
-          int _diff = _realGameDate.millisecondsSinceEpoch -
-              Selection.offlineTracker.millisecondsSinceEpoch;
-          // NOW WE CHECK IF THE GAME MATCH TIMES DIFFERENCE IS LESS OR EQUAL To 1.5 MINUTES
-          // IF SO REMOVE IT AFTER 90 SECONS = 90,000 MILLI SECONDS
-          if (_diff <= 90000) {
-            // THAT'S 90 SECONDS
-            // print('This game is no longer valid : ID : ${_matches[j].id}');
-            // LET US GET THE GAME ID
-            String _gameID = _matches[j].id.toString();
-            // UPDATE THE GAME STATUS FROM NS TO LIVE
-            // TO BE UNCOMMENTED BEFORE UPLOADING
-            // // Firestore.instance
-            // //     .collection('football')
-            // //     .document(_gameID)
-            // //     .updateData({'status': 'LIVE'}).catchError((e) {
-            // //   print('Error while updating the match: $e');
-            // // });
-            // print('WILL UPDATE THE GAME STATUS IN THE DB');
-            // UPDATE THE GAME LOCAL VALUE HAS_EXPIRED TO TRUE
-            // LOOP THROUGH ODDS ARRAY TO UPDATE THE HAS_EXPIRED VALUE
-            for (var odd in oddsGameArray) {
-              // IF THE ID MATCHES
-              if (odd.gameID == _matches[j].id) {
-                // SET THE EXPIRIG STATE TO TRUE
-                odd.hasExpired = true;
-                // BREAK FOR A FASTER PROCESSING
-                break;
+      // print('OFFLINE TIME 1: ${Selection.offlineTracker}');
+      // UPDATE THE TIME IF IT IS NOT DIRECTLY FROM THE DATABASE
+      if ((_reloadAllow == 1)) {
+        int _dateMilli = Selection.offlineTracker.millisecondsSinceEpoch;
+        // print('OFFLINE TIME 1: ${Selection.offlineTracker}');
+        // SO TO ADD 10 SECONDS WE NEED TO MULTIPLY 10 BY 1000
+        Selection.offlineTracker = DateTime.fromMillisecondsSinceEpoch(
+          _dateMilli + (_timeInterval * 1000), // CONVERT TO SECONDS IN TIME
+        ).toUtc();
+        // print('OFFLINE TIME: ${Selection.offlineTracker}');
+        // print('The value of date is null ${Selection.offlineTracker}');
+      }
+
+      // LET US PROCESS THE DATA HERE
+      // IT STORE THE GAME ID THAT WILL BE DELETED FROM MATCHES ARRAY
+      var _gamePos = [];
+      // WE LOOP THROUGH THE MATCHES ARRAY TO VERIFY FOR GAME VALIDITY
+      for (int j = 0; j < _matches.length; j++) {
+        if (mounted)
+          setState(() {
+            // WE GET THE RIGHT STARTING MATCH DATE_TIME
+            // IT WILL ALWAYS BE GREATER THAN THE LOCAL TIME IF NOT, THEN THE STATUS WILL BE UPDATED
+            String _dateFromDB = _matches[j].time['starting_at']['date_time'];
+            // WE CONVERT THE STRING DATE INTO DATE INSTANCE
+            DateTime _realGameDate = DateTime.parse(_dateFromDB);
+            // SHOULD BE GREATER ALWAYS OTHERWISE UPDATE THE STATUS
+            // print(_realGameDate.millisecondsSinceEpoch);
+            // print(Selection.offlineTracker.millisecondsSinceEpoch);
+            // LET US GET THE DIFF HERE
+            int _diff = _realGameDate.millisecondsSinceEpoch -
+                Selection.offlineTracker.millisecondsSinceEpoch;
+            // NOW WE CHECK IF THE GAME MATCH TIMES DIFFERENCE IS LESS OR EQUAL To 1.5 MINUTES
+            // IF SO REMOVE IT AFTER 120 SECONS = 120,000 MILLI SECONDS
+            if (_diff <= 120000) {
+              // THAT'S 120 SECONDS
+              // print('This game is no longer valid : ID : ${_matches[j].id}');
+              // LET US GET THE GAME ID
+              String _gameID = _matches[j].id.toString();
+              // UPDATE THE GAME STATUS FROM NS TO LIVE
+              // TO BE UNCOMMENTED BEFORE UPLOADING
+              // // Firestore.instance
+              // //     .collection('football')
+              // //     .document(_gameID)
+              // //     .updateData({'status': 'LIVE'}).catchError((e) {
+              // //   print('Error while updating the match: $e');
+              // // });
+              // print('WILL UPDATE THE GAME STATUS IN THE DB');
+              // UPDATE THE GAME LOCAL VALUE HAS_EXPIRED TO TRUE
+              // LOOP THROUGH ODDS ARRAY TO UPDATE THE HAS_EXPIRED VALUE
+              for (var odd in oddsGameArray) {
+                // IF THE ID MATCHES
+                if (odd.gameID == _matches[j].id) {
+                  // SET THE EXPIRIG STATE TO TRUE
+                  odd.hasExpired = true;
+                  // BREAK FOR A FASTER PROCESSING
+                  break;
+                }
               }
+              // DELETE THE GAME IN THE _MATCHES ARRAY
+              // WE ADD THEM IN A RESIDUAL ARRAY FOR A BETTER PROCESSING
+              _gamePos.add(_matches[j].id);
+              // OTHERWISE, UPDATE THE STATUS TO LIVE
             }
-            // DELETE THE GAME IN THE _MATCHES ARRAY
-            // WE ADD THEM IN A RESIDUAL ARRAY FOR A BETTER PROCESSING
-            _gamePos.add(_matches[j].id);
-            // OTHERWISE, UPDATE THE STATUS TO LIVE
-          }
-        });
+          });
+      }
+
+      // LET US DELETE ALL EXPIRING GAMES FROM THE MATCHES ARRAY
+      // WE LOOP THROUGH THE IDS TO BE REMOVED AND LOOK FOR MATCHING
+      ////////////////////////////////////////////////////
+      // for (int _i = 0; _i < _gamePos.length; _i++) {
+      //   // LOOP THROUG MATCHES FOR UPDATE TOO
+      //   for (int _j = 0; _j < _matches.length; _j++) {
+      //     // CONDITIONS FOR MATCHING
+      //     if (_matches[_j].id == _gamePos[_i]) {
+      //       //  THIS MATCH OR THE GAME TO BE DELETED
+      //       _matches.removeAt(_j);
+      //       // WE BREAK THE LOOP FOR A FASTER PROCESSING
+      //       break;
+      //     }
+      //   }
+      // }
+
+      // AFTER SUCCESSFULLY DELETED OLD GAMES,
+      // WE CLEAR THE ARRAY FOR SPACE MANAGEMENT
+      _gamePos.clear();
+      // WE CHECK IF WE HAVE LESS GAME ON THE USER PANEL WE LOAD MORE
+      //////////////////////////////////////////////////////////
+      // if (_matches.length < Selection.minimumMatchesCount) {
+      //   // print('WE WILL LOAD AGAIN GAMES HERE');
+      //   // IF WE HAVE LESS MATCHES ON OUR LIST
+      //   // WE LOAD MORE GAMES AGAIN TO REFILL THE ARRAY LIST
+      //   loadMatchMethod();
+      // }
     }
-
-    // LET US DELETE ALL EXPIRING GAMES FROM THE MATCHES ARRAY
-    // WE LOOP THROUGH THE IDS TO BE REMOVED AND LOOK FOR MATCHING
-    ////////////////////////////////////////////////////
-    // for (int _i = 0; _i < _gamePos.length; _i++) {
-    //   // LOOP THROUG MATCHES FOR UPDATE TOO
-    //   for (int _j = 0; _j < _matches.length; _j++) {
-    //     // CONDITIONS FOR MATCHING
-    //     if (_matches[_j].id == _gamePos[_i]) {
-    //       //  THIS MATCH OR THE GAME TO BE DELETED
-    //       _matches.removeAt(_j);
-    //       // WE BREAK THE LOOP FOR A FASTER PROCESSING
-    //       break;
-    //     }
-    //   }
-    // }
-
-    // AFTER SUCCESSFULLY DELETED OLD GAMES,
-    // WE CLEAR THE ARRAY FOR SPACE MANAGEMENT
-    _gamePos.clear();
-    // WE CHECK IF WE HAVE LESS GAME ON THE USER PANEL WE LOAD MORE
-    //////////////////////////////////////////////////////////
-    // if (_matches.length < Selection.minimumMatchesCount) {
-    //   // print('WE WILL LOAD AGAIN GAMES HERE');
-    //   // IF WE HAVE LESS MATCHES ON OUR LIST
-    //   // WE LOAD MORE GAMES AGAIN TO REFILL THE ARRAY LIST
-    //   loadMatchMethod();
-    // }
   }
 }

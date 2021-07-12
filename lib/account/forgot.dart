@@ -265,7 +265,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                           context,
                                           'Désolé! Ce compte est bloqué.',
                                           Colors.red.shade300,
-                                          10);
+                                          5);
                                     }
                                     // else if (Selection.allowSMSReset ==
                                     //     false) {
@@ -283,7 +283,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                           context,
                                           'Vérification du numéro...',
                                           Colors.lightGreen[400],
-                                          4);
+                                          3);
                                       // set the number filter to phone
                                       _phoneNumber = _numberFilter;
                                       Selection.resetPhone = _phoneNumber;
@@ -398,26 +398,27 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 String generatedCode = thisResult['resetPassword'].toString();
                 // sending the code to the user number now
                 // INITIALIZING THE TWILIO PACKAGE FOR MESSAGING
-                TwilioFlutter twilioFlutter = TwilioFlutter(
-                    accountSid:
-                        'ACbb2ae40e19e030055d04a1787f2a325b', // replace *** with Account SID
-                    authToken:
-                        'a21e567a1d705578a4acb6b652d95391', // replace xxx with Auth Token
-                    twilioNumber:
-                        '+17172592892' // replace .... with Twilio Number
-                    );
-                // SENDING A TWILIO REQUEST WITH TO THE SERVER WITH THIS PHONE NUMBER, CODE AND CONTENT
-                twilioFlutter
+                 TwilioFlutter(
+                  // replace *** with Account SID
+                  accountSid: 'ACbb2ae40e19e030055d04a1787f2a325b',
+                  // replace xxx with Auth Token
+                  authToken: 'a21e567a1d705578a4acb6b652d95391',
+                  // replace .... with Twilio Number
+                  // twilioNumber: 'SKIIYA SARL',
+                  twilioNumber: '+17172592892',
+                  // SENDING A TWILIO REQUEST WITH TO THE SERVER WITH THIS PHONE NUMBER, CODE AND CONTENT
+                )
                     .sendSMS(
                   toNumber: '+243' + phone,
                   messageBody:
-                      'Le code de confirmation pour modifier votre mot de passe sur SKIIYA BET est: ' +
+                      'Le code pour modifier votre mot de passe sur SKIIYA BET est: ' +
                           generatedCode +
-                          '\nPlus d\'info sur https://www.skiiyabet.com',
+                          '\n\nPlus d\'info sur https://www.skiiyabet.com',
                 )
                     .then((value) {
                   if (mounted)
                     setState(() {
+                      // print("FINAL RESULT IS: $value");
                       // print('message sent successfully');
                       // redirect to update password
                       // REDIRECT TO ADD PHONE NUMBER
@@ -433,11 +434,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 }).catchError((e) {
                   // ERROR MESSAGE IF THE CODE WAS NOT SENT
                   resultMessage(
-                    context,
-                    'SMS non envoyé',
-                    Colors.red.shade300,
-                    5,
-                  );
+                      context, 'SMS non envoyé', Colors.red.shade300, 3);
                   //   // print('The error while sending sms is: $e');
                 });
               } else {
@@ -618,6 +615,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     // print('will execute this $_getResetCode  $_getResetTimestamp');
     // GET COUNTER FOR VERIFICATION
     if (_getResetCode <= 2) {
+      // print('pass here');
       // SET THE ALLOW REQUEST TO TRUE
       Selection.allowSMSReset = true;
       // INCREASE THE RESET CODE BY 1
@@ -685,7 +683,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               context,
               'Vous avez demandé le code plusieurs fois.\nVeuillez réessayer dans $_output.',
               Colors.red.shade300,
-              10,
+              5,
             );
           });
       }

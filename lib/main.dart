@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
     // THIS IS THE MAIN METHOD FOR SKIIYA BET
     // FIREBASE INIT - FLUTTER BUILD WEB - FIREBASE SERVE - FIREBASE DEPLOY 
     return MaterialApp( 
-      title: 'SkiiYa Bet',
+      title: 'SKIIYA Bet',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.white,

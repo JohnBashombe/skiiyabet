@@ -8,6 +8,26 @@ class Method {
   // GET THE POURCENTAGE VALUE OF THE BONUS
   static int pourcentageRate = 0;
 
+  static getLocalTime(String _gameDate) {
+    // CONVERTING THE DATE TIME
+    DateTime _thisDate = DateTime.parse(_gameDate).add(Duration(hours: 3));
+    // GET THE DATE
+    return _thisDate.hour.toString().padLeft(2, '0') +
+        ':' +
+        _thisDate.minute.toString().padLeft(2, '0');
+  }
+
+  static getLocalDate(String _gameDate) {
+    // CONVERTING THE DATE TIME
+    DateTime _thisDate = DateTime.parse(_gameDate).add(Duration(hours: 3));
+    // GET THE DATE
+    return _thisDate.day.toString().padLeft(2, '0') +
+        '-' +
+        _thisDate.month.toString().padLeft(2, '0') +
+        '-' +
+        _thisDate.year.toString();
+  }
+
   static String displayUserBonus() {
     // COUNT THE MATCHES ON THE TICKET
     int counter = 0;

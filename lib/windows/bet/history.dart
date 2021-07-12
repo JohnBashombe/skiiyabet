@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:skiiyabet/methods/methods.dart';
 import 'package:skiiyabet/windows/bet/widget.dart';
 import 'package:http/http.dart' as http;
 
@@ -75,9 +76,16 @@ class _HistoryState extends State<History> {
     }
 
     // GET THE TIME
-    var _time = _histDetails['time']['time'];
+    // var _time = _histDetails['time']['time'];
+    // // GET THE DATE
+    // var _date = _histDetails['time']['date'];
+    // print(_histDetails['time']);
+    // GET THE DATETIME
+    String _dateTime = _histDetails['time']['date_time'];
     // GET THE DATE
-    var _date = _histDetails['time']['date'];
+    String _ourDate = Method.getLocalDate(_dateTime).toString();
+    // GET THE TIME
+    String _ourTime = Method.getLocalTime(_dateTime).toString();
     // GET THE STAKE OF THE TICKET
     var _stake = _histDetails['rewards']['stake'];
     // GET THE CURRENCY SYMBOL
@@ -139,7 +147,7 @@ class _HistoryState extends State<History> {
             ),
           ),
           bottomData(_totalRate, _currency, _stake, _toatalWinning, _bonus,
-              _payout, _status, _colorItem, _date, _time),
+              _payout, _status, _colorItem, _ourDate, _ourTime),
         ],
       ),
     );
@@ -150,11 +158,18 @@ class _HistoryState extends State<History> {
     var _histDetails = _histData[_detailIndex];
     // print(_histDetails.data);
     // GET THE TIME
-    var _time =
-        _histDetails['matches']['dataTimes'][_index]['starting_at']['time'];
+    // var _time =
+    //     _histDetails['matches']['dataTimes'][_index]['starting_at']['time'];
+    // // GET THE DATE
+    // var _date =
+    //     _histDetails['matches']['dataTimes'][_index]['starting_at']['date'];
+    // print(_histDetails['matches']['dataTimes'][_index]['starting_at']);
+    String _dateTime = (_histDetails['matches']['dataTimes'][_index]
+        ['starting_at']['date_time']);
     // GET THE DATE
-    var _date =
-        _histDetails['matches']['dataTimes'][_index]['starting_at']['date'];
+    String _ourDate = Method.getLocalDate(_dateTime).toString();
+    // GET THE TIME
+    String _ourTime = Method.getLocalTime(_dateTime).toString();
     // GET LOCAL TEAM
     var _localTeam = _histDetails['matches']['localTeams'][_index];
     // GET VISITOR TEAM
@@ -216,7 +231,7 @@ class _HistoryState extends State<History> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _date.toString(),
+                  _ourDate.toString(),
                   style: TextStyle(
                     fontSize: 12.0,
                     color: Colors.grey,
@@ -224,7 +239,7 @@ class _HistoryState extends State<History> {
                 ),
                 SizedBox(height: 2.0),
                 Text(
-                  _time.toString(),
+                  _ourTime.toString(),
                   style: TextStyle(
                     fontSize: 12.0,
                     color: Colors.black,
@@ -437,9 +452,15 @@ class _HistoryState extends State<History> {
 
   Widget myHistWidget(BuildContext context, int index) {
     // GET THE TIME
-    var _time = _histData[index]['time']['time'];
+    // var _time = _histData[index]['time']['time'];
+    // // GET THE DATE
+    // var _date = _histData[index]['time']['date'];
+    // print(_histDetails['matches']['dataTimes'][_index]['starting_at']);
+    String _dateTime = _histData[index]['time']['date_time'];
     // GET THE DATE
-    var _date = _histData[index]['time']['date'];
+    String _ourDate = Method.getLocalDate(_dateTime).toString();
+    // GET THE TIME
+    String _ourTime = Method.getLocalTime(_dateTime).toString();
     // GET THE TOTAL PAYOUT
     var _payout = _histData[index]['rewards']['payout'];
     // GET THE STAKE OF THE TICKET
@@ -483,7 +504,7 @@ class _HistoryState extends State<History> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _date.toString(),
+                      _ourDate.toString(),
                       style: TextStyle(
                         fontSize: 12.0,
                         color: Colors.grey,
@@ -491,7 +512,7 @@ class _HistoryState extends State<History> {
                     ),
                     SizedBox(height: 2.0),
                     Text(
-                      _time.toString(),
+                      _ourTime.toString(),
                       style: TextStyle(
                         fontSize: 12.0,
                         color: Colors.black,

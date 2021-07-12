@@ -4,6 +4,7 @@ import 'package:skiiyabet/components/selection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:skiiyabet/methods/methods.dart';
 import 'package:skiiyabet/windows/bet/widget.dart';
 
 class Transactions extends StatefulWidget {
@@ -172,9 +173,19 @@ class _TransactionsState extends State<Transactions> {
 
   Widget myTransactionWidget(BuildContext context, int index) {
     // GET THE TIME
-    var _time = _transData[index]['time']['time'];
-    // GET THE DATE
-    var _date = _transData[index]['time']['date'];
+    // var _time = _transData[index]['time']['time'];
+    // // GET THE DATE
+    // var _date = _transData[index]['time']['date'];
+    // GET THE DATETIME NOW
+    String _dateTime = _transData[index]['time']['date_time'];
+    // // GET THE DATE
+    // String _ourDate = _transData[index]['time']['date'];
+    // GET THE TIME
+    // String _ourTime = _transData[index]['time']['time'];
+    // print(_transData[index]['time']);
+    String _ourDate = Method.getLocalDate(_dateTime).toString();
+    // GET THE TIME
+    String _ourTime = Method.getLocalTime(_dateTime).toString();
     // GET THE SIGN OF THE TRANSACTION
     var _actionSign = _transData[index]['action_sign'];
     // GET THE AMOUNT OF THE TRANSACTION
@@ -193,7 +204,7 @@ class _TransactionsState extends State<Transactions> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _date.toString(),
+                  _ourDate.toString(),
                   style: TextStyle(
                     fontSize: 12.0,
                     color: Colors.grey,
@@ -201,7 +212,7 @@ class _TransactionsState extends State<Transactions> {
                 ),
                 SizedBox(height: 2.0),
                 Text(
-                  _time.toString(),
+                  _ourTime.toString(),
                   style: TextStyle(
                     fontSize: 12.0,
                     color: Colors.black,

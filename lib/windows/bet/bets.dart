@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:skiiyabet/methods/methods.dart';
 import 'package:skiiyabet/windows/bet/widget.dart';
 import 'package:http/http.dart' as http;
 
@@ -79,9 +80,16 @@ class _BetsState extends State<Bets> {
     }
 
     // GET THE TIME
-    var _time = _betDetails['time']['time'];
-    // GET THE DATE
-    var _date = _betDetails['time']['date'];
+    // var _time = _betDetails['time']['time'];
+    // // GET THE DATE
+    // var _date = _betDetails['time']['date'];
+    // print(_betDetails['time']);
+    String _dateTime = _betDetails['time']['date_time'];
+    // // GET THE DATE
+    String _ourDate = Method.getLocalDate(_dateTime).toString();
+    // GET THE TIME
+    String _ourTime = Method.getLocalTime(_dateTime).toString();
+
     // GET THE STAKE OF THE TICKET
     var _stake = _betDetails['rewards']['stake'];
     // GET THE CURRENCY SYMBOL
@@ -143,7 +151,7 @@ class _BetsState extends State<Bets> {
             ),
           ),
           bottomData(_totalRate, _currency, _stake, _toatalWinning, _bonus,
-              _payout, _status, _colorItem, _date, _time),
+              _payout, _status, _colorItem, _ourDate, _ourTime),
         ],
       ),
     );
@@ -152,12 +160,19 @@ class _BetsState extends State<Bets> {
   Column gamesFromTicket(int _index) {
     // WE STORE DATA IN THE NEW ARRAY OF DATA
     var _betDetails = _betData[_detailIndex];
+    // GET THE DATE TIME
+    String _dateTime =
+        _betDetails['matches']['dataTimes'][_index]['starting_at']['date_time'];
+    // // GET THE DATE
+    String _ourDate = Method.getLocalDate(_dateTime).toString();
     // GET THE TIME
-    var _time =
-        _betDetails['matches']['dataTimes'][_index]['starting_at']['time'];
-    // GET THE DATE
-    var _date =
-        _betDetails['matches']['dataTimes'][_index]['starting_at']['date'];
+    String _ourTime = Method.getLocalTime(_dateTime).toString();
+    // GET THE TIME
+    // var _time =
+    //     _betDetails['matches']['dataTimes'][_index]['starting_at']['time'];
+    // // GET THE DATE
+    // var _date =
+    //     _betDetails['matches']['dataTimes'][_index]['starting_at']['date'];
     // GET LOCAL TEAM
     var _localTeam = _betDetails['matches']['localTeams'][_index];
     // GET VISITOR TEAM
@@ -219,7 +234,7 @@ class _BetsState extends State<Bets> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _date.toString(),
+                  _ourDate.toString(),
                   style: TextStyle(
                     fontSize: 12.0,
                     color: Colors.grey,
@@ -227,7 +242,7 @@ class _BetsState extends State<Bets> {
                 ),
                 SizedBox(height: 2.0),
                 Text(
-                  _time.toString(),
+                  _ourTime.toString(),
                   style: TextStyle(
                     fontSize: 12.0,
                     color: Colors.black,
@@ -440,9 +455,14 @@ class _BetsState extends State<Bets> {
 
   Widget myBetsWidget(BuildContext context, int index) {
     // GET THE TIME
-    var _time = _betData[index]['time']['time'];
-    // GET THE DATE
-    var _date = _betData[index]['time']['date'];
+    // var _time = _betData[index]['time']['time'];
+    // // GET THE DATE
+    // var _date = _betData[index]['time']['date'];
+    String _dateTime = _betData[index]['time']['date_time'];
+    // // GET THE DATE
+    String _ourDate = Method.getLocalDate(_dateTime).toString();
+    // GET THE TIME
+    String _ourTime = Method.getLocalTime(_dateTime).toString();
     // GET THE TOTAL PAYOUT
     var _payout = _betData[index]['rewards']['payout'];
     // GET THE STAKE OF THE TICKET
@@ -473,7 +493,7 @@ class _BetsState extends State<Bets> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _date.toString(),
+                      _ourDate.toString(),
                       style: TextStyle(
                         fontSize: 12.0,
                         color: Colors.grey,
@@ -481,7 +501,7 @@ class _BetsState extends State<Bets> {
                     ),
                     SizedBox(height: 2.0),
                     Text(
-                      _time.toString(),
+                      _ourTime.toString(),
                       style: TextStyle(
                         fontSize: 12.0,
                         color: Colors.black,
